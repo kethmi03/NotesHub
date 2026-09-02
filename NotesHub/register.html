@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register | NotesHub</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Notes<span class="logo-highlight">Hub</span></span>
+        </div>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="browse-notes.html">Browse Notes</a>
+                <a href="upload-note.html">Upload Notes</a>
+            <a href="index.html#how-it-works">How It Works</a>
+            <a href="index.html#about">About</a>
+        </nav>
+
+        <div class="nav-buttons">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="register.html" class="register-btn active">Get Started</a>
+        </div>
+
+    </header>
+
+
+    <!-- ================= AUTH SECTION ================= -->
+
+    <section class="auth-section">
+
+        <div class="auth-container">
+            
+            <div class="auth-header">
+                <h2>Create an Account</h2>
+                <p>Join the student knowledge marketplace today.</p>
+            </div>
+
+            <form id="registerForm" class="auth-form">
+                
+                <div class="input-group">
+                    <label for="reg-name">Full Name</label>
+                    <div class="input-wrapper">
+                        
+                        <input type="text" id="reg-name" placeholder="John Doe" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="reg-email">Email</label>
+                    <div class="input-wrapper">
+                        
+                        <input type="email" id="reg-email" placeholder="john@gmail.com" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="reg-password">Password</label>
+                    <div class="input-wrapper">
+                        
+                        <input type="password" id="reg-password" placeholder="Create a strong password" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="reg-confirm-password">Confirm Password</label>
+                    <div class="input-wrapper">
+                       
+                        <input type="password" id="reg-confirm-password" placeholder="Confirm your password" required>
+                    </div>
+                </div>
+
+                <div id="registerMessage" class="form-message" aria-live="polite"></div>
+
+                <button type="submit" class="auth-submit-btn">Register</button>
+
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html">Log in here</a></p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-content">
+
+            <div class="footer-brand">
+
+                <div class="logo">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Notes<span class="logo-highlight">Hub</span></span>
+                </div>
+
+                <p>
+                    A peer-to-peer academic notes marketplace
+                    designed for students.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h4>Platform</h4>
+
+                <a href="browse-notes.html">Browse Notes</a>
+                <a href="upload-note.html">Upload Notes</a>
+
+                <a href="login.html">Login</a>
+                <a href="register.html">Register</a>
+
+            </div>
+
+
+            <div>
+
+                <h4>Support</h4>
+
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Report Content</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="copyright">
+
+            © 2026 NotesHub. All Rights Reserved.
+
+        </div>
+
+    </footer>
+
+
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>

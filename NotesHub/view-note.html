@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Software Engineering Lectures | NotesHub</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Notes<span class="logo-highlight">Hub</span></span>
+        </div>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="browse-notes.html">Browse Notes</a>
+                <a href="upload-note.html">Upload Notes</a>
+            <a href="dashboard.html">Dashboard</a>
+        </nav>
+
+        <div class="nav-buttons">
+            <div class="user-profile-nav">
+                <div class="avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <span>John Doe</span>
+                <button class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+
+    </header>
+
+
+    <!-- ================= NOTE DETAILS SECTION ================= -->
+
+    <section class="note-details-section">
+
+        <div class="note-details-container">
+            
+            <div class="note-main-content">
+                
+                <div class="breadcrumb">
+                    <a href="browse-notes.html">Browse Notes</a>
+                <a href="upload-note.html">Upload Notes</a>
+                    <span>/</span>
+                    <a href="#">Computer Science</a>
+                    <span>/</span>
+                    <span class="current">Software Engineering Lectures</span>
+                </div>
+
+                <div class="note-header-info">
+                    
+                    <div class="note-icon-huge">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </div>
+
+                    <div>
+                        <h1>Software Engineering Complete Lectures</h1>
+                        
+                        <div class="note-meta-badges">
+                            <span class="badge"><i class="fa-solid fa-book"></i> SE3106</span>
+                            <span class="badge"><i class="fa-solid fa-calendar"></i> Y3S1</span>
+                            <span class="badge rating"><i class="fa-solid fa-star"></i> 4.8 (24 Reviews)</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="note-description">
+                    <h3>Description</h3>
+                    <p>
+                        This is a complete set of lecture notes for Software Engineering (SE3106). It covers everything from the software development life cycle (SDLC), agile methodologies, requirements engineering, system design, testing, to maintenance.
+                    </p>
+                    <p>
+                        The notes are compiled from lecture slides, textbooks, and personal research. It's perfectly structured for exam preparation and quick revision.
+                    </p>
+                    
+                    <h4>Tags:</h4>
+                    <div class="tags-list">
+                        <span>#software-engineering</span>
+                        <span>#agile</span>
+                        <span>#sdlc</span>
+                        <span>#summary</span>
+                    </div>
+                </div>
+
+                <div class="note-reviews">
+                    <h3>Student Reviews</h3>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
+                                <strong>Mike Ross</strong>
+                            </div>
+                            <div class="review-stars">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+                        <p>These notes are a lifesaver! Perfectly summarized and very easy to understand. Helped me a lot during the final exams.</p>
+                        <span class="review-date">2 weeks ago</span>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
+                                <strong>Emily Chen</strong>
+                            </div>
+                            <div class="review-stars">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-regular fa-star"></i>
+                            </div>
+                        </div>
+                        <p>Good notes, especially the part about Agile methodologies. Highly recommended.</p>
+                        <span class="review-date">1 month ago</span>
+                    </div>
+
+                    <button class="add-review-btn">Write a Review</button>
+                </div>
+
+            </div>
+
+
+            <!-- Right Sidebar: Action Card -->
+            <div class="note-action-sidebar">
+                
+                <div class="action-card">
+                    
+
+
+                    <div class="file-details">
+                        <div class="detail-row">
+                            <span><i class="fa-solid fa-file"></i> Format</span>
+                            <strong>PDF</strong>
+                        </div>
+                        <div class="detail-row">
+                            <span><i class="fa-solid fa-hard-drive"></i> Size</span>
+                            <strong>2.4 MB</strong>
+                        </div>
+                        <div class="detail-row">
+                            <span><i class="fa-solid fa-file-lines"></i> Pages</span>
+                            <strong>45</strong>
+                        </div>
+                        <div class="detail-row">
+                            <span><i class="fa-solid fa-clock"></i> Uploaded</span>
+                            <strong>Sept 15, 2026</strong>
+                        </div>
+                    </div>
+
+                    <button class="download-action-btn">
+                        <i class="fa-solid fa-cloud-arrow-down"></i> Download Note
+                    </button>
+
+                    <button class="save-btn">
+                        <i class="fa-regular fa-bookmark"></i> Save for later
+                    </button>
+
+                    <div class="author-card">
+                        <h4>Uploaded By</h4>
+                        <div class="author-profile">
+                            <div class="avatar-large" style="width: 50px; height: 50px; font-size: 20px;">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div>
+                                <strong>Sarah Jenkins</strong>
+                                <span>Software Engineering</span>
+                                <div class="author-stats">
+                                    <span><i class="fa-solid fa-star" style="color: #f59e0b;"></i> 4.9</span>
+                                    <span>• 12 Notes</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="view-profile-btn">View Profile</button>
+                    </div>
+
+                    <button class="report-btn"><i class="fa-solid fa-flag"></i> Report this note</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-content">
+
+            <div class="footer-brand">
+
+                <div class="logo">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Notes<span class="logo-highlight">Hub</span></span>
+                </div>
+
+                <p>
+                    A peer-to-peer academic notes marketplace
+                    designed for students.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h4>Platform</h4>
+
+                <a href="browse-notes.html">Browse Notes</a>
+                <a href="upload-note.html">Upload Notes</a>
+
+                <a href="dashboard.html">Dashboard</a>
+
+            </div>
+
+
+            <div>
+
+                <h4>Support</h4>
+
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Report Content</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="copyright">
+
+            © 2026 NotesHub. All Rights Reserved.
+
+        </div>
+
+    </footer>
+
+
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | NotesHub</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Notes<span class="logo-highlight">Hub</span></span>
+        </div>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="browse-notes.html">Browse Notes</a>
+                <a href="upload-note.html">Upload Notes</a>
+            <a href="dashboard.html" class="active">Dashboard</a>
+        </nav>
+
+        <div class="nav-buttons">
+            <div class="user-profile-nav">
+                <div class="avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <span>John Doe</span>
+                <button class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+
+    </header>
+
+
+    <!-- ================= DASHBOARD SECTION ================= -->
+
+    <section class="dashboard-section">
+
+        <div class="dashboard-sidebar">
+            <div class="sidebar-user">
+                <div class="avatar-large">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <h3>John Doe</h3>
+                
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="active"><i class="fa-solid fa-chart-pie"></i> Overview</a>
+                <a href="my-notes.html"><i class="fa-solid fa-file-lines"></i> My Notes</a>
+                <a href="saved-notes.html"><i class="fa-solid fa-bookmark"></i> Saved Notes</a>
+
+                <a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a>
+            </nav>
+
+            <a href="upload-note.html" class="upload-btn">
+                <i class="fa-solid fa-plus"></i> Upload New Note
+            </a>
+        </div>
+
+
+        <div class="dashboard-content">
+            
+            <div class="dashboard-header">
+                <h2>Welcome back, John! 👋</h2>
+                <p>Here's what's happening with your notes today.</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #eef2ff; color: #4f46e5;">
+                        <i class="fa-solid fa-download"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>124</h3>
+                        <p>Total Downloads</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>4.8</h3>
+                        <p>Average Rating</p>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <!-- Recent Notes -->
+            <div class="recent-notes">
+                <div class="section-heading">
+                    <h3>My Recent Notes</h3>
+                    <a href="#">View All</a>
+                </div>
+
+                <div class="notes-grid">
+                    
+                    <div class="note-card-small">
+                        <div class="note-icon-small">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </div>
+                        <div class="note-details">
+                            <h4>Software Engineering Notes</h4>
+                            <p>Y3S1 • SE3106</p>
+                        </div>
+                        <div class="note-stats">
+                            <span><i class="fa-solid fa-download"></i> 45</span>
+                            <span><i class="fa-solid fa-star"></i> 4.5</span>
+                        </div>
+                        <div class="note-actions">
+                            <button class="edit-btn"><i class="fa-solid fa-pen"></i></button>
+                            <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="note-card-small">
+                        <div class="note-icon-small">
+                            <i class="fa-solid fa-file-powerpoint"></i>
+                        </div>
+                        <div class="note-details">
+                            <h4>Database Management</h4>
+                            <p>Y2S2 • DB2104</p>
+                        </div>
+                        <div class="note-stats">
+                            <span><i class="fa-solid fa-download"></i> 79</span>
+                            <span><i class="fa-solid fa-star"></i> 4.9</span>
+                        </div>
+                        <div class="note-actions">
+                            <button class="edit-btn"><i class="fa-solid fa-pen"></i></button>
+                            <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-content">
+
+            <div class="footer-brand">
+
+                <div class="logo">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Notes<span class="logo-highlight">Hub</span></span>
+                </div>
+
+                <p>
+                    A peer-to-peer academic notes marketplace
+                    designed for students.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h4>Platform</h4>
+
+                <a href="browse-notes.html">Browse Notes</a>
+                <a href="upload-note.html">Upload Notes</a>
+
+                <a href="dashboard.html">Dashboard</a>
+
+            </div>
+
+
+            <div>
+
+                <h4>Support</h4>
+
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Report Content</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="copyright">
+
+            © 2026 NotesHub. All Rights Reserved.
+
+        </div>
+
+    </footer>
+
+
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>
