@@ -1,0 +1,10 @@
+{
+  "liveServer.settings.root": "/NotesHub",
+  "liveServer.settings.port": 5500,
+  "liveServer.settings.https": false,
+  "liveServer.settings.ignoreFiles": [
+    ".vscode",
+    ".git",
+    "node_modules"
+  ]
+}
