@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Browse Notes | NotesHub</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Notes<span class="logo-highlight">Hub</span></span>
+        </div>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="browse-notes.html" class="active">Browse Notes</a>
+            <a href="dashboard.html">Dashboard</a>
+        </nav>
+
+        <div class="nav-buttons">
+            <div class="user-profile-nav">
+                <div class="avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <span>John Doe</span>
+                <button class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+
+    </header>
+
+
+    <!-- ================= BROWSE SECTION ================= -->
+
+    <section class="browse-section">
+
+        <!-- Sidebar Filters -->
+        <aside class="filters-sidebar">
+            
+            <div class="filter-group">
+                <h3>Search</h3>
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search by keyword...">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h3>Subject</h3>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> English
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> Science
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> Physics
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> Biology
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> Economics 
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox" checked> Computer Science
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> Mathematics
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> Business
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> Engineering
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> Other
+                </label>
+            </div>
+
+            <div class="filter-group">
+                <h3>Grade Range</h3>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> Grade 6 - 9 
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> Grade 10 - 11
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> Grade 12 - 13
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> Undergraduate
+                </label>
+                <label class="custom-checkbox">
+                    <input type="checkbox"> Other
+                </label>
+            </div>
+
+            <div class="filter-group">
+                <h3>Semester (Undergraduate Students)</h3>
+                <select class="filter-select">
+                    <option value="">All Semesters</option>
+                    <option value="Y1S1">Year 1 Sem 1</option>
+                    <option value="Y1S2">Year 1 Sem 2</option>
+                    <option value="Y2S1">Year 2 Sem 1</option>
+                    <option value="Y2S2">Year 2 Sem 2</option>
+                    <option value="Y3S1">Year 3 Sem 1</option>
+                    <option value="Y3S2">Year 3 Sem 2</option>
+                    <option value="Y4S1">Year 4 Sem 1</option>
+                    <option value="Y4S2">Year 4 Sem 2</option>
+                </select>
+            </div>
+
+
+
+            <button class="apply-filters-btn">Apply Filters</button>
+
+        </aside>
+
+        <!-- Main Content -->
+        <div class="browse-content">
+            
+            <div class="browse-header">
+                <div>
+                    <h2>Explore Notes</h2>
+                    <p>Showing 124 results for "Computer Science"</p>
+                </div>
+
+                <div class="sort-box">
+                    <label>Sort by:</label>
+                    <select>
+                        <option>Most Popular</option>
+                        <option>Highest Rated</option>
+                        <option>Newest First</option>
+
+                    </select>
+                </div>
+            </div>
+
+            <!-- Notes Grid -->
+            <div class="marketplace-grid">
+                
+                <!-- Note 1 -->
+                <div class="market-card">
+                    <div class="market-card-top">
+
+                        <div class="note-icon-large">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="market-card-body">
+                        <h3><a href="view-note.html">Software Engineering Lectures</a></h3>
+                        <p class="module">SE3106 • Y3S1</p>
+                        
+                        <div class="author-info">
+                            <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
+                            <span>By Sarah Jenkins</span>
+                        </div>
+
+                        <div class="market-stats">
+                            <span><i class="fa-solid fa-star"></i> 4.8 (24)</span>
+                            <span><i class="fa-solid fa-download"></i> 156</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note 2 -->
+                <div class="market-card">
+                    <div class="market-card-top">
+
+                        <div class="note-icon-large" style="background: #e0f2fe; color: #0284c7;">
+                            <i class="fa-solid fa-file-word"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="market-card-body">
+                        <h3><a href="view-note.html">Data Structures Complete Summary</a></h3>
+                        <p class="module">CS2001 • Y2S1</p>
+                        
+                        <div class="author-info">
+                            <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
+                            <span>By Mike Ross</span>
+                        </div>
+
+                        <div class="market-stats">
+                            <span><i class="fa-solid fa-star"></i> 4.9 (42)</span>
+                            <span><i class="fa-solid fa-download"></i> 312</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note 3 -->
+                <div class="market-card">
+                    <div class="market-card-top">
+
+                        <div class="note-icon-large" style="background: #fef3c7; color: #d97706;">
+                            <i class="fa-solid fa-file-powerpoint"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="market-card-body">
+                        <h3><a href="view-note.html">Database Management Systems</a></h3>
+                        <p class="module">DB2104 • Y2S2</p>
+                        
+                        <div class="author-info">
+                            <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
+                            <span>By Emma Watson</span>
+                        </div>
+
+                        <div class="market-stats">
+                            <span><i class="fa-solid fa-star"></i> 4.5 (18)</span>
+                            <span><i class="fa-solid fa-download"></i> 89</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note 4 -->
+                <div class="market-card">
+                    <div class="market-card-top">
+
+                        <div class="note-icon-large">
+                            <i class="fa-solid fa-file-pdf"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="market-card-body">
+                        <h3><a href="view-note.html">Computer Networks Past Papers</a></h3>
+                        <p class="module">NW3002 • Y3S2</p>
+                        
+                        <div class="author-info">
+                            <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
+                            <span>By John Doe</span>
+                        </div>
+
+                        <div class="market-stats">
+                            <span><i class="fa-solid fa-star"></i> 4.7 (12)</span>
+                            <span><i class="fa-solid fa-download"></i> 45</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-content">
+
+            <div class="footer-brand">
+
+                <div class="logo">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Notes<span class="logo-highlight">Hub</span></span>
+                </div>
+
+                <p>
+                    A peer-to-peer academic notes marketplace
+                    designed for students.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h4>Platform</h4>
+
+                <a href="browse-notes.html">Browse Notes</a>
+                <a href="upload-note.html">Upload Notes</a>
+
+                <a href="dashboard.html">Dashboard</a>
+
+            </div>
+
+
+            <div>
+
+                <h4>Support</h4>
+
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Report Content</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="copyright">
+
+            © 2026 NotesHub. All Rights Reserved.
+
+        </div>
+
+    </footer>
+
+
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>

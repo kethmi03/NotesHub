@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NotesHub | Peer Notes Marketplace</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Notes<span class="logo-highlight">Hub</span></span>
+        </div>
+
+        <nav>
+            <a href="index.html" class="active">Home</a>
+            <a href="browse-notes.html" onclick="redirectToAuthPage(event)">Browse Notes</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#about">About</a>
+        </nav>
+
+        <div class="nav-buttons">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="register.html" class="register-btn">Get Started</a>
+        </div>
+
+    </header>
+
+
+    <!-- ================= HERO SECTION ================= -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-badge">
+                <i class="fa-solid fa-graduation-cap"></i>
+                Student Knowledge Marketplace
+            </div>
+
+            <h1>
+                Learn Better.
+                <span>Share Smarter.</span>
+            </h1>
+
+            <p>
+                Discover high-quality academic notes created by students,
+                share your knowledge, and make your study journey easier
+                with NotesHub.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="browse-notes.html" class="primary-btn" onclick="redirectToAuthPage(event)">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Explore Notes
+                </a>
+
+                <a href="upload-note.html" class="secondary-btn" onclick="redirectToAuthPage(event)">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    Upload Your Notes
+                </a>
+
+
+
+            </div>
+
+            <div class="hero-stats">
+
+                <div>
+                    <h3>1,000+</h3>
+                    <p>Study Notes</p>
+                </div>
+
+                <div>
+                    <h3>500+</h3>
+                    <p>Students</p>
+                </div>
+
+                <div>
+                    <h3>50+</h3>
+                    <p>Subjects</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- HERO CARD -->
+
+        <div class="hero-card">
+
+            <div class="floating-card card-one">
+                <i class="fa-solid fa-file-lines"></i>
+
+                <div>
+                    <strong>Lecture Notes</strong>
+                    <small>Software Engineering</small>
+                </div>
+            </div>
+
+
+            <div class="main-note-card">
+
+                <div class="note-icon">
+                    <i class="fa-solid fa-file-pdf"></i>
+                </div>
+
+                <h3>Software Engineering</h3>
+
+                <p>
+                    Complete lecture notes
+                </p>
+
+                <div class="note-info">
+                    <span>
+                        <i class="fa-solid fa-star"></i>
+                        4.8
+                    </span>
+
+                    <span>
+                        <i class="fa-solid fa-download"></i>
+                        124
+                    </span>
+                </div>
+
+                <button>
+                    View Note
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+
+            </div>
+
+
+            <div class="floating-card card-two">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                <div>
+                    <strong>Trusted Notes</strong>
+                    <small>Student Reviewed</small>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= CATEGORIES ================= -->
+
+    <section class="categories">
+
+        <div class="section-title">
+
+            <span>EXPLORE</span>
+
+            <h2>Find Notes For Your Studies</h2>
+
+            <p>
+                Search academic resources according to your course,
+                subject and semester.
+            </p>
+
+        </div>
+
+
+        <div class="category-grid">
+
+            <div class="category-card">
+
+                <div class="category-icon">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+
+                <h3>Programming</h3>
+
+                <p>120+ Notes</p>
+
+            </div>
+
+
+            <div class="category-card">
+
+                <div class="category-icon">
+                    <i class="fa-solid fa-database"></i>
+                </div>
+
+                <h3>Database</h3>
+
+                <p>85+ Notes</p>
+
+            </div>
+
+
+            <div class="category-card">
+
+                <div class="category-icon">
+                    <i class="fa-solid fa-network-wired"></i>
+                </div>
+
+                <h3>Networking</h3>
+
+                <p>70+ Notes</p>
+
+            </div>
+
+
+            <div class="category-card">
+
+                <div class="category-icon">
+                    <i class="fa-solid fa-laptop-code"></i>
+                </div>
+
+                <h3>Software Engineering</h3>
+
+                <p>95+ Notes</p>
+
+            </div>
+
+
+            <div class="category-card">
+
+                <div class="category-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+
+                <h3>Business</h3>
+
+                <p>60+ Notes</p>
+
+            </div>
+
+
+            <div class="category-card">
+
+                <div class="category-icon">
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+
+                <h3>Mathematics</h3>
+
+                <p>80+ Notes</p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= HOW IT WORKS ================= -->
+
+    <section class="how-it-works" id="how-it-works">
+
+        <div class="section-title">
+
+            <span>HOW IT WORKS</span>
+
+            <h2>Simple. Fast. Student Friendly.</h2>
+
+        </div>
+
+
+        <div class="steps">
+
+            <div class="step">
+
+                <div class="step-number">01</div>
+
+                <i class="fa-solid fa-user-plus"></i>
+
+                <h3>Create Account</h3>
+
+                <p>
+                    Register for a NotesHub account using your email.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">02</div>
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <h3>Find Notes</h3>
+
+                <p>
+                    Search notes by subject, module, semester or keyword.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">03</div>
+
+                <i class="fa-solid fa-download"></i>
+
+                <h3>Download</h3>
+
+                <p>
+                    Purchase or access the required academic resources.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">04</div>
+
+                <i class="fa-solid fa-star"></i>
+
+                <h3>Review</h3>
+
+                <p>
+                    Rate and review notes to help other students.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= CTA ================= -->
+
+    <section class="cta">
+
+        <div>
+
+            <h2>Have Notes to Share?</h2>
+
+            <p>
+                Turn your knowledge into value and help other students
+                succeed.
+            </p>
+
+            <a href="register.html" class="cta-button">
+                Start Sharing
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-content">
+
+            <div class="footer-brand">
+
+                <div class="logo">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Notes<span class="logo-highlight">Hub</span></span>
+                </div>
+
+                <p>
+                    A peer-to-peer academic notes marketplace
+                    designed for students.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h4>Platform</h4>
+
+                <a href="browse-notes.html" onclick="handleProtectedLink(event)">Browse Notes</a>
+                <a href="upload-note.html" onclick="handleProtectedLink(event)">Upload Notes</a>
+
+                <a href="login.html">Login</a>
+                <a href="register.html">Register</a>
+
+            </div>
+
+
+            <div>
+
+                <h4>Support</h4>
+
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Report Content</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="copyright">
+
+            © 2026 NotesHub. All Rights Reserved.
+
+        </div>
+
+    </footer>
+
+
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>

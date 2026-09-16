@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings | NotesHub</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Notes<span class="logo-highlight">Hub</span></span>
+        </div>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="browse-notes.html">Browse Notes</a>
+                <a href="upload-note.html">Upload Notes</a>
+            <a href="dashboard.html">Dashboard</a>
+        </nav>
+
+        <div class="nav-buttons">
+            <div class="user-profile-nav">
+                <div class="avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <span>John Doe</span>
+                <button class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+
+    </header>
+
+
+    <!-- ================= DASHBOARD SECTION ================= -->
+
+    <section class="dashboard-section">
+
+        <div class="dashboard-sidebar">
+            <div class="sidebar-user">
+                <div class="avatar-large">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <h3>John Doe</h3>
+                
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Overview</a>
+                <a href="my-notes.html"><i class="fa-solid fa-file-lines"></i> My Notes</a>
+                <a href="saved-notes.html"><i class="fa-solid fa-bookmark"></i> Saved Notes</a>
+
+                <a href="settings.html" class="active"><i class="fa-solid fa-gear"></i> Settings</a>
+            </nav>
+
+            <a href="upload-note.html" class="upload-btn">
+                <i class="fa-solid fa-plus"></i> Upload New Note
+            </a>
+        </div>
+
+
+        <div class="dashboard-content">
+            
+            <div class="dashboard-header">
+                <h2>Settings</h2>
+                <p>Manage your account preferences</p>
+            </div>
+
+            <!-- Settings Sections -->
+            <div class="settings-container">
+
+                <!-- Account Settings -->
+                <div class="settings-section">
+                    <div class="settings-section-header">
+                        <h3><i class="fa-solid fa-user"></i> Account Information</h3>
+                    </div>
+                    
+                    <form class="settings-form">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label for="full-name">Full Name</label>
+                                <input type="text" id="full-name" value="Kulith" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" value="kulith@gmail.com" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="grade-level">Grade Level</label>
+                                <select id="grade-level" required>
+                                    <option value="6-9">Grade 6 - 9</option>
+                                    <option value="10-11">Grade 10 - 11</option>
+                                    <option value="12-13">Grade 12 - 13</option>
+                                    <option value="y1">Year 1 (Undergraduate)</option>
+                                    <option value="y2">Year 2 (Undergraduate)</option>
+                                    <option value="y3">Year 3 (Undergraduate)</option>
+                                    <option value="y4">Year 4 (Undergraduate)</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="semester">Semester</label>
+                                <select id="semester" required>
+                                    <option value="s1">Semester 1</option>
+                                    <option value="s2">Semester 2</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="save-btn">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Password Settings -->
+                <div class="settings-section">
+                    <div class="settings-section-header">
+                        <h3><i class="fa-solid fa-lock"></i> Change Password</h3>
+                    </div>
+                    
+                    <form class="settings-form">
+                        <div class="form-grid">
+                            <div class="input-group full-width">
+                                <label for="current-password">Current Password</label>
+                                <input type="password" id="current-password" required>
+                            </div>
+
+                            <div class="input-group full-width">
+                                <label for="new-password">New Password</label>
+                                <input type="password" id="new-password" required>
+                            </div>
+
+                            <div class="input-group full-width">
+                                <label for="confirm-password">Confirm New Password</label>
+                                <input type="password" id="confirm-password" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="save-btn">
+                            <i class="fa-solid fa-lock"></i> Update Password
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Notification Settings -->
+                <div class="settings-section">
+                    <div class="settings-section-header">
+                        <h3><i class="fa-solid fa-bell"></i> Notifications</h3>
+                    </div>
+                    
+                    <form class="settings-form">
+                        <div class="checkbox-group">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" checked>
+                                Email me when someone downloads my notes
+                            </label>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" checked>
+                                Email me when someone rates my notes
+                            </label>
+                            <label class="custom-checkbox">
+                                <input type="checkbox">
+                                Email me about new notes matching my interests
+                            </label>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" checked>
+                                Weekly digest of platform activity
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="save-btn">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Preferences
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="settings-section danger-zone">
+                    <div class="settings-section-header">
+                        <h3><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone</h3>
+                    </div>
+                    
+                    <div class="danger-actions">
+                        <button class="danger-btn">
+                            <i class="fa-solid fa-exclamation-circle"></i> Deactivate Account
+                        </button>
+                        <p>Your account and all data will be permanently deleted.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-content">
+
+            <div class="footer-brand">
+
+                <div class="logo">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Notes<span class="logo-highlight">Hub</span></span>
+                </div>
+
+                <p>
+                    A peer-to-peer academic notes marketplace
+                    designed for students.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h4>Platform</h4>
+
+                <a href="browse-notes.html">Browse Notes</a>
+                <a href="upload-note.html">Upload Notes</a>
+
+                <a href="dashboard.html">Dashboard</a>
+
+            </div>
+
+
+            <div>
+
+                <h4>Support</h4>
+
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Report Content</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="copyright">
+
+            © 2026 NotesHub. All Rights Reserved.
+
+        </div>
+
+    </footer>
+
+
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>

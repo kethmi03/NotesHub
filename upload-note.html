@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Upload Note | NotesHub</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Notes<span class="logo-highlight">Hub</span></span>
+        </div>
+
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="browse-notes.html">Browse Notes</a>
+                <a href="upload-note.html">Upload Notes</a>
+            <a href="dashboard.html">Dashboard</a>
+        </nav>
+
+        <div class="nav-buttons">
+            <div class="user-profile-nav">
+                <div class="avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <span>John Doe</span>
+                <button class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+
+    </header>
+
+
+    <!-- ================= UPLOAD SECTION ================= -->
+
+    <section class="upload-section">
+        
+        <div class="upload-container">
+            
+            <div class="upload-header">
+                <h2>Upload Your Notes</h2>
+                <p>Share your knowledge and help others succeed.</p>
+            </div>
+
+            <form id="uploadForm" class="upload-form">
+                
+                <div class="form-grid">
+                    
+                    <div class="input-group">
+                        <label for="note-title">Note Title</label>
+                        <input type="text" id="note-title" placeholder="e.g., Software Engineering Complete Guide" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="note-subject">Subject Area</label>
+                        <select id="note-subject" required>
+                            <option value="">Select a subject...</option>
+                            <option value="cs">Computer Science</option>
+                            <option value="math">Mathematics</option>
+                            <option value="business">Business & Finance</option>
+                            <option value="engineering">Engineering</option>
+                            <option value="english">English</option>
+                            <option value="science">Science</option>
+                             <option value="engineering">Physics</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="note-module">Topic / Course</label>
+                        <input type="text" id="note-module" placeholder="e.g., Algebra, Biology" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="note-semester">Grade Level</label>
+                        <select id="note-semester" required>
+                            <option value="">Select grade level...</option>
+                            <option value="middle">Grade 6 - 9</option>
+                            <option value="high">Grade 10 - 11</option>
+                            <option value="high">Grade 12 - 13</option>
+                            <option value="undergrad">University / Undergraduate</option>
+                            <option value="postgrad">University / Postgraduate</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label for="note-description">Description</label>
+                        <textarea id="note-description" rows="4" placeholder="Briefly describe what these notes cover..." required></textarea>
+                    </div>
+
+
+
+                    <div class="input-group">
+                        <label for="note-tags">Tags</label>
+                        <input type="text" id="note-tags" placeholder="e.g., summary, past papers (comma separated)">
+                    </div>
+
+                </div>
+
+                <div class="file-upload-area" id="fileUploadArea">
+                    <input type="file" id="note-file" accept=".pdf,.doc,.docx,.ppt,.pptx" hidden required>
+                    <div class="upload-icon">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <h3>Drag & Drop your file here</h3>
+                    <p>or click to browse from your device</p>
+                    <span class="file-limits">Supported formats: PDF, DOCX, PPTX (Max 20MB)</span>
+                    <button type="button" class="browse-btn" onclick="document.getElementById('note-file').click()">Browse File</button>
+                </div>
+
+                <div class="form-actions">
+                    <a href="dashboard.html" class="cancel-btn">Cancel</a>
+                    <button type="submit" class="submit-note-btn">Upload Note</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-content">
+
+            <div class="footer-brand">
+
+                <div class="logo">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Notes<span class="logo-highlight">Hub</span></span>
+                </div>
+
+                <p>
+                    A peer-to-peer academic notes marketplace
+                    designed for students.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <h4>Platform</h4>
+
+                <a href="browse-notes.html">Browse Notes</a>
+                <a href="upload-note.html">Upload Notes</a>
+
+                <a href="dashboard.html">Dashboard</a>
+
+            </div>
+
+
+            <div>
+
+                <h4>Support</h4>
+
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Report Content</a>
+
+            </div>
+
+        </div>
+
+
+        <div class="copyright">
+
+            © 2026 NotesHub. All Rights Reserved.
+
+        </div>
+
+    </footer>
+
+
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>
