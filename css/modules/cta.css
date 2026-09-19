@@ -1,0 +1,47 @@
+/* ================= CTA ================= */
+.cta {
+    margin: 80px 8%;
+
+    padding: 65px;
+
+    border-radius: 25px;
+
+    background: var(--primary-color);
+
+    color: white;
+
+    text-align: center;
+}
+
+
+.cta h2 {
+    font-size: 35px;
+
+    margin-bottom: 12px;
+}
+
+
+.cta p {
+    opacity: 0.9;
+
+    margin-bottom: 25px;
+}
+
+
+.cta-button {
+    display: inline-flex;
+
+    align-items: center;
+    gap: 10px;
+
+    background: white;
+    color: var(--primary-color);
+
+    text-decoration: none;
+
+    padding: 13px 22px;
+
+    border-radius: 8px;
+
+    font-weight: 700;
+}

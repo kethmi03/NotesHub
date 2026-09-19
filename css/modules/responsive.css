@@ -1,0 +1,73 @@
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+
+    .navbar nav {
+        display: none;
+    }
+
+    .hero {
+        flex-direction: column;
+
+        text-align: center;
+
+        gap: 60px;
+    }
+
+    .hero-buttons,
+    .hero-stats {
+        justify-content: center;
+    }
+
+    .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .steps {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .navbar {
+        padding: 0 5%;
+    }
+
+    .login-btn {
+        display: none;
+
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hero {
+        padding: 60px 5%;
+    }
+
+    .hero h1 {
+        font-size: 45px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .hero-card {
+        width: 100%;
+        transform: scale(0.85);
+    }
+
+    .category-grid,
+    .steps {
+        grid-template-columns: 1fr;
+    }
+
+    .cta {
+        margin: 50px 5%;
+        padding: 45px 20px;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+}

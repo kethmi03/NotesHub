@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-light: #e0e7ff;
+    --primary-lightest: #eef2ff;
+    --text-secondary: #64748b;
+    --text-dark: #334155;
+    --text-main: #172033;
+    --text-darker: #1e293b;
+    --text-darkest: #0f172a;
+    --text-muted: #475569;
+    --text-light: #94a3b8;
+    --border-color: #cbd5e1;
+    --border-light: #e5e7eb;
+    --border-lighter: #e2e8f0;
+    --border-alt: #dbe1ea;
+    --bg-secondary: #f1f5f9;
+    --bg-main: #f8fafc;
+    --danger-color: #ef4444;
+    --danger-hover: #dc2626;
+    --danger-dark: #b91c1c;
+    --danger-light: #fee2e2;
+    --danger-lightest: #fef2f2;
+    --danger-muted: #fecaca;
+    --warning-color: #f59e0b;
+    --warning-hover: #d97706;
+    --warning-light: #fef3c7;
+    --success-color: #22c55e;
+    --success-hover: #16a34a;
+    --success-dark: #047857;
+    --success-light: #dcfce7;
+    --success-lightest: #ecfdf5;
+    --success-muted: #a7f3d0;
+}
+
+[data-theme="dark"] {
+    --bg-main: #0f172a;
+    --bg-secondary: #1e293b;
+    --text-main: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-dark: #f1f5f9;
+    --text-darker: #f8fafc;
+    --text-darkest: #ffffff;
+    --border-light: #334155;
+    --border-color: #475569;
+    --border-lighter: #1e293b;
+    --primary-light: rgba(79, 70, 229, 0.15);
+    --primary-lightest: rgba(79, 70, 229, 0.1);
+}
+
+[data-theme="dark"] .navbar {
+    background: rgba(15, 23, 42, 0.75);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .navbar nav a:hover,
+[data-theme="dark"] .navbar nav a.active {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    color: var(--text-main);
+}
+
+[data-theme="dark"] footer {
+    background: #020617; /* Very dark slate, darker than bg-main */
+    border-top: 1px solid var(--border-light);
+}
+
+[data-theme="dark"] .main-note-card,
+[data-theme="dark"] .floating-card,
+[data-theme="dark"] .category-card,
+[data-theme="dark"] .market-card,
+[data-theme="dark"] .review-card,
+[data-theme="dark"] .author-card,
+[data-theme="dark"] .auth-container,
+[data-theme="dark"] .stat-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-light);
+}
+
+[data-theme="dark"] .input-wrapper input {
+    background: var(--bg-main);
+    color: var(--text-main);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .secondary-btn {
+    background: var(--bg-secondary);
+    color: var(--text-main);
+    border-color: var(--border-light);
+}
+
+[data-theme="dark"] .secondary-btn:hover {
+    background: var(--bg-main);
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
