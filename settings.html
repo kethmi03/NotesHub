@@ -14,38 +14,6 @@
 
 <body>
 
-    <!-- ================= NAVBAR ================= -->
-
-    <header class="navbar">
-
-        <div class="logo">
-            <i class="fa-solid fa-book-open"></i>
-            <span>Notes<span class="logo-highlight">Hub</span></span>
-        </div>
-
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="browse-notes.html">Browse Notes</a>
-                <a href="upload-note.html">Upload Notes</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-
-        <div class="nav-buttons">
-            <a href="#" id="theme-toggle" class="login-btn" style="padding: 10px; font-size: 18px;" title="Toggle Dark Mode">
-                <i class="fa-solid fa-moon"></i>
-            </a>
-            <div class="user-profile-nav">
-                <div class="avatar">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <span>John Doe</span>
-                <button class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
-            </div>
-        </div>
-
-    </header>
-
-
     <!-- ================= DASHBOARD SECTION ================= -->
 
     <section class="dashboard-section">
@@ -56,7 +24,7 @@
                     <i class="fa-solid fa-user"></i>
                 </div>
                 <h3>John Doe</h3>
-                
+
             </div>
 
             <nav class="sidebar-nav">
@@ -72,9 +40,8 @@
             </a>
         </div>
 
-
         <div class="dashboard-content">
-            
+
             <div class="dashboard-header">
                 <h2>Settings</h2>
                 <p>Manage your account preferences</p>
@@ -88,7 +55,7 @@
                     <div class="settings-section-header">
                         <h3><i class="fa-solid fa-user"></i> Account Information</h3>
                     </div>
-                    
+
                     <form class="settings-form">
                         <div class="form-grid">
                             <div class="input-group">
@@ -124,7 +91,7 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <button type="submit" class="save-btn">
                             <i class="fa-solid fa-floppy-disk"></i> Save Changes
                         </button>
@@ -136,7 +103,7 @@
                     <div class="settings-section-header">
                         <h3><i class="fa-solid fa-lock"></i> Change Password</h3>
                     </div>
-                    
+
                     <form class="settings-form">
                         <div class="form-grid">
                             <div class="input-group full-width">
@@ -154,7 +121,7 @@
                                 <input type="password" id="confirm-password" required>
                             </div>
                         </div>
-                        
+
                         <button type="submit" class="save-btn">
                             <i class="fa-solid fa-lock"></i> Update Password
                         </button>
@@ -166,7 +133,7 @@
                     <div class="settings-section-header">
                         <h3><i class="fa-solid fa-bell"></i> Notifications</h3>
                     </div>
-                    
+
                     <form class="settings-form">
                         <div class="checkbox-group">
                             <label class="custom-checkbox">
@@ -186,7 +153,7 @@
                                 Weekly digest of platform activity
                             </label>
                         </div>
-                        
+
                         <button type="submit" class="save-btn">
                             <i class="fa-solid fa-floppy-disk"></i> Save Preferences
                         </button>
@@ -198,7 +165,7 @@
                     <div class="settings-section-header">
                         <h3><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone</h3>
                     </div>
-                    
+
                     <div class="danger-actions">
                         <button class="danger-btn">
                             <i class="fa-solid fa-exclamation-circle"></i> Deactivate Account
@@ -213,63 +180,7 @@
 
     </section>
 
-    <!-- ================= FOOTER ================= -->
-
-    <footer>
-
-        <div class="footer-content">
-
-            <div class="footer-brand">
-
-                <div class="logo">
-                    <i class="fa-solid fa-book-open"></i>
-                    <span>Notes<span class="logo-highlight">Hub</span></span>
-                </div>
-
-                <p>
-                    A peer-to-peer academic notes marketplace
-                    designed for students.
-                </p>
-
-            </div>
-
-
-            <div>
-
-                <h4>Platform</h4>
-
-                <a href="browse-notes.html">Browse Notes</a>
-                <a href="upload-note.html">Upload Notes</a>
-
-                <a href="dashboard.html">Dashboard</a>
-
-            </div>
-
-
-            <div>
-
-                <h4>Support</h4>
-
-                <a href="#">Help Center</a>
-                <a href="#">Contact Us</a>
-                <a href="#">Report Content</a>
-
-            </div>
-
-        </div>
-
-
-        <div class="copyright">
-
-            © 2026 NotesHub. All Rights Reserved.
-
-        </div>
-
-    </footer>
-
-
-    <script src="js/main.js"></script>
-
+    <script type="module" src="js/main.js"></script>
 
     <script src="js/theme.js"></script>
     <script src="js/animations.js"></script>

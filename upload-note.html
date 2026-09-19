@@ -14,53 +14,21 @@
 
 <body>
 
-    <!-- ================= NAVBAR ================= -->
-
-    <header class="navbar">
-
-        <div class="logo">
-            <i class="fa-solid fa-book-open"></i>
-            <span>Notes<span class="logo-highlight">Hub</span></span>
-        </div>
-
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="browse-notes.html">Browse Notes</a>
-                <a href="upload-note.html">Upload Notes</a>
-            <a href="dashboard.html">Dashboard</a>
-        </nav>
-
-        <div class="nav-buttons">
-            <a href="#" id="theme-toggle" class="login-btn" style="padding: 10px; font-size: 18px;" title="Toggle Dark Mode">
-                <i class="fa-solid fa-moon"></i>
-            </a>
-            <div class="user-profile-nav">
-                <div class="avatar">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <span>John Doe</span>
-                <button class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
-            </div>
-        </div>
-
-    </header>
-
-
     <!-- ================= UPLOAD SECTION ================= -->
 
     <section class="upload-section">
-        
+
         <div class="upload-container">
-            
+
             <div class="upload-header">
                 <h2>Upload Your Notes</h2>
                 <p>Share your knowledge and help others succeed.</p>
             </div>
 
             <form id="uploadForm" class="upload-form">
-                
+
                 <div class="form-grid">
-                    
+
                     <div class="input-group">
                         <label for="note-title">Note Title</label>
                         <input type="text" id="note-title" placeholder="e.g., Software Engineering Complete Guide" required>
@@ -104,8 +72,6 @@
                         <textarea id="note-description" rows="4" placeholder="Briefly describe what these notes cover..." required></textarea>
                     </div>
 
-
-
                     <div class="input-group">
                         <label for="note-tags">Tags</label>
                         <input type="text" id="note-tags" placeholder="e.g., summary, past papers (comma separated)">
@@ -137,63 +103,7 @@
 
     </section>
 
-    <!-- ================= FOOTER ================= -->
-
-    <footer>
-
-        <div class="footer-content">
-
-            <div class="footer-brand">
-
-                <div class="logo">
-                    <i class="fa-solid fa-book-open"></i>
-                    <span>Notes<span class="logo-highlight">Hub</span></span>
-                </div>
-
-                <p>
-                    A peer-to-peer academic notes marketplace
-                    designed for students.
-                </p>
-
-            </div>
-
-
-            <div>
-
-                <h4>Platform</h4>
-
-                <a href="browse-notes.html">Browse Notes</a>
-                <a href="upload-note.html">Upload Notes</a>
-
-                <a href="dashboard.html">Dashboard</a>
-
-            </div>
-
-
-            <div>
-
-                <h4>Support</h4>
-
-                <a href="#">Help Center</a>
-                <a href="#">Contact Us</a>
-                <a href="#">Report Content</a>
-
-            </div>
-
-        </div>
-
-
-        <div class="copyright">
-
-            © 2026 NotesHub. All Rights Reserved.
-
-        </div>
-
-    </footer>
-
-
-    <script src="js/main.js"></script>
-
+    <script type="module" src="js/main.js"></script>
 
     <script src="js/theme.js"></script>
     <script src="js/animations.js"></script>

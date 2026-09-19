@@ -1,0 +1,265 @@
+/* ================= AUTH SECTION ================= */
+.auth-section {
+    min-height: calc(100vh - 75px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 8%;
+    background: #0f172a; /* Dark background so opacity dims the video instead of washing it out */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Background Video */
+.bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    opacity: 0.7; /* Dim the video slightly so the content stands out */
+}
+
+/* Animated background blobs */
+.auth-section::before,
+.auth-section::after {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: 2;
+    pointer-events: none;
+    animation: moveBlobs 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.auth-section::before {
+    background: var(--primary-color);
+    opacity: 0.15;
+    top: -100px;
+    left: -100px;
+}
+
+.auth-section::after {
+    background: #ec4899; /* A nice pink to contrast with the primary color */
+    opacity: 0.15;
+    bottom: -100px;
+    right: -100px;
+    animation-delay: -10s;
+}
+
+@keyframes moveBlobs {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(100px, 150px) scale(1.1); }
+    100% { transform: translate(-100px, 50px) scale(0.9); }
+}
+
+.auth-split {
+    display: flex;
+    width: 100%;
+    max-width: 1000px;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.1);
+    overflow: hidden;
+    position: relative;
+    z-index: 3;
+}
+
+.auth-split-image {
+    flex: 1;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: white;
+    text-align: center;
+}
+
+/* Add a subtle pattern overlay */
+.auth-split-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+}
+
+.image-overlay {
+    position: relative;
+    z-index: 1;
+    max-width: 350px;
+}
+
+.image-overlay h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+
+.image-overlay p {
+    font-size: 16px;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+.auth-container {
+    flex: 1;
+    background: white;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.auth-header h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.auth-header p {
+    color: var(--text-secondary);
+    font-size: 15px;
+}
+
+.auth-form .input-group {
+    margin-bottom: 20px;
+}
+
+.auth-form label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 15px;
+    color: var(--text-light);
+}
+
+.auth-form .input-wrapper input {
+    width: 100%;
+    padding: 14px 15px 14px 45px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    outline: none;
+    font-size: 15px;
+    background: var(--bg-main);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.auth-form .input-wrapper input:focus {
+    border-color: var(--primary-color);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+.auth-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-weight: normal;
+}
+
+.forgot-password {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.form-message {
+    display: none;
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-message.success {
+    display: block;
+    background: var(--success-lightest);
+    border: 1px solid var(--success-muted);
+    color: var(--success-dark);
+}
+
+.form-message.error {
+    display: block;
+    background: var(--danger-lightest);
+    border: 1px solid var(--danger-muted);
+    color: var(--danger-dark);
+}
+
+.auth-submit-btn {
+    width: 100%;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.auth-submit-btn:hover {
+    background: var(--primary-hover);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 30px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.auth-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+@media (max-width: 800px) {
+    .auth-split {
+        flex-direction: column;
+    }
+
+    .auth-split-image {
+        padding: 40px 20px;
+    }
+
+    .auth-container {
+        padding: 30px 20px;
+    }
+}

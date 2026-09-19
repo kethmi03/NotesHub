@@ -1,0 +1,62 @@
+/* ================= HOW IT WORKS ================= */
+.how-it-works {
+    background: white;
+}
+
+
+.steps {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 30px;
+}
+
+
+.step {
+    text-align: center;
+
+    position: relative;
+}
+
+
+.step-number {
+    color: var(--primary-color);
+
+    font-weight: 800;
+
+    margin-bottom: 15px;
+}
+
+
+.step>i {
+    width: 65px;
+    height: 65px;
+
+    background: var(--primary-lightest);
+    color: var(--primary-color);
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: auto auto 20px;
+
+    font-size: 22px;
+}
+
+
+.step h3 {
+    margin-bottom: 10px;
+}
+
+
+.step p {
+    color: var(--text-secondary);
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
