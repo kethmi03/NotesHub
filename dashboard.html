@@ -14,6 +14,23 @@
 
 <body>
 
+    <header class="navbar admin-navbar">
+        <div class="logo">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Notes<span class="logo-highlight">Hub</span></span>
+        </div>
+
+        <div class="nav-buttons">
+            <button type="button" id="theme-toggle" class="admin-header-theme" title="Toggle dark mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            <button type="button" class="logout-btn admin-header-logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </header>
+
     <!-- ================= DASHBOARD SECTION ================= -->
 
     <section class="dashboard-section admin-dashboard" data-dashboard-role="admin">
@@ -37,6 +54,7 @@
             <a href="#notes" class="upload-btn">
                 <i class="fa-solid fa-shield-halved"></i> Moderate Notes
             </a>
+
         </div>
 
         <div class="dashboard-content">

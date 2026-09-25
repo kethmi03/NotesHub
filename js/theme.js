@@ -6,6 +6,12 @@ if (savedTheme === 'dark') {
     root.setAttribute('data-theme', 'dark');
 }
 
+const initialThemeIcon = document.querySelector('#theme-toggle i');
+if (initialThemeIcon && savedTheme === 'dark') {
+    initialThemeIcon.classList.remove('fa-moon');
+    initialThemeIcon.classList.add('fa-sun');
+}
+
 // Use event delegation so it works with dynamically loaded navbars
 document.addEventListener('click', (e) => {
     const toggleBtn = e.target.closest('#theme-toggle');

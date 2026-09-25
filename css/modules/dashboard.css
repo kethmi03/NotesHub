@@ -5,6 +5,40 @@
     background: var(--bg-secondary);
 }
 
+.admin-header-theme,
+.admin-header-logout {
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.admin-header-theme {
+    padding: 10px 14px;
+    background: transparent;
+    color: var(--text-dark);
+    font-size: 18px;
+}
+
+.admin-header-theme:hover {
+    color: var(--primary-color);
+}
+
+.admin-header-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 18px;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: white;
+}
+
+.admin-header-logout:hover {
+    background: var(--primary-hover);
+}
+
 .dashboard-sidebar {
     width: 280px;
     background: white;
@@ -93,3 +127,4 @@
 .upload-btn:hover {
     background: var(--primary-hover);
 }
+

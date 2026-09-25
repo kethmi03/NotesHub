@@ -7,9 +7,10 @@ import { getCurrentUser } from './storage.js';
 
 function updateUserInfo() {
     const currentUser = getCurrentUser();
-    updateNavbarState(currentUser);
 
     if (document.querySelector('[data-dashboard-role="admin"]')) return;
+
+    updateNavbarState(currentUser);
     if (!currentUser) return;
     const userName = currentUser.name || 'Student';
 
@@ -24,7 +25,8 @@ function updateUserInfo() {
 
 document.addEventListener('DOMContentLoaded', () => {
     // Inject dynamic components
-    loadNavbar();
+    const isAdminDashboard = document.querySelector('[data-dashboard-role="admin"]');
+    if (!isAdminDashboard) loadNavbar();
     loadFooter();
 
     // Attach form event listeners
