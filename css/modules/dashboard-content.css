@@ -24,6 +24,51 @@
     margin-bottom: 45px;
 }
 
+.admin-stats-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.admin-stats-grid .stat-card {
+    min-width: 0;
+    padding: 22px 18px;
+    gap: 14px;
+}
+
+.admin-stats-grid .stat-info h3 {
+    font-size: 26px;
+}
+
+.admin-stats-grid .stat-info p {
+    line-height: 1.35;
+}
+
+.admin-overview-note {
+    background: linear-gradient(135deg, #172033, #263653);
+    color: white;
+    padding: 28px;
+    border-radius: 16px;
+}
+
+.admin-overview-note .section-heading {
+    margin-bottom: 12px;
+}
+
+.admin-overview-note h3 {
+    color: white;
+}
+
+.admin-status {
+    color: #a7f3d0;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.admin-overview-copy {
+    color: #cbd5e1;
+    max-width: 620px;
+    line-height: 1.6;
+}
+
 .stat-card {
     background: white;
     padding: 25px;

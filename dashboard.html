@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Dashboard | NotesHub</title>
+    <title>Admin Overview | NotesHub</title>
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -16,109 +16,98 @@
 
     <!-- ================= DASHBOARD SECTION ================= -->
 
-    <section class="dashboard-section">
+    <section class="dashboard-section admin-dashboard" data-dashboard-role="admin">
 
         <div class="dashboard-sidebar">
             <div class="sidebar-user">
                 <div class="avatar-large">
                     <i class="fa-solid fa-user"></i>
                 </div>
-                <h3>John Doe</h3>
+                <h3>NotesHub Admin</h3>
 
             </div>
 
             <nav class="sidebar-nav">
                 <a href="dashboard.html" class="active"><i class="fa-solid fa-chart-pie"></i> Overview</a>
-                <a href="my-notes.html"><i class="fa-solid fa-file-lines"></i> My Notes</a>
-                <a href="saved-notes.html"><i class="fa-solid fa-bookmark"></i> Saved Notes</a>
-
-                <a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a>
+                <a href="#users"><i class="fa-solid fa-users"></i> Users</a>
+                <a href="#notes"><i class="fa-solid fa-file-lines"></i> Notes</a>
+                <a href="#reports"><i class="fa-solid fa-flag"></i> Reports</a>
             </nav>
 
-            <a href="upload-note.html" class="upload-btn">
-                <i class="fa-solid fa-plus"></i> Upload New Note
+            <a href="#notes" class="upload-btn">
+                <i class="fa-solid fa-shield-halved"></i> Moderate Notes
             </a>
         </div>
 
         <div class="dashboard-content">
 
             <div class="dashboard-header">
-                <h2>Welcome back, John! 👋</h2>
-                <p>Here's what's happening with your notes today.</p>
+                <h2>Admin Overview</h2>
+                <p>Keep track of your NotesHub community and content.</p>
             </div>
 
             <!-- Stats -->
-            <div class="stats-grid">
+            <div class="stats-grid admin-stats-grid">
 
-                <div class="stat-card reveal">
-                    <div class="stat-icon" style="background: #eef2ff; color: #4f46e5;">
-                        <i class="fa-solid fa-download"></i>
+                <div class="stat-card reveal" id="users">
+                    <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">
+                        <i class="fa-solid fa-users"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>124</h3>
-                        <p>Total Downloads</p>
+                        <h3 data-admin-stat="users">0</h3>
+                        <p>Total Users</p>
                     </div>
                 </div>
 
                 <div class="stat-card reveal">
-                    <div class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
-                        <i class="fa-solid fa-star"></i>
+                    <div class="stat-icon" style="background: #eef2ff; color: #4f46e5;">
+                        <i class="fa-solid fa-book-open"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>4.8</h3>
-                        <p>Average Rating</p>
+                        <h3 data-admin-stat="notes">0</h3>
+                        <p>Total Notes</p>
+                    </div>
+                </div>
+
+                <div class="stat-card reveal">
+                    <div class="stat-icon" style="background: #fef3c7; color: #d97706;">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 data-admin-stat="pending">0</h3>
+                        <p>Pending Note Approvals</p>
+                    </div>
+                </div>
+
+                <div class="stat-card reveal" id="reports">
+                    <div class="stat-icon" style="background: #fee2e2; color: #dc2626;">
+                        <i class="fa-solid fa-flag"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 data-admin-stat="reported">0</h3>
+                        <p>Reported Notes</p>
+                    </div>
+                </div>
+
+                <div class="stat-card reveal">
+                    <div class="stat-icon" style="background: #f1f5f9; color: #475569;">
+                        <i class="fa-solid fa-user-slash"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 data-admin-stat="blocked">0</h3>
+                        <p>Blocked Users</p>
                     </div>
                 </div>
 
             </div>
 
-            <!-- Recent Notes -->
-            <div class="recent-notes">
+            <!-- Admin activity entry point -->
+            <div class="recent-notes admin-overview-note" id="notes">
                 <div class="section-heading">
-                    <h3>My Recent Notes</h3>
-                    <a href="#">View All</a>
+                    <h3>Moderation Center</h3>
+                    <span class="admin-status"><i class="fa-solid fa-circle-check"></i> System healthy</span>
                 </div>
-
-                <div class="notes-grid">
-
-                    <div class="note-card-small">
-                        <div class="note-icon-small">
-                            <i class="fa-solid fa-file-pdf"></i>
-                        </div>
-                        <div class="note-details">
-                            <h4>Software Engineering Notes</h4>
-                            <p>Y3S1 • SE3106</p>
-                        </div>
-                        <div class="note-stats">
-                            <span><i class="fa-solid fa-download"></i> 45</span>
-                            <span><i class="fa-solid fa-star"></i> 4.5</span>
-                        </div>
-                        <div class="note-actions">
-                            <button class="edit-btn"><i class="fa-solid fa-pen"></i></button>
-                            <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="note-card-small">
-                        <div class="note-icon-small">
-                            <i class="fa-solid fa-file-powerpoint"></i>
-                        </div>
-                        <div class="note-details">
-                            <h4>Database Management</h4>
-                            <p>Y2S2 • DB2104</p>
-                        </div>
-                        <div class="note-stats">
-                            <span><i class="fa-solid fa-download"></i> 79</span>
-                            <span><i class="fa-solid fa-star"></i> 4.9</span>
-                        </div>
-                        <div class="note-actions">
-                            <button class="edit-btn"><i class="fa-solid fa-pen"></i></button>
-                            <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-
-                </div>
-
+                <p class="admin-overview-copy">Review pending submissions, investigate reports, and manage community access from one place.</p>
             </div>
 
         </div>

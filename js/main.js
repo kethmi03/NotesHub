@@ -9,6 +9,7 @@ function updateUserInfo() {
     const currentUser = getCurrentUser();
     updateNavbarState(currentUser);
 
+    if (document.querySelector('[data-dashboard-role="admin"]')) return;
     if (!currentUser) return;
     const userName = currentUser.name || 'Student';
 

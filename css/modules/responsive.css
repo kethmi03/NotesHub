@@ -1,6 +1,10 @@
 /* ================= RESPONSIVE ================= */
 @media (max-width: 900px) {
 
+    .admin-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
     .navbar nav {
         display: none;
     }
@@ -29,6 +33,10 @@
 
 
 @media (max-width: 600px) {
+
+    .admin-stats-grid {
+        grid-template-columns: 1fr;
+    }
 
     .navbar {
         padding: 0 5%;

@@ -61,6 +61,20 @@ export function handleLoginSubmit(event) {
         return;
     }
 
+    if (email.toLowerCase() === 'admin@gmail.com' && password === 'admin123') {
+        setCurrentUser({
+            name: 'NotesHub Admin',
+            email: 'admin@gmail.com',
+            role: 'admin'
+        });
+
+        showFormMessage(messageElement, 'success', 'Admin login successful! Redirecting...');
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 800);
+        return;
+    }
+
     const users = getUsers();
     const matchedUser = users.find((user) =>
         user.email.toLowerCase() === email.toLowerCase() && user.password === password
