@@ -1,4 +1,5 @@
 import { getUsers, saveUsers, getCurrentUser, setCurrentUser } from './storage.js';
+import { isFirebaseConfigured, loginWithFirebase, logoutFromFirebase, registerWithFirebase } from './firebase.js';
 
 export function showFormMessage(element, type, message) {
     if (!element) return;
@@ -6,7 +7,7 @@ export function showFormMessage(element, type, message) {
     element.className = `form-message ${type}`;
 }
 
-export function handleRegisterSubmit(event) {
+export async function handleRegisterSubmit(event) {
     event.preventDefault();
 
     const name = document.getElementById('reg-name')?.value.trim();
@@ -22,6 +23,30 @@ export function handleRegisterSubmit(event) {
 
     if (password !== confirmPassword) {
         showFormMessage(messageElement, 'error', 'Passwords do not match.');
+        return;
+    }
+
+    if (isFirebaseConfigured) {
+        try {
+            await registerWithFirebase(name, email, password);
+            showFormMessage(messageElement, 'success', 'Registration successful! Redirecting to login...');
+            event.target.reset();
+            setTimeout(() => {
+                const nextPage = new URLSearchParams(window.location.search).get('next') || 'upload-note.html';
+                window.location.href = `login.html?next=${encodeURIComponent(nextPage)}`;
+            }, 1200);
+        } catch (error) {
+            const messages = {
+                'auth/email-already-in-use': 'මේ email එකෙන් account එකක් දැනටමත් තියෙනවා.',
+                'auth/operation-not-allowed': 'Firebase Console එකේ Email/Password sign-in enable කරන්න.',
+                'auth/weak-password': 'Password එක අවම වශයෙන් අක්ෂර 6ක් විය යුතුයි.',
+                'auth/invalid-email': 'Email address එක නිවැරදි නැහැ.',
+                'auth/network-request-failed': 'Internet connection එක පරීක්ෂා කරන්න.',
+                'permission-denied': 'Firestore Rules publish කරන්න. Firestore → Rules → Publish යන්න.'
+            };
+            const message = messages[error.code] || `Account එක හදන්න බැරි වුණා (${error.code || 'unknown-error'}).`;
+            showFormMessage(messageElement, 'error', message);
+        }
         return;
     }
 
@@ -49,7 +74,7 @@ export function handleRegisterSubmit(event) {
     }, 1200);
 }
 
-export function handleLoginSubmit(event) {
+export async function handleLoginSubmit(event) {
     event.preventDefault();
 
     const email = document.getElementById('login-email')?.value.trim();
@@ -61,7 +86,7 @@ export function handleLoginSubmit(event) {
         return;
     }
 
-    if (email.toLowerCase() === 'admin@gmail.com' && password === 'admin123') {
+    if (!isFirebaseConfigured && email.toLowerCase() === 'admin@gmail.com' && password === 'admin123') {
         setCurrentUser({
             name: 'NotesHub Admin',
             email: 'admin@gmail.com',
@@ -72,6 +97,22 @@ export function handleLoginSubmit(event) {
         setTimeout(() => {
             window.location.href = 'dashboard.html';
         }, 800);
+        return;
+    }
+
+    if (isFirebaseConfigured) {
+        try {
+            const user = await loginWithFirebase(email, password);
+            setCurrentUser(user);
+            showFormMessage(messageElement, 'success', 'Login successful!');
+            const nextPage = new URLSearchParams(window.location.search).get('next');
+            const allowedNextPages = ['browse-notes.html', 'upload-note.html', 'dashboard.html'];
+            setTimeout(() => {
+                window.location.href = allowedNextPages.includes(nextPage) ? nextPage : 'dashboard.html';
+            }, 800);
+        } catch (error) {
+            showFormMessage(messageElement, 'error', 'Invalid email or password.');
+        }
         return;
     }
 
@@ -100,7 +141,8 @@ export function handleLoginSubmit(event) {
     }, 800);
 }
 
-export function handleLogout() {
+export async function handleLogout() {
+    if (isFirebaseConfigured) await logoutFromFirebase();
     setCurrentUser(null);
     window.location.href = 'index.html';
 }
@@ -110,7 +152,7 @@ export function redirectToAuthPage(event) {
     if (event) event.preventDefault();
 
     const targetPage = event?.currentTarget?.getAttribute('href') || 'dashboard.html';
-    const hasExistingUsers = getUsers().length > 0;
+    const hasExistingUsers = isFirebaseConfigured || getUsers().length > 0;
     const authPage = hasExistingUsers ? 'login.html' : 'register.html';
     window.location.href = `${authPage}?next=${encodeURIComponent(targetPage)}`;
 }

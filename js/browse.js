@@ -1,4 +1,5 @@
 import { getNotes } from './storage.js';
+import { getFirebaseNotes, isFirebaseConfigured } from './firebase.js';
 
 const defaultNotes = [
     {
@@ -95,11 +96,9 @@ function renderNotes(notes) {
     });
 }
 
-function handleFilters() {
+function handleFilters(allNotes) {
     const searchInput = document.querySelector('.search-box input');
     const subjectCheckboxes = document.querySelectorAll('.filter-group:nth-child(2) input[type="checkbox"]');
-    
-    let allNotes = [...defaultNotes, ...getNotes()];
     
     const term = searchInput.value.toLowerCase();
     
@@ -125,26 +124,29 @@ function handleFilters() {
     }
 }
 
-export function setupBrowsePage() {
+export async function setupBrowsePage() {
     const grid = document.querySelector('.marketplace-grid');
     if (!grid) return;
+
+    const storedNotes = isFirebaseConfigured ? await getFirebaseNotes() : getNotes();
+    const allNotes = [...defaultNotes, ...storedNotes];
 
     // Add event listeners to filters
     const searchInput = document.querySelector('.search-box input');
     if (searchInput) {
-        searchInput.addEventListener('input', handleFilters);
+        searchInput.addEventListener('input', () => handleFilters(allNotes));
     }
 
     const checkboxes = document.querySelectorAll('.custom-checkbox input');
     checkboxes.forEach(cb => {
-        cb.addEventListener('change', handleFilters);
+        cb.addEventListener('change', () => handleFilters(allNotes));
     });
 
     const applyBtn = document.querySelector('.apply-filters-btn');
     if (applyBtn) {
-        applyBtn.addEventListener('click', handleFilters);
+        applyBtn.addEventListener('click', () => handleFilters(allNotes));
     }
 
     // Initial render
-    handleFilters();
+    handleFilters(allNotes);
 }
