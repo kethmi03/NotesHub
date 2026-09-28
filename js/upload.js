@@ -1,7 +1,8 @@
 import { getNotes, saveNotes, getCurrentUser } from './storage.js';
 import { showFormMessage } from './auth.js';
+import { isFirebaseConfigured, uploadNoteToFirebase } from './firebase.js';
 
-export function handleUploadSubmit(event) {
+export async function handleUploadSubmit(event) {
     event.preventDefault();
 
     const fileInput = document.getElementById('note-file');
@@ -19,8 +20,7 @@ export function handleUploadSubmit(event) {
     }
 
     const currentUser = getCurrentUser();
-    const notes = getNotes();
-    notes.push({
+    const note = {
         title: document.getElementById('note-title').value.trim(),
         subject: document.getElementById('note-subject').value,
         module: document.getElementById('note-module').value.trim(),
@@ -30,9 +30,25 @@ export function handleUploadSubmit(event) {
         fileName: file.name,
         uploadedBy: currentUser?.email || 'student',
         uploadedAt: new Date().toISOString()
-    });
+    };
 
-    saveNotes(notes);
+    if (isFirebaseConfigured) {
+        if (!currentUser?.uid) {
+            showFormMessage(messageElement, 'error', 'Please log in again before uploading.');
+            return;
+        }
+        try {
+            await uploadNoteToFirebase(note, file, currentUser);
+        } catch (error) {
+            showFormMessage(messageElement, 'error', 'Upload failed. Please try again.');
+            return;
+        }
+    } else {
+        const notes = getNotes();
+        notes.push(note);
+        saveNotes(notes);
+    }
+
     showFormMessage(messageElement, 'success', 'Your note was added successfully.');
     event.target.reset();
 

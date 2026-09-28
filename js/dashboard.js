@@ -1,11 +1,12 @@
 import { getNotes, getUsers } from './storage.js';
+import { getFirebaseNotes, getFirebaseUsers, isFirebaseConfigured } from './firebase.js';
 
-export function setupDashboard() {
+export async function setupDashboard() {
     const dashboardSection = document.querySelector('.dashboard-section');
     if (!dashboardSection) return;
 
-    const allNotes = getNotes();
-    const users = getUsers();
+    const allNotes = isFirebaseConfigured ? await getFirebaseNotes() : getNotes();
+    const users = isFirebaseConfigured ? await getFirebaseUsers() : getUsers();
     const metrics = {
         users: users.length,
         notes: allNotes.length,
