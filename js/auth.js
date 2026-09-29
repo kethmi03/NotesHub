@@ -111,7 +111,17 @@ export async function handleLoginSubmit(event) {
                 window.location.href = allowedNextPages.includes(nextPage) ? nextPage : 'dashboard.html';
             }, 800);
         } catch (error) {
-            showFormMessage(messageElement, 'error', 'Invalid email or password.');
+            const messages = {
+                'auth/invalid-credential': 'Email or password is incorrect. If you do not have an account yet, create one first.',
+                'auth/user-not-found': 'No account was found for this email. Create an account first.',
+                'auth/wrong-password': 'Password is incorrect. Please try again.',
+                'auth/invalid-email': 'Please enter a valid email address.',
+                'auth/operation-not-allowed': 'Email/password sign-in is disabled. Enable it in Firebase Console under Authentication > Sign-in method.',
+                'auth/unauthorized-domain': 'This website is not authorized for Firebase sign-in. Add its domain in Firebase Console under Authentication > Settings > Authorized domains.',
+                'auth/network-request-failed': 'Could not reach Firebase. Check your internet connection and try again.',
+                'auth/too-many-requests': 'Too many attempts. Wait a little while, then try again.'
+            };
+            showFormMessage(messageElement, 'error', messages[error.code] || `Login failed (${error.code || 'unknown-error'}). Check the Firebase configuration and try again.`);
         }
         return;
     }
