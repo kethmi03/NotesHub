@@ -3,6 +3,7 @@ import { getFirebaseNotes, isFirebaseConfigured } from './firebase.js';
 
 const defaultNotes = [
     {
+        id: 'software-engineering-lectures',
         title: "Software Engineering Lectures",
         module: "SE3106",
         gradeLevel: "Y3S1",
@@ -14,6 +15,7 @@ const defaultNotes = [
         type: "pdf"
     },
     {
+        id: 'data-structures-complete-summary',
         title: "Data Structures Complete Summary",
         module: "CS2001",
         gradeLevel: "Y2S1",
@@ -25,6 +27,7 @@ const defaultNotes = [
         type: "word"
     },
     {
+        id: 'database-management-systems',
         title: "Database Management Systems",
         module: "DB2104",
         gradeLevel: "Y2S2",
@@ -36,6 +39,7 @@ const defaultNotes = [
         type: "powerpoint"
     },
     {
+        id: 'computer-networks-past-papers',
         title: "Computer Networks Past Papers",
         module: "NW3002",
         gradeLevel: "Y3S2",
@@ -79,7 +83,7 @@ function renderNotes(notes) {
                     </div>
                 </div>
                 <div class="market-card-body">
-                    <h3><a href="view-note.html">${note.title}</a></h3>
+                    <h3><a href="view-note.html?id=${encodeURIComponent(note.id || note.title)}">${note.title}</a></h3>
                     <p class="module">${note.module} • ${note.gradeLevel}</p>
                     <div class="author-info">
                         <div class="avatar-small"><i class="fa-solid fa-user"></i></div>

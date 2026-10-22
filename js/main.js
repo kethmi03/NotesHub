@@ -4,6 +4,7 @@ import { handleUploadSubmit, setupFileUpload } from './upload.js';
 import { setupBrowsePage } from './browse.js';
 import { setupDashboard } from './dashboard.js';
 import { getCurrentUser } from './storage.js';
+import { setupNoteDetails, setupSavedNotes } from './saved-notes.js';
 
 function updateUserInfo() {
     const currentUser = getCurrentUser();
@@ -48,6 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupFileUpload();
     setupBrowsePage();
     setupDashboard();
+    setupNoteDetails();
+    setupSavedNotes();
 
     // Wait slightly for components to be inserted into DOM, then attach component-related listeners
     setTimeout(() => {

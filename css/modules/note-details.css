@@ -301,6 +301,26 @@
     background: var(--bg-main);
 }
 
+.save-btn[aria-pressed="true"] {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.saved-note-status {
+    margin: -18px 0 24px;
+    color: var(--primary-color);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.saved-note-status.error {
+    color: var(--danger-color);
+}
+
+.saved-note-status[hidden] {
+    display: none;
+}
+
 .author-card {
     background: var(--bg-main);
     padding: 20px;

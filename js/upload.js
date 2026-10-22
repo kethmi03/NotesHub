@@ -45,7 +45,10 @@ export async function handleUploadSubmit(event) {
         }
     } else {
         const notes = getNotes();
-        notes.push(note);
+        notes.push({
+            ...note,
+            id: `local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+        });
         saveNotes(notes);
     }
 
