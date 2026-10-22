@@ -142,7 +142,7 @@ function renderSavedNotes(notes, grid, searchTerm) {
     );
 
     if (filteredNotes.length === 0) {
-        grid.innerHTML = '<p class="saved-notes-empty">No saved notes found. Browse notes and save one for later.</p>';
+        grid.innerHTML = '<p class="saved-notes-empty">No saved notes found. <a href="browse-notes.html">Browse notes</a> and save one for later.</p>';
         return;
     }
 
@@ -184,7 +184,7 @@ function getSafeDownloadUrl(value) {
     try {
         const url = new URL(value, window.location.href);
         return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
-    } catch (error) {
+    } catch {
         return '';
     }
 }

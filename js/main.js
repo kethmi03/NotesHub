@@ -20,7 +20,8 @@ function updateUserInfo() {
     if (sidebarName) sidebarName.textContent = userName;
 
     // Update welcome message on dashboard
-    const welcomeHeading = document.querySelector('.dashboard-header h2');
+    const isOverviewPage = window.location.pathname.split('/').pop() === 'dashboard.html';
+    const welcomeHeading = isOverviewPage ? document.querySelector('.dashboard-header h2') : null;
     if (welcomeHeading) welcomeHeading.textContent = `Welcome back, ${userName}! 👋`;
 }
 
