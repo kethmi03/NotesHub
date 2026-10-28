@@ -173,6 +173,10 @@ export function redirectToAuthPage(event) {
     window.location.href = `${authPage}?next=${encodeURIComponent(targetPage)}`;
 }
 
+if (typeof window !== 'undefined') {
+    window.redirectToAuthPage = redirectToAuthPage;
+}
+
 export function handleProtectedLink(event) {
     const loggedOutPages = ['index.html', 'login.html', 'register.html', ''];
     let currentPage = window.location.pathname.split('/').pop();
@@ -195,6 +199,15 @@ export function setupAuthRedirect() {
     }
 
     if (currentUser) {
+        // Check if user has been blocked
+        const users = getUsers();
+        const activeRecord = users.find(u => u.email && currentUser.email && u.email.toLowerCase() === currentUser.email.toLowerCase());
+        if (currentUser.blocked === true || currentUser.status === 'blocked' || (activeRecord && (activeRecord.blocked === true || activeRecord.status === 'blocked'))) {
+            alert('Your account has been suspended by an administrator.');
+            handleLogout();
+            return;
+        }
+
         const isAdmin = currentUser.role === 'admin' || currentUser.email?.toLowerCase() === 'admin@gmail.com';
         if (currentPage === 'admin-dashboard.html' && !isAdmin) {
             window.location.href = 'dashboard.html';

@@ -292,6 +292,9 @@ export function setupSavedNotes() {
 
     update();
 
+    window.addEventListener('storage', update);
+    window.addEventListener('noteshub:sync', update);
+
     const currentUser = getCurrentUser();
     const sidebarName = document.querySelector('.sidebar-user h3');
     if (sidebarName && currentUser?.name) sidebarName.textContent = currentUser.name;

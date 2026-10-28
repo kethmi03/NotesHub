@@ -197,4 +197,17 @@ export async function setupBrowsePage() {
 
     // Initial render
     handleFilters(allNotes, onNoteDeleted);
+
+    async function refreshBrowseNotes() {
+        const updatedStored = isFirebaseConfigured ? await getFirebaseNotes() : getNotes();
+        const updatedDeleted = getDeletedDefaultNoteIds();
+        allNotes = [
+            ...defaultNotes.filter(n => !updatedDeleted.includes(String(n.id))),
+            ...updatedStored
+        ];
+        handleFilters(allNotes, onNoteDeleted);
+    }
+
+    window.addEventListener('storage', refreshBrowseNotes);
+    window.addEventListener('noteshub:sync', refreshBrowseNotes);
 }

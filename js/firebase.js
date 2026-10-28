@@ -82,13 +82,25 @@ export function logoutFromFirebase() {
 }
 
 export async function getFirebaseNotes() {
-    const snapshot = await getDocs(collection(db, 'notes'));
-    return snapshot.docs.map((note) => ({ id: note.id, ...note.data() }));
+    try {
+        if (!db) return [];
+        const snapshot = await getDocs(collection(db, 'notes'));
+        return snapshot.docs.map((note) => ({ id: note.id, ...note.data() }));
+    } catch (err) {
+        console.warn('Could not fetch Firebase notes:', err);
+        return [];
+    }
 }
 
 export async function getFirebaseUsers() {
-    const snapshot = await getDocs(collection(db, 'users'));
-    return snapshot.docs.map((user) => ({ id: user.id, ...user.data() }));
+    try {
+        if (!db) return [];
+        const snapshot = await getDocs(collection(db, 'users'));
+        return snapshot.docs.map((user) => ({ id: user.id, ...user.data() }));
+    } catch (err) {
+        console.warn('Could not fetch Firebase users:', err);
+        return [];
+    }
 }
 
 export async function uploadNoteToFirebase(note, file, user) {

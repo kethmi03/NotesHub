@@ -9,7 +9,8 @@ import {
     getDeletedDefaultNoteIds,
     deleteUserAccount,
     toggleUserBlock,
-    toggleUserRole
+    toggleUserRole,
+    DEFAULT_SYSTEM_USERS
 } from './storage.js';
 import { 
     getFirebaseNotes, 
@@ -80,69 +81,102 @@ const defaultNotes = [
 ];
 
 export async function getAllSystemUsers() {
-    const localUsers = getUsers();
+    let localUsers = [];
+    try {
+        localUsers = getUsers() || [];
+    } catch (e) {
+        localUsers = [];
+    }
+
     let fbUsers = [];
     if (isFirebaseConfigured) {
         try {
-            fbUsers = await getFirebaseUsers();
+            fbUsers = (await getFirebaseUsers()) || [];
         } catch (e) {
             console.warn('Could not fetch Firebase users:', e);
+            fbUsers = [];
         }
     }
 
-    const defaultSystemUsers = [
-        {
-            name: 'NotesHub Admin',
-            email: 'admin@gmail.com',
-            role: 'admin',
-            createdAt: '2026-09-01T00:00:00.000Z',
-            status: 'active'
-        },
-        {
-            name: 'Ramuthu theniya',
-            email: 'ramuthu@gmail.com',
-            role: 'student',
-            gradeLevel: 'Grade 12 - 13',
-            semester: 'Semester 1',
-            createdAt: '2026-10-15T08:30:00.000Z',
-            status: 'active'
-        },
-        {
-            name: 'Sarah Jenkins',
-            email: 'sarah.jenkins@gmail.com',
-            role: 'student',
-            gradeLevel: 'Year 3 (Undergraduate)',
-            semester: 'Semester 1',
-            createdAt: '2026-09-15T10:00:00.000Z',
-            status: 'active'
-        },
-        {
-            name: 'Mike Ross',
-            email: 'mike.ross@gmail.com',
-            role: 'student',
-            gradeLevel: 'Year 2 (Undergraduate)',
-            semester: 'Semester 1',
-            createdAt: '2026-09-18T14:20:00.000Z',
-            status: 'active'
-        }
-    ];
-
     const map = new Map();
-    defaultSystemUsers.forEach(u => map.set(u.email.toLowerCase(), u));
-    fbUsers.forEach(u => {
-        if (u.email) map.set(u.email.toLowerCase(), { ...map.get(u.email.toLowerCase()), ...u, source: 'firebase' });
-    });
-    localUsers.forEach(u => {
-        if (u.email) map.set(u.email.toLowerCase(), { ...map.get(u.email.toLowerCase()), ...u, source: 'local' });
-    });
 
-    const current = getCurrentUser();
-    if (current && current.email) {
-        const existing = map.get(current.email.toLowerCase()) || {};
-        map.set(current.email.toLowerCase(), {
-            ...existing,
-            ...current
+    // 1. Load default system users
+    if (Array.isArray(DEFAULT_SYSTEM_USERS)) {
+        DEFAULT_SYSTEM_USERS.forEach(u => {
+            if (u && u.email) {
+                map.set(u.email.toLowerCase(), {
+                    name: u.name,
+                    email: u.email,
+                    role: u.role || 'student',
+                    gradeLevel: u.gradeLevel || 'General Student',
+                    semester: u.semester || 'Semester 1',
+                    createdAt: u.createdAt || '2026-09-01T00:00:00.000Z',
+                    status: u.status || 'active',
+                    blocked: u.blocked === true || u.status === 'blocked',
+                    source: 'system'
+                });
+            }
         });
+    }
+
+    // 2. Merge Firebase users
+    if (Array.isArray(fbUsers)) {
+        fbUsers.forEach(u => {
+            if (u && u.email) {
+                const emailLower = u.email.toLowerCase();
+                const existing = map.get(emailLower) || {};
+                map.set(emailLower, {
+                    ...existing,
+                    ...u,
+                    email: u.email,
+                    name: u.name || existing.name || emailLower.split('@')[0],
+                    role: u.role || existing.role || (emailLower === 'admin@gmail.com' ? 'admin' : 'student'),
+                    status: u.status || existing.status || 'active',
+                    blocked: u.blocked === true || existing.blocked === true,
+                    source: 'firebase'
+                });
+            }
+        });
+    }
+
+    // 3. Merge LocalStorage registered users
+    if (Array.isArray(localUsers)) {
+        localUsers.forEach(u => {
+            if (u && u.email) {
+                const emailLower = u.email.toLowerCase();
+                const existing = map.get(emailLower) || {};
+                map.set(emailLower, {
+                    ...existing,
+                    ...u,
+                    email: u.email,
+                    name: u.name || existing.name || emailLower.split('@')[0],
+                    role: u.role || existing.role || (emailLower === 'admin@gmail.com' ? 'admin' : 'student'),
+                    status: u.status || existing.status || 'active',
+                    blocked: u.blocked === true || existing.blocked === true,
+                    source: 'local'
+                });
+            }
+        });
+    }
+
+    // 4. Merge Current logged in user
+    try {
+        const current = getCurrentUser();
+        if (current && current.email) {
+            const emailLower = current.email.toLowerCase();
+            const existing = map.get(emailLower) || {};
+            map.set(emailLower, {
+                ...existing,
+                ...current,
+                email: current.email,
+                name: current.name || existing.name || 'User',
+                role: current.role || existing.role || (emailLower === 'admin@gmail.com' ? 'admin' : 'student'),
+                status: current.status || existing.status || 'active',
+                blocked: current.blocked === true || existing.blocked === true
+            });
+        }
+    } catch (e) {
+        // ignore
     }
 
     return Array.from(map.values());
@@ -165,6 +199,9 @@ export async function setupDashboard() {
             return;
         }
 
+        let filterUsersRef = null;
+        let filterNotesRef = null;
+
         // TAB SWITCHING SETUP
         const tabs = ['overview', 'notes', 'reports', 'users'];
         function activateTab(tabName) {
@@ -184,6 +221,13 @@ export async function setupDashboard() {
 
             if (window.location.hash !== `#${tabName}`) {
                 history.replaceState(null, '', `#${tabName}`);
+            }
+
+            if (tabName === 'users' && typeof filterUsersRef === 'function') {
+                filterUsersRef();
+            }
+            if (tabName === 'notes' && typeof filterNotesRef === 'function') {
+                filterNotesRef();
             }
         }
 
@@ -211,14 +255,34 @@ export async function setupDashboard() {
 
         // LOAD AND RENDER ADMIN DATA
         async function loadAndRenderAdminData() {
-            const storedNotes = isFirebaseConfigured ? await getFirebaseNotes() : getNotes();
-            const deletedDefaults = getDeletedDefaultNoteIds();
+            let firebaseNotes = [];
+            if (isFirebaseConfigured) {
+                try {
+                    firebaseNotes = (await getFirebaseNotes()) || [];
+                } catch (e) {
+                    firebaseNotes = [];
+                }
+            }
+            const localNotes = getNotes() || [];
+            const deletedDefaults = getDeletedDefaultNoteIds() || [];
+
+            const noteMap = new Map();
+            localNotes.forEach(n => noteMap.set(String(n.id || n.title), n));
+            firebaseNotes.forEach(n => noteMap.set(String(n.id || n.title), { ...noteMap.get(String(n.id || n.title)), ...n }));
+            const storedNotes = Array.from(noteMap.values());
+
             const allNotes = [
                 ...defaultNotes.filter(n => !deletedDefaults.includes(String(n.id))),
                 ...storedNotes
             ];
 
-            const allUsers = await getAllSystemUsers();
+            let allUsers = [];
+            try {
+                allUsers = await getAllSystemUsers();
+            } catch (e) {
+                console.warn('Could not load system users:', e);
+                allUsers = DEFAULT_SYSTEM_USERS || [];
+            }
 
             const reportedNotes = allNotes.filter(n => n.reported === true || Number(n.reportCount) > 0 || n.status === 'reported');
             const pendingNotes = allNotes.filter(n => n.status === 'pending' || n.approvalStatus === 'pending');
@@ -490,6 +554,7 @@ export async function setupDashboard() {
             const statusSelect = document.getElementById('adminStatusFilter');
             if (statusSelect) statusSelect.onchange = filterNotes;
 
+            filterNotesRef = filterNotes;
             filterNotes();
 
             // 5. RENDER USERS TAB
@@ -507,7 +572,11 @@ export async function setupDashboard() {
                 }
 
                 usersContainer.innerHTML = `
-                    <div class="admin-table-container">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; color: var(--text-secondary);">
+                        <span>Showing <strong>${usersList.length}</strong> registered user(s) in system</span>
+                        <span style="font-size: 12px;"><i class="fa-solid fa-users"></i> Platform User Directory</span>
+                    </div>
+                    <div class="admin-table-container" style="margin-top: 0;">
                         <div class="admin-table-scroll">
                             <table class="admin-table">
                                 <thead>
@@ -526,45 +595,59 @@ export async function setupDashboard() {
                                         const isMainAdmin = email.toLowerCase() === 'admin@gmail.com';
                                         const isBlocked = u.blocked === true || u.status === 'blocked';
                                         const userNotesCount = allNotes.filter(n =>
-                                            (n.uploadedBy && n.uploadedBy.toLowerCase() === email.toLowerCase()) ||
-                                            (n.uploadedByName && n.uploadedByName.toLowerCase() === (u.name || '').toLowerCase())
+                                            (n.uploadedBy && typeof n.uploadedBy === 'string' && n.uploadedBy.toLowerCase() === email.toLowerCase()) ||
+                                            (n.uploadedByName && typeof n.uploadedByName === 'string' && n.uploadedByName.toLowerCase() === (u.name || '').toLowerCase())
                                         ).length;
+                                        const role = (u.role || 'student').toLowerCase();
+                                        const isAdminRole = role === 'admin';
 
                                         return `
                                             <tr>
                                                 <td>
                                                     <div style="display: flex; align-items: center; gap: 10px;">
-                                                        <div class="avatar" style="width: 32px; height: 32px; font-size: 13px; ${u.role === 'admin' ? 'background: #eef2ff; color: #4f46e5;' : ''}">
-                                                            <i class="fa-solid ${u.role === 'admin' ? 'fa-shield-halved' : 'fa-user'}"></i>
+                                                        <div class="avatar" style="width: 34px; height: 34px; font-size: 13px; border-radius: 50%; display: flex; align-items: center; justify-content: center; ${isAdminRole ? 'background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe;' : 'background: #f1f5f9; color: #475569;'}">
+                                                            <i class="fa-solid ${isAdminRole ? 'fa-shield-halved' : 'fa-user'}"></i>
                                                         </div>
-                                                        <strong>${escapeHtml(u.name || 'User')}</strong>
+                                                        <div>
+                                                            <strong style="display: block; color: var(--text-dark);">${escapeHtml(u.name || 'User')}</strong>
+                                                            <span style="font-size: 11px; color: var(--text-secondary);">${escapeHtml(u.gradeLevel || 'General Student')}</span>
+                                                        </div>
                                                     </div>
                                                 </td>
-                                                <td>${escapeHtml(email)}</td>
                                                 <td>
-                                                    <span class="admin-badge-status ${u.role === 'admin' ? 'approved' : 'pending'}">
-                                                        ${u.role === 'admin' ? 'Administrator' : 'Student'}
+                                                    <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary); font-size: 13px;">
+                                                        <i class="fa-regular fa-envelope" style="font-size: 12px;"></i>
+                                                        <span>${escapeHtml(email)}</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="admin-badge-status ${isAdminRole ? 'approved' : 'pending'}">
+                                                        <i class="fa-solid ${isAdminRole ? 'fa-shield' : 'fa-graduation-cap'}"></i>
+                                                        ${isAdminRole ? 'Administrator' : 'Student'}
                                                     </span>
                                                 </td>
-                                                <td><span style="font-weight: 600;">${userNotesCount}</span> note(s)</td>
                                                 <td>
-                                                    <span style="color: ${isBlocked ? '#dc2626' : '#059669'}; font-weight: 600;">
+                                                    <span style="font-weight: 700; color: var(--text-dark);">${userNotesCount}</span>
+                                                    <span style="color: var(--text-secondary); font-size: 12px;"> note(s)</span>
+                                                </td>
+                                                <td>
+                                                    <span style="color: ${isBlocked ? '#dc2626' : '#059669'}; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 5px;">
                                                         <i class="fa-solid ${isBlocked ? 'fa-circle-xmark' : 'fa-circle-check'}"></i> ${isBlocked ? 'Blocked' : 'Active'}
                                                     </span>
                                                 </td>
                                                 <td style="text-align: right;">
                                                     <div class="admin-action-btn-group" style="justify-content: flex-end;">
                                                         ${!isMainAdmin ? `
-                                                            <button type="button" class="admin-btn-sm ${isBlocked ? 'admin-btn-view' : 'admin-btn-dismiss'}" data-toggle-block-email="${email}">
+                                                            <button type="button" class="admin-btn-sm ${isBlocked ? 'admin-btn-view' : 'admin-btn-dismiss'}" data-toggle-block-email="${escapeHtml(email)}" title="${isBlocked ? 'Unblock user' : 'Block user'}">
                                                                 <i class="fa-solid ${isBlocked ? 'fa-unlock' : 'fa-ban'}"></i> ${isBlocked ? 'Unblock' : 'Block'}
                                                             </button>
-                                                            <button type="button" class="admin-btn-sm admin-btn-view" data-toggle-role-email="${email}">
-                                                                <i class="fa-solid fa-user-gear"></i> ${u.role === 'admin' ? 'Make Student' : 'Make Admin'}
+                                                            <button type="button" class="admin-btn-sm admin-btn-view" data-toggle-role-email="${escapeHtml(email)}" title="Toggle user role">
+                                                                <i class="fa-solid fa-user-gear"></i> ${isAdminRole ? 'Make Student' : 'Make Admin'}
                                                             </button>
-                                                            <button type="button" class="admin-btn-sm admin-btn-delete" data-delete-user-email="${email}">
+                                                            <button type="button" class="admin-btn-sm admin-btn-delete" data-delete-user-email="${escapeHtml(email)}" title="Delete user">
                                                                 <i class="fa-solid fa-trash"></i> Delete
                                                             </button>
-                                                        ` : '<span style="font-size: 12px; color: var(--text-secondary); font-style: italic;">Primary Admin</span>'}
+                                                        ` : '<span style="font-size: 12px; color: var(--text-secondary); font-style: italic; padding: 4px 8px; background: var(--bg-secondary); border-radius: 4px;">Primary Admin</span>'}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -624,6 +707,7 @@ export async function setupDashboard() {
             const userRoleFilter = document.getElementById('adminUserRoleFilter');
             if (userRoleFilter) userRoleFilter.onchange = filterUsers;
 
+            filterUsersRef = filterUsers;
             filterUsers();
 
             // Attach global delete listeners (e.g. from any section)
@@ -641,6 +725,8 @@ export async function setupDashboard() {
         }
 
         await loadAndRenderAdminData();
+        window.addEventListener('storage', () => loadAndRenderAdminData());
+        window.addEventListener('noteshub:sync', () => loadAndRenderAdminData());
         return;
     }
 
@@ -658,77 +744,90 @@ export async function setupDashboard() {
             heading.textContent = `Welcome back, ${currentUser.name || 'Student'}! 👋`;
         }
 
-        try {
-            const allNotes = isFirebaseConfigured ? await getFirebaseNotes() : getNotes();
-            const userNotes = currentUser
-                ? allNotes.filter(note =>
-                    (note.uploadedBy && currentUser.email && note.uploadedBy.toLowerCase() === currentUser.email.toLowerCase()) ||
-                    (currentUser.uid && note.userId === currentUser.uid)
-                )
-                : [];
-
-            let savedCount = 0;
+        async function loadAndRenderStudentData() {
             try {
-                savedCount = getSavedNotes().length;
-            } catch (err) {
-                savedCount = 0;
-            }
+                const activeUser = getCurrentUser();
+                if (!activeUser) return;
 
-            const totalDownloads = userNotes.reduce((acc, note) => acc + (parseInt(note.downloads) || 0), 0);
-            const validRatings = userNotes.map(n => parseFloat(n.rating)).filter(r => !isNaN(r) && r > 0);
-            const avgRating = validRatings.length > 0
-                ? (validRatings.reduce((sum, r) => sum + r, 0) / validRatings.length).toFixed(1)
-                : '5.0';
-
-            const uploadsEl = document.getElementById('userTotalUploads');
-            if (uploadsEl) uploadsEl.textContent = userNotes.length;
-
-            const savedEl = document.getElementById('userSavedNotes');
-            if (savedEl) savedEl.textContent = savedCount;
-
-            const downloadsEl = document.getElementById('userTotalDownloads');
-            if (downloadsEl) downloadsEl.textContent = totalDownloads;
-
-            const ratingEl = document.getElementById('userAvgRating');
-            if (ratingEl) ratingEl.textContent = avgRating;
-
-            // Render Student Recent Uploads
-            const grid = document.getElementById('userRecentNotesGrid');
-            if (grid) {
-                if (userNotes.length === 0) {
-                    grid.innerHTML = `
-                        <div class="saved-notes-empty" style="grid-column: 1 / -1; padding: 30px; text-align: center; background: white; border-radius: 12px; border: 1px dashed var(--border-light);">
-                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 32px; color: var(--primary-color); margin-bottom: 12px; display: block;"></i>
-                            <h4 style="font-size: 16px; margin-bottom: 6px;">You haven't uploaded any notes yet</h4>
-                            <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">Share your study material, lecture notes, or revision guides with fellow students.</p>
-                            <a href="upload-note.html" class="primary-btn" style="display: inline-block; padding: 10px 18px; font-size: 14px; text-decoration: none; border-radius: 8px;">Upload Notes</a>
-                        </div>
-                    `;
-                } else {
-                    const recent = userNotes.slice(0, 4);
-                    grid.innerHTML = recent.map(note => `
-                        <div class="note-card-small">
-                            <div class="note-icon-small">
-                                <i class="fa-solid ${note.fileName && note.fileName.endsWith('.pdf') ? 'fa-file-pdf' : 'fa-file-lines'}"></i>
-                            </div>
-                            <div class="note-details">
-                                <h4><a href="view-note.html?id=${note.id}">${escapeHtml(note.title || 'Untitled Note')}</a></h4>
-                                <p>${escapeHtml(note.gradeLevel || 'General')} • ${escapeHtml(note.module || note.subject || 'Academic')}</p>
-                            </div>
-                            <div class="note-stats">
-                                <span><i class="fa-solid fa-download"></i> ${note.downloads || 0}</span>
-                                <span><i class="fa-solid fa-star"></i> ${note.rating || '5.0'}</span>
-                            </div>
-                            <div class="note-actions">
-                                <a href="view-note.html?id=${note.id}" title="View Note"><i class="fa-solid fa-eye"></i></a>
-                            </div>
-                        </div>
-                    `).join('');
+                if (heading) {
+                    heading.textContent = `Welcome back, ${activeUser.name || 'Student'}! 👋`;
                 }
+
+                const allNotes = isFirebaseConfigured ? await getFirebaseNotes() : getNotes();
+                const userNotes = activeUser
+                    ? allNotes.filter(note =>
+                        (note.uploadedBy && activeUser.email && note.uploadedBy.toLowerCase() === activeUser.email.toLowerCase()) ||
+                        (activeUser.uid && note.userId === activeUser.uid)
+                    )
+                    : [];
+
+                let savedCount = 0;
+                try {
+                    savedCount = getSavedNotes().length;
+                } catch (err) {
+                    savedCount = 0;
+                }
+
+                const totalDownloads = userNotes.reduce((acc, note) => acc + (parseInt(note.downloads) || 0), 0);
+                const validRatings = userNotes.map(n => parseFloat(n.rating)).filter(r => !isNaN(r) && r > 0);
+                const avgRating = validRatings.length > 0
+                    ? (validRatings.reduce((sum, r) => sum + r, 0) / validRatings.length).toFixed(1)
+                    : '5.0';
+
+                const uploadsEl = document.getElementById('userTotalUploads');
+                if (uploadsEl) uploadsEl.textContent = userNotes.length;
+
+                const savedEl = document.getElementById('userSavedNotes');
+                if (savedEl) savedEl.textContent = savedCount;
+
+                const downloadsEl = document.getElementById('userTotalDownloads');
+                if (downloadsEl) downloadsEl.textContent = totalDownloads;
+
+                const ratingEl = document.getElementById('userAvgRating');
+                if (ratingEl) ratingEl.textContent = avgRating;
+
+                // Render Student Recent Uploads
+                const grid = document.getElementById('userRecentNotesGrid');
+                if (grid) {
+                    if (userNotes.length === 0) {
+                        grid.innerHTML = `
+                            <div class="saved-notes-empty" style="grid-column: 1 / -1; padding: 30px; text-align: center; background: white; border-radius: 12px; border: 1px dashed var(--border-light);">
+                                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 32px; color: var(--primary-color); margin-bottom: 12px; display: block;"></i>
+                                <h4 style="font-size: 16px; margin-bottom: 6px;">You haven't uploaded any notes yet</h4>
+                                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">Share your study material, lecture notes, or revision guides with fellow students.</p>
+                                <a href="upload-note.html" class="primary-btn" style="display: inline-block; padding: 10px 18px; font-size: 14px; text-decoration: none; border-radius: 8px;">Upload Notes</a>
+                            </div>
+                        `;
+                    } else {
+                        const recent = userNotes.slice(0, 4);
+                        grid.innerHTML = recent.map(note => `
+                            <div class="note-card-small">
+                                <div class="note-icon-small">
+                                    <i class="fa-solid ${note.fileName && note.fileName.endsWith('.pdf') ? 'fa-file-pdf' : 'fa-file-lines'}"></i>
+                                </div>
+                                <div class="note-details">
+                                    <h4><a href="view-note.html?id=${note.id}">${escapeHtml(note.title || 'Untitled Note')}</a></h4>
+                                    <p>${escapeHtml(note.gradeLevel || 'General')} • ${escapeHtml(note.module || note.subject || 'Academic')}</p>
+                                </div>
+                                <div class="note-stats">
+                                    <span><i class="fa-solid fa-download"></i> ${note.downloads || 0}</span>
+                                    <span><i class="fa-solid fa-star"></i> ${note.rating || '5.0'}</span>
+                                </div>
+                                <div class="note-actions">
+                                    <a href="view-note.html?id=${note.id}" title="View Note"><i class="fa-solid fa-eye"></i></a>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error setting up student dashboard:', error);
             }
-        } catch (error) {
-            console.error('Error setting up student dashboard:', error);
         }
+
+        await loadAndRenderStudentData();
+        window.addEventListener('storage', () => loadAndRenderStudentData());
+        window.addEventListener('noteshub:sync', () => loadAndRenderStudentData());
     }
 }
 

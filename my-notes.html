@@ -23,8 +23,8 @@
                 <div class="avatar-large">
                     <i class="fa-solid fa-user"></i>
                 </div>
-                <h3>John Doe</h3>
-
+                <h3>Student</h3>
+                <p>Student Account</p>
             </div>
 
             <nav class="sidebar-nav">
@@ -52,83 +52,25 @@
                 <div style="display: flex; gap: 20px; flex: 1;">
                     <div class="search-box" style="flex: 1; max-width: 300px;">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" placeholder="Search your notes...">
+                        <input type="text" id="myNotesSearch" placeholder="Search your notes...">
                     </div>
                 </div>
 
                 <div class="sort-box">
                     <label>Sort by:</label>
-                    <select>
-                        <option>Most Recent</option>
-                        <option>Most Downloaded</option>
-                        <option>Highest Rated</option>
+                    <select id="myNotesSort">
+                        <option value="recent">Most Recent</option>
+                        <option value="downloads">Most Downloaded</option>
+                        <option value="rating">Highest Rated</option>
                     </select>
                 </div>
             </div>
 
             <!-- My Notes Grid -->
             <div class="recent-notes">
-                <div class="notes-grid">
-
-                    <div class="note-card-small">
-                        <div class="note-icon-small">
-                            <i class="fa-solid fa-file-pdf"></i>
-                        </div>
-                        <div class="note-details">
-                            <h4>Software Engineering Notes</h4>
-                            <p>Y3S1 • SE3106</p>
-                            <p style="font-size: 12px; color: #666; margin-top: 5px;">Uploaded 2 days ago</p>
-                        </div>
-                        <div class="note-stats">
-                            <span><i class="fa-solid fa-download"></i> 45</span>
-                            <span><i class="fa-solid fa-star"></i> 4.5</span>
-                        </div>
-                        <div class="note-actions">
-                            <button class="edit-btn"><i class="fa-solid fa-pen"></i></button>
-                            <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="note-card-small">
-                        <div class="note-icon-small">
-                            <i class="fa-solid fa-file-powerpoint"></i>
-                        </div>
-                        <div class="note-details">
-                            <h4>Database Management</h4>
-                            <p>Y2S2 • DB2104</p>
-                            <p style="font-size: 12px; color: #666; margin-top: 5px;">Uploaded 5 days ago</p>
-                        </div>
-                        <div class="note-stats">
-                            <span><i class="fa-solid fa-download"></i> 79</span>
-                            <span><i class="fa-solid fa-star"></i> 4.9</span>
-                        </div>
-                        <div class="note-actions">
-                            <button class="edit-btn"><i class="fa-solid fa-pen"></i></button>
-                            <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="note-card-small">
-                        <div class="note-icon-small">
-                            <i class="fa-solid fa-file-word"></i>
-                        </div>
-                        <div class="note-details">
-                            <h4>Web Development Guide</h4>
-                            <p>Y2S1 • CS2050</p>
-                            <p style="font-size: 12px; color: #666; margin-top: 5px;">Uploaded 1 week ago</p>
-                        </div>
-                        <div class="note-stats">
-                            <span><i class="fa-solid fa-download"></i> 32</span>
-                            <span><i class="fa-solid fa-star"></i> 4.3</span>
-                        </div>
-                        <div class="note-actions">
-                            <button class="edit-btn"><i class="fa-solid fa-pen"></i></button>
-                            <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-
+                <div class="notes-grid" id="myNotesGrid">
+                    <!-- Populated dynamically by my-notes.js -->
                 </div>
-
             </div>
 
         </div>
