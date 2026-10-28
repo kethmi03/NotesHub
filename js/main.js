@@ -5,6 +5,7 @@ import { setupBrowsePage } from './browse.js';
 import { setupDashboard } from './dashboard.js';
 import { getCurrentUser } from './storage.js';
 import { setupNoteDetails, setupSavedNotes } from './saved-notes.js';
+import { setupSettingsPage } from './settings.js';
 
 function updateUserInfo() {
     const currentUser = getCurrentUser();
@@ -23,6 +24,16 @@ function updateUserInfo() {
     const isOverviewPage = window.location.pathname.split('/').pop() === 'dashboard.html';
     const welcomeHeading = isOverviewPage ? document.querySelector('.dashboard-header h2') : null;
     if (welcomeHeading) welcomeHeading.textContent = `Welcome back, ${userName}! 👋`;
+
+    // Update settings inputs if present
+    const fullNameInput = document.getElementById('full-name');
+    const emailInput = document.getElementById('email');
+    if (fullNameInput && !fullNameInput.dataset.userEdited) {
+        fullNameInput.value = currentUser.name || '';
+    }
+    if (emailInput && !emailInput.dataset.userEdited) {
+        emailInput.value = currentUser.email || '';
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -52,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupDashboard();
     setupNoteDetails();
     setupSavedNotes();
+    setupSettingsPage();
 
     // Wait slightly for components to be inserted into DOM, then attach component-related listeners
     setTimeout(() => {

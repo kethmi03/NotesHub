@@ -54,15 +54,26 @@ export async function registerWithFirebase(name, email, password) {
         await deleteUser(credentials.user).catch(() => {});
         throw error;
     }
-    return { name, email: email.toLowerCase(), uid: credentials.user.uid };
+    return { name, email: email.toLowerCase(), uid: credentials.user.uid, role: 'student' };
 }
 
 export async function loginWithFirebase(email, password) {
     const credentials = await signInWithEmailAndPassword(auth, email, password);
+    let role = email.toLowerCase() === 'admin@gmail.com' ? 'admin' : 'student';
+    try {
+        const { getDoc, doc: getDocRef } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+        const userDoc = await getDoc(getDocRef(db, 'users', credentials.user.uid));
+        if (userDoc.exists() && userDoc.data()?.role) {
+            role = userDoc.data().role;
+        }
+    } catch (err) {
+        console.warn('Could not fetch user role from Firestore:', err);
+    }
     return {
-        name: credentials.user.displayName || 'Student',
+        name: credentials.user.displayName || (role === 'admin' ? 'NotesHub Admin' : 'Student'),
         email: credentials.user.email,
-        uid: credentials.user.uid
+        uid: credentials.user.uid,
+        role: role
     };
 }
 

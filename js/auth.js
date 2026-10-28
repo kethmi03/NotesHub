@@ -95,7 +95,7 @@ export async function handleLoginSubmit(event) {
 
         showFormMessage(messageElement, 'success', 'Admin login successful! Redirecting...');
         setTimeout(() => {
-            window.location.href = 'dashboard.html';
+            window.location.href = 'admin-dashboard.html';
         }, 800);
         return;
     }
@@ -106,9 +106,11 @@ export async function handleLoginSubmit(event) {
             setCurrentUser(user);
             showFormMessage(messageElement, 'success', 'Login successful!');
             const nextPage = new URLSearchParams(window.location.search).get('next');
-            const allowedNextPages = ['browse-notes.html', 'upload-note.html', 'dashboard.html'];
+            const defaultTarget = user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html';
+            const allowedNextPages = ['browse-notes.html', 'upload-note.html', 'dashboard.html', 'admin-dashboard.html', 'my-notes.html', 'saved-notes.html', 'settings.html'];
+            const targetPage = (nextPage && allowedNextPages.includes(nextPage)) ? nextPage : defaultTarget;
             setTimeout(() => {
-                window.location.href = allowedNextPages.includes(nextPage) ? nextPage : 'dashboard.html';
+                window.location.href = targetPage;
             }, 800);
         } catch (error) {
             const messages = {
@@ -136,18 +138,22 @@ export async function handleLoginSubmit(event) {
         return;
     }
 
+    const userRole = matchedUser.role || (matchedUser.email.toLowerCase() === 'admin@gmail.com' ? 'admin' : 'student');
     setCurrentUser({
         name: matchedUser.name,
-        email: matchedUser.email
+        email: matchedUser.email,
+        role: userRole
     });
 
     showFormMessage(messageElement, 'success', 'Login successful!');
 
     const nextPage = new URLSearchParams(window.location.search).get('next');
-    const allowedNextPages = ['browse-notes.html', 'upload-note.html', 'dashboard.html'];
+    const defaultTarget = userRole === 'admin' ? 'admin-dashboard.html' : 'dashboard.html';
+    const allowedNextPages = ['browse-notes.html', 'upload-note.html', 'dashboard.html', 'admin-dashboard.html', 'my-notes.html', 'saved-notes.html', 'settings.html'];
+    const targetPage = (nextPage && allowedNextPages.includes(nextPage)) ? nextPage : defaultTarget;
 
     setTimeout(() => {
-        window.location.href = allowedNextPages.includes(nextPage) ? nextPage : 'dashboard.html';
+        window.location.href = targetPage;
     }, 800);
 }
 
@@ -182,7 +188,18 @@ export function setupAuthRedirect() {
     let currentPage = window.location.pathname.split('/').pop();
     if (currentPage === '') currentPage = 'index.html';
 
-    if (!loggedOutPages.includes(currentPage) && !getCurrentUser()) {
+    const currentUser = getCurrentUser();
+    if (!loggedOutPages.includes(currentPage) && !currentUser) {
         window.location.href = 'login.html';
+        return;
+    }
+
+    if (currentUser) {
+        const isAdmin = currentUser.role === 'admin' || currentUser.email?.toLowerCase() === 'admin@gmail.com';
+        if (currentPage === 'admin-dashboard.html' && !isAdmin) {
+            window.location.href = 'dashboard.html';
+        } else if (currentPage === 'dashboard.html' && isAdmin) {
+            window.location.href = 'admin-dashboard.html';
+        }
     }
 }

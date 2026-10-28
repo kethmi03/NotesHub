@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Admin Overview | NotesHub</title>
+    <title>Student Dashboard | NotesHub</title>
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -14,118 +14,111 @@
 
 <body>
 
-    <header class="navbar admin-navbar">
-        <div class="logo">
-            <i class="fa-solid fa-book-open"></i>
-            <span>Notes<span class="logo-highlight">Hub</span></span>
-        </div>
-
-        <div class="nav-buttons">
-            <button type="button" id="theme-toggle" class="admin-header-theme" title="Toggle dark mode">
-                <i class="fa-solid fa-moon"></i>
-            </button>
-            <button type="button" class="logout-btn admin-header-logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </button>
-        </div>
-    </header>
-
     <!-- ================= DASHBOARD SECTION ================= -->
 
-    <section class="dashboard-section admin-dashboard" data-dashboard-role="admin">
+    <section class="dashboard-section user-dashboard" data-dashboard-role="student">
 
         <div class="dashboard-sidebar">
             <div class="sidebar-user">
                 <div class="avatar-large">
                     <i class="fa-solid fa-user"></i>
                 </div>
-                <h3>NotesHub Admin</h3>
-
+                <h3>Student</h3>
+                <p>Student Account</p>
             </div>
 
             <nav class="sidebar-nav">
                 <a href="dashboard.html" class="active"><i class="fa-solid fa-chart-pie"></i> Overview</a>
-                <a href="#users"><i class="fa-solid fa-users"></i> Users</a>
-                <a href="#notes"><i class="fa-solid fa-file-lines"></i> Notes</a>
-                <a href="#reports"><i class="fa-solid fa-flag"></i> Reports</a>
+                <a href="my-notes.html"><i class="fa-solid fa-file-lines"></i> My Notes</a>
+                <a href="saved-notes.html"><i class="fa-solid fa-bookmark"></i> Saved Notes</a>
+                <a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a>
             </nav>
 
-            <a href="#notes" class="upload-btn">
-                <i class="fa-solid fa-shield-halved"></i> Moderate Notes
+            <a href="upload-note.html" class="upload-btn">
+                <i class="fa-solid fa-plus"></i> Upload New Note
             </a>
-
         </div>
 
         <div class="dashboard-content">
 
             <div class="dashboard-header">
-                <h2>Admin Overview</h2>
-                <p>Keep track of your NotesHub community and content.</p>
+                <h2 id="studentWelcomeHeading">Welcome back! 👋</h2>
+                <p>Here's what's happening with your notes today.</p>
             </div>
 
-            <!-- Stats -->
-            <div class="stats-grid admin-stats-grid">
-
-                <div class="stat-card reveal" id="users">
-                    <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">
-                        <i class="fa-solid fa-users"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 data-admin-stat="users">0</h3>
-                        <p>Total Users</p>
-                    </div>
-                </div>
+            <!-- Student Stats -->
+            <div class="stats-grid">
 
                 <div class="stat-card reveal">
                     <div class="stat-icon" style="background: #eef2ff; color: #4f46e5;">
                         <i class="fa-solid fa-book-open"></i>
                     </div>
                     <div class="stat-info">
-                        <h3 data-admin-stat="notes">0</h3>
-                        <p>Total Notes</p>
+                        <h3 id="userTotalUploads">0</h3>
+                        <p>Uploaded Notes</p>
                     </div>
                 </div>
 
                 <div class="stat-card reveal">
-                    <div class="stat-icon" style="background: #fef3c7; color: #d97706;">
-                        <i class="fa-solid fa-hourglass-half"></i>
+                    <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">
+                        <i class="fa-solid fa-bookmark"></i>
                     </div>
                     <div class="stat-info">
-                        <h3 data-admin-stat="pending">0</h3>
-                        <p>Pending Note Approvals</p>
-                    </div>
-                </div>
-
-                <div class="stat-card reveal" id="reports">
-                    <div class="stat-icon" style="background: #fee2e2; color: #dc2626;">
-                        <i class="fa-solid fa-flag"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 data-admin-stat="reported">0</h3>
-                        <p>Reported Notes</p>
+                        <h3 id="userSavedNotes">0</h3>
+                        <p>Saved Notes</p>
                     </div>
                 </div>
 
                 <div class="stat-card reveal">
-                    <div class="stat-icon" style="background: #f1f5f9; color: #475569;">
-                        <i class="fa-solid fa-user-slash"></i>
+                    <div class="stat-icon" style="background: #ecfdf5; color: #059669;">
+                        <i class="fa-solid fa-download"></i>
                     </div>
                     <div class="stat-info">
-                        <h3 data-admin-stat="blocked">0</h3>
-                        <p>Blocked Users</p>
+                        <h3 id="userTotalDownloads">0</h3>
+                        <p>Total Downloads</p>
+                    </div>
+                </div>
+
+                <div class="stat-card reveal">
+                    <div class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="userAvgRating">5.0</h3>
+                        <p>Average Rating</p>
                     </div>
                 </div>
 
             </div>
 
-            <!-- Admin activity entry point -->
-            <div class="recent-notes admin-overview-note" id="notes">
+            <!-- Quick Action / Explore Banner -->
+            <div class="recent-notes" style="margin-bottom: 35px;">
                 <div class="section-heading">
-                    <h3>Moderation Center</h3>
-                    <span class="admin-status"><i class="fa-solid fa-circle-check"></i> System healthy</span>
+                    <h3>Quick Actions</h3>
                 </div>
-                <p class="admin-overview-copy">Review pending submissions, investigate reports, and manage community access from one place.</p>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <a href="browse-notes.html" class="primary-btn" style="padding: 12px 20px; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-magnifying-glass"></i> Explore Notes Marketplace
+                    </a>
+                    <a href="upload-note.html" class="secondary-btn" style="padding: 12px 20px; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Share New Notes
+                    </a>
+                    <a href="saved-notes.html" class="secondary-btn" style="padding: 12px 20px; font-size: 14px; text-decoration: none; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-bookmark"></i> View Saved Notes
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recent Uploaded Notes -->
+            <div class="recent-notes">
+                <div class="section-heading">
+                    <h3>My Recent Uploads</h3>
+                    <a href="my-notes.html">View All <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div class="notes-grid" id="userRecentNotesGrid">
+                    <!-- Populated dynamically by dashboard.js -->
+                </div>
             </div>
 
         </div>
