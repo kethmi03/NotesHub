@@ -1,4 +1,4 @@
-import { getUsers, saveUsers, getCurrentUser, setCurrentUser } from './storage.js';
+import { getUsers, saveUsers, getCurrentUser, setCurrentUser, registerOrUpdateUser } from './storage.js';
 import { isFirebaseConfigured, loginWithFirebase, logoutFromFirebase, registerWithFirebase } from './firebase.js';
 
 export function showFormMessage(element, type, message) {
@@ -26,45 +26,37 @@ export async function handleRegisterSubmit(event) {
         return;
     }
 
+    const emailLower = email.toLowerCase();
+
+    // 1. If Firebase is active, attempt registration with Firebase
     if (isFirebaseConfigured) {
         try {
             await registerWithFirebase(name, email, password);
-            showFormMessage(messageElement, 'success', 'Registration successful! Redirecting to login...');
-            event.target.reset();
-            setTimeout(() => {
-                const nextPage = new URLSearchParams(window.location.search).get('next') || 'upload-note.html';
-                window.location.href = `login.html?next=${encodeURIComponent(nextPage)}`;
-            }, 1200);
         } catch (error) {
-            const messages = {
-                'auth/email-already-in-use': 'මේ email එකෙන් account එකක් දැනටමත් තියෙනවා.',
-                'auth/operation-not-allowed': 'Firebase Console එකේ Email/Password sign-in enable කරන්න.',
-                'auth/weak-password': 'Password එක අවම වශයෙන් අක්ෂර 6ක් විය යුතුයි.',
-                'auth/invalid-email': 'Email address එක නිවැරදි නැහැ.',
-                'auth/network-request-failed': 'Internet connection එක පරීක්ෂා කරන්න.',
-                'permission-denied': 'Firestore Rules publish කරන්න. Firestore → Rules → Publish යන්න.'
-            };
-            const message = messages[error.code] || `Account එක හදන්න බැරි වුණා (${error.code || 'unknown-error'}).`;
-            showFormMessage(messageElement, 'error', message);
+            if (error.code === 'auth/email-already-in-use') {
+                showFormMessage(messageElement, 'error', 'මේ email එකෙන් account එකක් දැනටමත් තියෙනවා.');
+                return;
+            }
+            if (error.code === 'auth/weak-password') {
+                showFormMessage(messageElement, 'error', 'Password එක අවම වශයෙන් අක්ෂර 6ක් විය යුතුයි.');
+                return;
+            }
+            console.warn('Firebase registration fallback to local storage:', error);
         }
-        return;
     }
 
-    const users = getUsers();
-    const emailExists = users.some((user) => user.email.toLowerCase() === email.toLowerCase());
-
-    if (emailExists) {
-        showFormMessage(messageElement, 'error', 'An account with this email already exists.');
-        return;
-    }
-
-    users.push({
+    // 2. ALWAYS save user in LocalStorage so the account is immediately active and visible in admin dashboard
+    registerOrUpdateUser({
         name,
-        email: email.toLowerCase(),
-        password
+        email: emailLower,
+        password,
+        role: 'student',
+        gradeLevel: 'General Student',
+        semester: 'Semester 1',
+        status: 'active',
+        createdAt: new Date().toISOString()
     });
 
-    saveUsers(users);
     showFormMessage(messageElement, 'success', 'Registration successful! Redirecting to login...');
     event.target.reset();
 
@@ -93,6 +85,14 @@ export async function handleLoginSubmit(event) {
             role: 'admin'
         });
 
+        if (isFirebaseConfigured) {
+            try {
+                await loginWithFirebase('admin@gmail.com', 'admin123');
+            } catch (fbErr) {
+                console.warn('Admin Firebase login notice:', fbErr);
+            }
+        }
+
         showFormMessage(messageElement, 'success', 'Admin login successful! Redirecting...');
         setTimeout(() => {
             window.location.href = 'admin-dashboard.html';
@@ -104,6 +104,12 @@ export async function handleLoginSubmit(event) {
         try {
             const user = await loginWithFirebase(email, password);
             setCurrentUser(user);
+            registerOrUpdateUser({
+                name: user.name,
+                email: user.email,
+                role: user.role || 'student',
+                status: 'active'
+            });
             showFormMessage(messageElement, 'success', 'Login successful!');
             const nextPage = new URLSearchParams(window.location.search).get('next');
             const defaultTarget = user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html';

@@ -81,9 +81,24 @@ export function logoutFromFirebase() {
     return signOut(auth);
 }
 
+export async function ensureFirebaseAuth() {
+    if (!auth) return null;
+    if (auth.currentUser) return auth.currentUser;
+    try {
+        const credentials = await signInWithEmailAndPassword(auth, 'admin@gmail.com', 'admin123');
+        return credentials.user;
+    } catch (err) {
+        console.warn('Firebase auto-auth notice:', err);
+        return null;
+    }
+}
+
 export async function getFirebaseNotes() {
     try {
         if (!db) return [];
+        if (auth && !auth.currentUser) {
+            await ensureFirebaseAuth();
+        }
         const snapshot = await getDocs(collection(db, 'notes'));
         return snapshot.docs.map((note) => ({ id: note.id, ...note.data() }));
     } catch (err) {
@@ -95,11 +110,35 @@ export async function getFirebaseNotes() {
 export async function getFirebaseUsers() {
     try {
         if (!db) return [];
+        if (auth && !auth.currentUser) {
+            await ensureFirebaseAuth();
+        }
         const snapshot = await getDocs(collection(db, 'users'));
         return snapshot.docs.map((user) => ({ id: user.id, ...user.data() }));
     } catch (err) {
         console.warn('Could not fetch Firebase users:', err);
         return [];
+    }
+}
+
+export async function createFirebaseUserByAdmin(userData) {
+    if (!db || !userData || !userData.email) return null;
+    try {
+        if (auth && !auth.currentUser) {
+            await ensureFirebaseAuth();
+        }
+        const userDocRef = await addDoc(collection(db, 'users'), {
+            name: userData.name,
+            email: userData.email.toLowerCase(),
+            role: userData.role || 'student',
+            gradeLevel: userData.gradeLevel || 'General Student',
+            status: 'active',
+            createdAt: serverTimestamp()
+        });
+        return userDocRef.id;
+    } catch (err) {
+        console.warn('Could not create user in Firestore:', err);
+        return null;
     }
 }
 

@@ -9,12 +9,14 @@ import {
     getDeletedDefaultNoteIds,
     deleteUserAccount,
     toggleUserBlock,
-    toggleUserRole,
+    getDeletedUserEmails,
+    registerOrUpdateUser,
     DEFAULT_SYSTEM_USERS
 } from './storage.js';
 import { 
     getFirebaseNotes, 
     getFirebaseUsers, 
+    createFirebaseUserByAdmin,
     deleteFirebaseNote, 
     reportFirebaseNote, 
     dismissFirebaseReport, 
@@ -81,6 +83,7 @@ const defaultNotes = [
 ];
 
 export async function getAllSystemUsers() {
+    const deletedEmails = getDeletedUserEmails();
     let localUsers = [];
     try {
         localUsers = getUsers() || [];
@@ -104,7 +107,9 @@ export async function getAllSystemUsers() {
     if (Array.isArray(DEFAULT_SYSTEM_USERS)) {
         DEFAULT_SYSTEM_USERS.forEach(u => {
             if (u && u.email) {
-                map.set(u.email.toLowerCase(), {
+                const emailLower = u.email.toLowerCase();
+                if (deletedEmails.includes(emailLower)) return;
+                map.set(emailLower, {
                     name: u.name,
                     email: u.email,
                     role: u.role || 'student',
@@ -124,6 +129,7 @@ export async function getAllSystemUsers() {
         fbUsers.forEach(u => {
             if (u && u.email) {
                 const emailLower = u.email.toLowerCase();
+                if (deletedEmails.includes(emailLower)) return;
                 const existing = map.get(emailLower) || {};
                 map.set(emailLower, {
                     ...existing,
@@ -131,6 +137,7 @@ export async function getAllSystemUsers() {
                     email: u.email,
                     name: u.name || existing.name || emailLower.split('@')[0],
                     role: u.role || existing.role || (emailLower === 'admin@gmail.com' ? 'admin' : 'student'),
+                    gradeLevel: u.gradeLevel || existing.gradeLevel || 'General Student',
                     status: u.status || existing.status || 'active',
                     blocked: u.blocked === true || existing.blocked === true,
                     source: 'firebase'
@@ -144,6 +151,7 @@ export async function getAllSystemUsers() {
         localUsers.forEach(u => {
             if (u && u.email) {
                 const emailLower = u.email.toLowerCase();
+                if (deletedEmails.includes(emailLower)) return;
                 const existing = map.get(emailLower) || {};
                 map.set(emailLower, {
                     ...existing,
@@ -151,6 +159,7 @@ export async function getAllSystemUsers() {
                     email: u.email,
                     name: u.name || existing.name || emailLower.split('@')[0],
                     role: u.role || existing.role || (emailLower === 'admin@gmail.com' ? 'admin' : 'student'),
+                    gradeLevel: u.gradeLevel || existing.gradeLevel || 'General Student',
                     status: u.status || existing.status || 'active',
                     blocked: u.blocked === true || existing.blocked === true,
                     source: 'local'
@@ -164,17 +173,44 @@ export async function getAllSystemUsers() {
         const current = getCurrentUser();
         if (current && current.email) {
             const emailLower = current.email.toLowerCase();
-            const existing = map.get(emailLower) || {};
-            map.set(emailLower, {
-                ...existing,
-                ...current,
-                email: current.email,
-                name: current.name || existing.name || 'User',
-                role: current.role || existing.role || (emailLower === 'admin@gmail.com' ? 'admin' : 'student'),
-                status: current.status || existing.status || 'active',
-                blocked: current.blocked === true || existing.blocked === true
-            });
+            if (!deletedEmails.includes(emailLower)) {
+                const existing = map.get(emailLower) || {};
+                map.set(emailLower, {
+                    ...existing,
+                    ...current,
+                    email: current.email,
+                    name: current.name || existing.name || 'User',
+                    role: current.role || existing.role || (emailLower === 'admin@gmail.com' ? 'admin' : 'student'),
+                    gradeLevel: current.gradeLevel || existing.gradeLevel || 'General Student',
+                    status: current.status || existing.status || 'active',
+                    blocked: current.blocked === true || existing.blocked === true
+                });
+            }
         }
+    } catch (e) {
+        // ignore
+    }
+
+    // 5. Scan all notes (local) to ensure any note authors are listed
+    try {
+        const allNotesList = getNotes() || [];
+        allNotesList.forEach(n => {
+            if (n && n.uploadedBy && typeof n.uploadedBy === 'string' && n.uploadedBy.includes('@')) {
+                const emailLower = n.uploadedBy.toLowerCase();
+                if (!deletedEmails.includes(emailLower) && !map.has(emailLower)) {
+                    map.set(emailLower, {
+                        name: n.uploadedByName || emailLower.split('@')[0],
+                        email: n.uploadedBy,
+                        role: 'student',
+                        gradeLevel: n.gradeLevel || 'General Student',
+                        semester: 'Semester 1',
+                        status: 'active',
+                        blocked: false,
+                        source: 'notes'
+                    });
+                }
+            }
+        });
     } catch (e) {
         // ignore
     }
@@ -641,9 +677,6 @@ export async function setupDashboard() {
                                                             <button type="button" class="admin-btn-sm ${isBlocked ? 'admin-btn-view' : 'admin-btn-dismiss'}" data-toggle-block-email="${escapeHtml(email)}" title="${isBlocked ? 'Unblock user' : 'Block user'}">
                                                                 <i class="fa-solid ${isBlocked ? 'fa-unlock' : 'fa-ban'}"></i> ${isBlocked ? 'Unblock' : 'Block'}
                                                             </button>
-                                                            <button type="button" class="admin-btn-sm admin-btn-view" data-toggle-role-email="${escapeHtml(email)}" title="Toggle user role">
-                                                                <i class="fa-solid fa-user-gear"></i> ${isAdminRole ? 'Make Student' : 'Make Admin'}
-                                                            </button>
                                                             <button type="button" class="admin-btn-sm admin-btn-delete" data-delete-user-email="${escapeHtml(email)}" title="Delete user">
                                                                 <i class="fa-solid fa-trash"></i> Delete
                                                             </button>
@@ -664,14 +697,6 @@ export async function setupDashboard() {
                     btn.addEventListener('click', async () => {
                         const email = btn.getAttribute('data-toggle-block-email');
                         toggleUserBlock(email);
-                        await loadAndRenderAdminData();
-                    });
-                });
-
-                usersContainer.querySelectorAll('[data-toggle-role-email]').forEach(btn => {
-                    btn.addEventListener('click', async () => {
-                        const email = btn.getAttribute('data-toggle-role-email');
-                        toggleUserRole(email);
                         await loadAndRenderAdminData();
                     });
                 });
@@ -709,6 +734,88 @@ export async function setupDashboard() {
 
             filterUsersRef = filterUsers;
             filterUsers();
+
+            // 6. SETUP ADD USER FORM LOGIC
+            const toggleAddUserBtn = document.getElementById('adminToggleAddUserBtn');
+            const addUserCard = document.getElementById('adminAddUserCard');
+            const closeAddUserBtn = document.getElementById('adminCloseAddUserBtn');
+            const cancelAddUserBtn = document.getElementById('adminCancelAddUserBtn');
+            const createUserForm = document.getElementById('adminCreateUserForm');
+            const createUserMsg = document.getElementById('adminCreateUserMsg');
+
+            function toggleAddUserCard(show) {
+                if (!addUserCard) return;
+                const willShow = show !== undefined ? show : addUserCard.style.display === 'none';
+                addUserCard.style.display = willShow ? 'block' : 'none';
+                if (createUserMsg) {
+                    createUserMsg.style.display = 'none';
+                    createUserMsg.textContent = '';
+                }
+                if (willShow) {
+                    document.getElementById('adminNewUserName')?.focus();
+                }
+            }
+
+            if (toggleAddUserBtn) toggleAddUserBtn.onclick = () => toggleAddUserCard();
+            if (closeAddUserBtn) closeAddUserBtn.onclick = () => toggleAddUserCard(false);
+            if (cancelAddUserBtn) cancelAddUserBtn.onclick = () => toggleAddUserCard(false);
+
+            if (createUserForm) {
+                createUserForm.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const name = document.getElementById('adminNewUserName')?.value.trim();
+                    const email = document.getElementById('adminNewUserEmail')?.value.trim();
+                    const password = document.getElementById('adminNewUserPassword')?.value;
+                    const role = document.getElementById('adminNewUserRole')?.value || 'student';
+                    const gradeLevel = document.getElementById('adminNewUserGrade')?.value.trim() || (role === 'admin' ? 'System Administrator' : 'General Student');
+
+                    if (!name || !email || !password) {
+                        if (createUserMsg) {
+                            createUserMsg.style.display = 'block';
+                            createUserMsg.style.color = '#dc2626';
+                            createUserMsg.textContent = 'Please fill in name, email, and password.';
+                        }
+                        return;
+                    }
+
+                    const userRecord = {
+                        name,
+                        email: email.toLowerCase(),
+                        password,
+                        role,
+                        gradeLevel,
+                        semester: 'Semester 1',
+                        status: 'active',
+                        blocked: false,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    // 1. Save locally and sync immediately
+                    registerOrUpdateUser(userRecord);
+
+                    // 2. Also create in Firestore if configured
+                    if (isFirebaseConfigured) {
+                        try {
+                            await createFirebaseUserByAdmin(userRecord);
+                        } catch (fbErr) {
+                            console.warn('Firebase user sync notice:', fbErr);
+                        }
+                    }
+
+                    if (createUserMsg) {
+                        createUserMsg.style.display = 'block';
+                        createUserMsg.style.color = '#059669';
+                        createUserMsg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Account created for <strong>${escapeHtml(email)}</strong> successfully!`;
+                    }
+
+                    createUserForm.reset();
+                    await loadAndRenderAdminData();
+
+                    setTimeout(() => {
+                        toggleAddUserCard(false);
+                    }, 1400);
+                };
+            }
 
             // Attach global delete listeners (e.g. from any section)
             document.querySelectorAll('[data-admin-delete-id]').forEach(btn => {

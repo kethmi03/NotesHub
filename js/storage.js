@@ -3,6 +3,7 @@ const CURRENT_USER_KEY = 'notesHubCurrentUser';
 const NOTES_KEY = 'notesHubNotes';
 const SAVED_NOTES_KEY = 'notesHubSavedNotes';
 const DELETED_DEFAULT_NOTES_KEY = 'notesHubDeletedDefaults';
+const DELETED_USERS_KEY = 'notesHubDeletedUsers';
 
 export const DEFAULT_SYSTEM_USERS = [
     {
@@ -13,12 +14,48 @@ export const DEFAULT_SYSTEM_USERS = [
         status: 'active'
     },
     {
+        name: 'Sandaruwann Tharaka',
+        email: 'sandaruwan@gmail.com',
+        role: 'student',
+        gradeLevel: 'Grade 12 - 13',
+        semester: 'Semester 1',
+        createdAt: '2026-10-28T06:08:24.924Z',
+        status: 'active'
+    },
+    {
+        name: 'Sineth Rusira',
+        email: 'sineth@gmail.com',
+        role: 'student',
+        gradeLevel: 'Year 2 (Undergraduate)',
+        semester: 'Semester 1',
+        createdAt: '2026-10-28T06:26:50.076Z',
+        status: 'active'
+    },
+    {
         name: 'Ramuthu theniya',
         email: 'ramuthu@gmail.com',
         role: 'student',
         gradeLevel: 'Grade 12 - 13',
         semester: 'Semester 1',
         createdAt: '2026-10-15T08:30:00.000Z',
+        status: 'active'
+    },
+    {
+        name: 'Chanula Wijayarathna',
+        email: 'chanulawije@gmail.com',
+        role: 'student',
+        gradeLevel: 'Year 1 (Undergraduate)',
+        semester: 'Semester 2',
+        createdAt: '2026-09-29T05:44:44.184Z',
+        status: 'active'
+    },
+    {
+        name: 'Kethmi Kavindya',
+        email: 'kulith@gmail.com',
+        role: 'student',
+        gradeLevel: 'Year 2 (Undergraduate)',
+        semester: 'Semester 1',
+        createdAt: '2026-09-29T05:56:25.744Z',
         status: 'active'
     },
     {
@@ -235,9 +272,60 @@ export function dismissReport(noteId) {
     return true;
 }
 
+export function getDeletedUserEmails() {
+    try {
+        return JSON.parse(localStorage.getItem(DELETED_USERS_KEY) || '[]');
+    } catch {
+        return [];
+    }
+}
+
+export function markUserDeleted(email) {
+    if (!email) return;
+    const emailLower = email.toLowerCase();
+    const list = getDeletedUserEmails();
+    if (!list.includes(emailLower)) {
+        list.push(emailLower);
+        localStorage.setItem(DELETED_USERS_KEY, JSON.stringify(list));
+    }
+}
+
+export function registerOrUpdateUser(userRecord) {
+    if (!userRecord || !userRecord.email) return null;
+    const emailLower = userRecord.email.toLowerCase();
+    const users = getUsers();
+    const index = users.findIndex(u => u.email.toLowerCase() === emailLower);
+    const updated = {
+        name: userRecord.name || emailLower.split('@')[0],
+        email: emailLower,
+        role: userRecord.role || 'student',
+        gradeLevel: userRecord.gradeLevel || 'General Student',
+        semester: userRecord.semester || 'Semester 1',
+        status: userRecord.status || 'active',
+        blocked: userRecord.blocked === true,
+        createdAt: userRecord.createdAt || new Date().toISOString(),
+        ...(userRecord.password ? { password: userRecord.password } : {})
+    };
+    if (index >= 0) {
+        users[index] = { ...users[index], ...updated };
+    } else {
+        users.push(updated);
+    }
+
+    // Ensure email is not in deleted user list
+    const deletedList = getDeletedUserEmails().filter(e => e !== emailLower);
+    localStorage.setItem(DELETED_USERS_KEY, JSON.stringify(deletedList));
+
+    saveUsers(users);
+    dispatchDataChange('users-updated', { user: updated });
+    return updated;
+}
+
 export function deleteUserAccount(email) {
     if (!email) return false;
     const emailLower = email.toLowerCase();
+    markUserDeleted(emailLower);
+
     const users = getUsers();
     const filtered = users.filter(u => u.email.toLowerCase() !== emailLower);
     saveUsers(filtered);
