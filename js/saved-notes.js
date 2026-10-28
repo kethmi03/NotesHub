@@ -1,5 +1,5 @@
-import { getCurrentUser, getNotes, getSavedNotes, removeSavedNote, saveNoteForLater } from './storage.js';
-import { getFirebaseNotes, isFirebaseConfigured } from './firebase.js';
+import { getCurrentUser, getNotes, getSavedNotes, removeSavedNote, saveNoteForLater, reportNote, deleteNote } from './storage.js';
+import { getFirebaseNotes, deleteFirebaseNote, reportFirebaseNote, isFirebaseConfigured } from './firebase.js';
 
 const exampleNote = {
     id: 'software-engineering-lectures',
@@ -132,6 +132,55 @@ export async function setupNoteDetails() {
             showMessage(status, 'Could not update saved notes. Please check browser storage settings.', true);
         }
     });
+
+    // Report Note Handler
+    const reportButton = document.querySelector('.report-btn');
+    if (reportButton) {
+        if (note.reported) {
+            reportButton.innerHTML = '<i class="fa-solid fa-flag"></i> Reported for Admin Review';
+            reportButton.style.color = 'var(--danger-color)';
+        }
+
+        reportButton.addEventListener('click', async () => {
+            const reason = window.prompt('Please provide a reason for reporting this note:\n(e.g., Inappropriate content, copyright violation, false academic notes, broken file)', 'Inappropriate or broken file');
+            if (!reason) return;
+
+            reportNote(note.id, reason);
+            if (isFirebaseConfigured) {
+                await reportFirebaseNote(note.id, reason);
+            }
+
+            reportButton.innerHTML = '<i class="fa-solid fa-flag"></i> Reported for Admin Review';
+            reportButton.style.color = 'var(--danger-color)';
+            reportButton.disabled = true;
+            showMessage(status, 'Thank you. This note has been reported and sent to the administrator for review.');
+        });
+    }
+
+    // Admin Delete Action
+    const currentUser = getCurrentUser();
+    const isAdmin = currentUser?.role === 'admin' || currentUser?.email?.toLowerCase() === 'admin@gmail.com';
+    const actionCard = document.querySelector('.action-card');
+    if (isAdmin && actionCard && !document.getElementById('adminRemoveNoteBtn')) {
+        const adminDelBtn = document.createElement('button');
+        adminDelBtn.id = 'adminRemoveNoteBtn';
+        adminDelBtn.type = 'button';
+        adminDelBtn.className = 'danger-btn';
+        adminDelBtn.style.width = '100%';
+        adminDelBtn.style.marginTop = '15px';
+        adminDelBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Delete Note (Admin)';
+        adminDelBtn.addEventListener('click', async () => {
+            if (confirm(`Admin Action: Are you sure you want to permanently delete "${note.title}"?`)) {
+                deleteNote(note.id);
+                if (isFirebaseConfigured) {
+                    await deleteFirebaseNote(note.id);
+                }
+                alert('Note has been deleted successfully by Admin.');
+                window.location.href = 'browse-notes.html';
+            }
+        });
+        actionCard.appendChild(adminDelBtn);
+    }
 }
 
 function renderSavedNotes(notes, grid, searchTerm) {

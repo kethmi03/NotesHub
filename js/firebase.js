@@ -102,10 +102,47 @@ export async function uploadNoteToFirebase(note, file, user) {
         uploadedBy: user.email,
         uploadedByName: user.name,
         uploadedAt: serverTimestamp(),
-        status: 'pending',
+        status: user.role === 'admin' ? 'approved' : 'pending',
         rating: 0,
         reviews: 0,
         downloads: 0
     });
     return noteReference.id;
+}
+
+export async function deleteFirebaseNote(noteId) {
+    if (!db || !noteId) return;
+    try {
+        const { doc: getDocRef, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+        await deleteDoc(getDocRef(db, 'notes', noteId));
+    } catch (err) {
+        console.warn('Could not delete note in Firebase:', err);
+    }
+}
+
+export async function reportFirebaseNote(noteId, reason = 'Flagged for review') {
+    if (!db || !noteId) return;
+    try {
+        const { doc: getDocRef, updateDoc, increment } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+        await updateDoc(getDocRef(db, 'notes', noteId), {
+            reported: true,
+            reportReason: reason,
+            reportCount: increment(1)
+        });
+    } catch (err) {
+        console.warn('Could not report note in Firebase:', err);
+    }
+}
+
+export async function dismissFirebaseReport(noteId) {
+    if (!db || !noteId) return;
+    try {
+        const { doc: getDocRef, updateDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+        await updateDoc(getDocRef(db, 'notes', noteId), {
+            reported: false,
+            reportReason: null
+        });
+    } catch (err) {
+        console.warn('Could not dismiss report in Firebase:', err);
+    }
 }

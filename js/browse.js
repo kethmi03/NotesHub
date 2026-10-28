@@ -1,5 +1,5 @@
-import { getNotes } from './storage.js';
-import { getFirebaseNotes, isFirebaseConfigured } from './firebase.js';
+import { getNotes, getCurrentUser, deleteNote, getDeletedDefaultNoteIds } from './storage.js';
+import { getFirebaseNotes, deleteFirebaseNote, isFirebaseConfigured } from './firebase.js';
 
 const defaultNotes = [
     {
@@ -52,16 +52,19 @@ const defaultNotes = [
     }
 ];
 
-function renderNotes(notes) {
+function renderNotes(notes, onNoteDeleted) {
     const grid = document.querySelector('.marketplace-grid');
     if (!grid) return;
     
     grid.innerHTML = '';
     
     if (notes.length === 0) {
-        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No notes found matching your criteria.</p>';
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">No notes found matching your criteria.</p>';
         return;
     }
+
+    const currentUser = getCurrentUser();
+    const isAdmin = currentUser?.role === 'admin' || currentUser?.email?.toLowerCase() === 'admin@gmail.com';
 
     notes.forEach(note => {
         let iconHtml = '<i class="fa-solid fa-file-pdf"></i>';
@@ -75,19 +78,34 @@ function renderNotes(notes) {
             bgStyle = 'background: #fef3c7; color: #d97706;';
         }
 
+        const noteId = String(note.id || note.title);
+        const adminDeleteBtn = isAdmin ? `
+            <button type="button" class="admin-card-delete-btn" data-delete-note-id="${noteId}" title="Admin: Delete note" style="position: absolute; top: 12px; right: 12px; background: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        ` : '';
+
+        const reportedBadge = (isAdmin && note.reported) ? `
+            <span style="position: absolute; top: 12px; left: 12px; background: #fee2e2; color: #dc2626; font-size: 11px; font-weight: 700; padding: 3px 7px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
+                <i class="fa-solid fa-flag"></i> Reported
+            </span>
+        ` : '';
+
         const html = `
-            <div class="market-card reveal active">
+            <div class="market-card reveal active" style="position: relative;">
+                ${reportedBadge}
+                ${adminDeleteBtn}
                 <div class="market-card-top">
                     <div class="note-icon-large" style="${bgStyle}">
                         ${iconHtml}
                     </div>
                 </div>
                 <div class="market-card-body">
-                    <h3><a href="view-note.html?id=${encodeURIComponent(note.id || note.title)}">${note.title}</a></h3>
+                    <h3><a href="view-note.html?id=${encodeURIComponent(noteId)}">${note.title}</a></h3>
                     <p class="module">${note.module} • ${note.gradeLevel}</p>
                     <div class="author-info">
                         <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
-                        <span>By ${note.uploadedBy}</span>
+                        <span>By ${note.uploadedByName || note.uploadedBy}</span>
                     </div>
                     <div class="market-stats">
                         <span><i class="fa-solid fa-star"></i> ${note.rating || 0} (${note.reviews || 0})</span>
@@ -98,29 +116,46 @@ function renderNotes(notes) {
         `;
         grid.insertAdjacentHTML('beforeend', html);
     });
+
+    if (isAdmin) {
+        grid.querySelectorAll('.admin-card-delete-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const idToDelete = btn.getAttribute('data-delete-note-id');
+                if (confirm('Admin: Are you sure you want to permanently delete this note from NotesHub?')) {
+                    deleteNote(idToDelete);
+                    if (isFirebaseConfigured) {
+                        await deleteFirebaseNote(idToDelete);
+                    }
+                    if (typeof onNoteDeleted === 'function') {
+                        onNoteDeleted(idToDelete);
+                    }
+                }
+            });
+        });
+    }
 }
 
-function handleFilters(allNotes) {
+function handleFilters(allNotes, onNoteDeleted) {
     const searchInput = document.querySelector('.search-box input');
     const subjectCheckboxes = document.querySelectorAll('.filter-group:nth-child(2) input[type="checkbox"]');
     
-    const term = searchInput.value.toLowerCase();
+    const term = searchInput ? searchInput.value.toLowerCase() : '';
     
     const activeSubjects = Array.from(subjectCheckboxes)
         .filter(cb => cb.checked)
         .map(cb => cb.parentElement.textContent.trim().toLowerCase());
 
     let filtered = allNotes.filter(note => {
-        const matchesSearch = note.title.toLowerCase().includes(term) || note.module.toLowerCase().includes(term);
+        const matchesSearch = (note.title || '').toLowerCase().includes(term) || (note.module || '').toLowerCase().includes(term);
         const subject = (note.subject || '').toLowerCase();
         
-        // If no subjects checked, don't filter by subject.
         const matchesSubject = activeSubjects.length === 0 || activeSubjects.includes(subject) || activeSubjects.includes('other');
         
         return matchesSearch && matchesSubject;
     });
 
-    renderNotes(filtered);
+    renderNotes(filtered, onNoteDeleted);
     
     const resultsText = document.querySelector('.browse-header p');
     if (resultsText) {
@@ -133,24 +168,33 @@ export async function setupBrowsePage() {
     if (!grid) return;
 
     const storedNotes = isFirebaseConfigured ? await getFirebaseNotes() : getNotes();
-    const allNotes = [...defaultNotes, ...storedNotes];
+    const deletedDefaults = getDeletedDefaultNoteIds();
+    let allNotes = [
+        ...defaultNotes.filter(n => !deletedDefaults.includes(String(n.id))),
+        ...storedNotes
+    ];
+
+    const onNoteDeleted = (deletedId) => {
+        allNotes = allNotes.filter(n => String(n.id || n.title) !== String(deletedId));
+        handleFilters(allNotes, onNoteDeleted);
+    };
 
     // Add event listeners to filters
     const searchInput = document.querySelector('.search-box input');
     if (searchInput) {
-        searchInput.addEventListener('input', () => handleFilters(allNotes));
+        searchInput.addEventListener('input', () => handleFilters(allNotes, onNoteDeleted));
     }
 
     const checkboxes = document.querySelectorAll('.custom-checkbox input');
     checkboxes.forEach(cb => {
-        cb.addEventListener('change', () => handleFilters(allNotes));
+        cb.addEventListener('change', () => handleFilters(allNotes, onNoteDeleted));
     });
 
     const applyBtn = document.querySelector('.apply-filters-btn');
     if (applyBtn) {
-        applyBtn.addEventListener('click', () => handleFilters(allNotes));
+        applyBtn.addEventListener('click', () => handleFilters(allNotes, onNoteDeleted));
     }
 
     // Initial render
-    handleFilters(allNotes);
+    handleFilters(allNotes, onNoteDeleted);
 }

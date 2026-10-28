@@ -86,7 +86,7 @@ export async function handleLoginSubmit(event) {
         return;
     }
 
-    if (!isFirebaseConfigured && email.toLowerCase() === 'admin@gmail.com' && password === 'admin123') {
+    if (email.toLowerCase() === 'admin@gmail.com' && password === 'admin123') {
         setCurrentUser({
             name: 'NotesHub Admin',
             email: 'admin@gmail.com',

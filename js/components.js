@@ -84,17 +84,38 @@ export function updateNavbarState(currentUser) {
     if (!authContainer) return;
     
     if (currentUser) {
+        const isAdmin = currentUser.role === 'admin' || currentUser.email?.toLowerCase() === 'admin@gmail.com';
+        const dashboardLink = isAdmin ? 'admin-dashboard.html' : 'dashboard.html';
+        const adminBadge = isAdmin ? `
+            <a href="admin-dashboard.html" class="primary-btn" style="padding: 6px 12px; font-size: 13px; text-decoration: none; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-shield-halved"></i> Admin Panel
+            </a>
+        ` : '';
+
         authContainer.innerHTML = `
+            ${adminBadge}
             <div class="user-profile-nav">
-                <div class="avatar">
-                    <i class="fa-solid fa-user"></i>
+                <div class="avatar" style="${isAdmin ? 'background: #eef2ff; color: #4f46e5;' : ''}">
+                    <i class="fa-solid ${isAdmin ? 'fa-shield-halved' : 'fa-user'}"></i>
                 </div>
-                <span>${currentUser.name || 'Student'}</span>
+                <a href="${dashboardLink}" style="text-decoration: none; color: inherit; font-weight: 600;">${currentUser.name || (isAdmin ? 'Admin' : 'Student')}</a>
                 <button class="logout-btn" title="Logout">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </button>
             </div>
         `;
+
+        // If admin, ensure navbar has quick access to upload notes and admin overview
+        const nav = document.querySelector('.navbar nav');
+        if (isAdmin && nav && !document.querySelector('.nav-link-admin')) {
+            const adminLink = document.createElement('a');
+            adminLink.href = 'admin-dashboard.html';
+            adminLink.className = 'nav-link-admin';
+            adminLink.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Admin';
+            adminLink.style.fontWeight = '700';
+            adminLink.style.color = 'var(--primary-color)';
+            nav.appendChild(adminLink);
+        }
     } else {
         authContainer.innerHTML = `
             <a href="login.html" class="login-btn">Login</a>

@@ -20,6 +20,7 @@ export async function handleUploadSubmit(event) {
     }
 
     const currentUser = getCurrentUser();
+    const isAdmin = currentUser?.role === 'admin' || currentUser?.email?.toLowerCase() === 'admin@gmail.com';
     const note = {
         title: document.getElementById('note-title').value.trim(),
         subject: document.getElementById('note-subject').value,
@@ -29,6 +30,11 @@ export async function handleUploadSubmit(event) {
         tags: document.getElementById('note-tags').value.trim(),
         fileName: file.name,
         uploadedBy: currentUser?.email || 'student',
+        uploadedByName: currentUser?.name || (isAdmin ? 'NotesHub Admin' : 'Student'),
+        status: isAdmin ? 'approved' : 'pending',
+        rating: 5.0,
+        reviews: 0,
+        downloads: 0,
         uploadedAt: new Date().toISOString()
     };
 
