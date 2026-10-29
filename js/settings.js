@@ -6,8 +6,6 @@ import { isFirebaseConfigured, auth, db } from './firebase.js';
 export function setupSettingsPage() {
     const fullNameInput = document.getElementById('full-name');
     const emailInput = document.getElementById('email');
-    const gradeLevelSelect = document.getElementById('grade-level');
-    const semesterSelect = document.getElementById('semester');
 
     if (!fullNameInput && !emailInput) return;
 
@@ -17,12 +15,6 @@ export function setupSettingsPage() {
     // Immediately populate current user details
     if (fullNameInput) fullNameInput.value = currentUser.name || '';
     if (emailInput) emailInput.value = currentUser.email || '';
-    if (currentUser.gradeLevel && gradeLevelSelect) {
-        gradeLevelSelect.value = currentUser.gradeLevel;
-    }
-    if (currentUser.semester && semesterSelect) {
-        semesterSelect.value = currentUser.semester;
-    }
 
     // Account Form submit handler
     const accountForm = document.getElementById('accountForm') || document.querySelector('.settings-section:first-of-type form');
@@ -31,8 +23,6 @@ export function setupSettingsPage() {
             e.preventDefault();
             const messageEl = document.getElementById('accountMessage');
             const newName = fullNameInput ? fullNameInput.value.trim() : '';
-            const newGrade = gradeLevelSelect ? gradeLevelSelect.value : '';
-            const newSemester = semesterSelect ? semesterSelect.value : '';
 
             if (!newName) {
                 showFormMessage(messageEl, 'error', 'Please enter your full name.');
@@ -53,9 +43,7 @@ export function setupSettingsPage() {
                         try {
                             const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
                             await setDoc(doc(db, 'users', currentUser.uid), {
-                                name: newName,
-                                gradeLevel: newGrade,
-                                semester: newSemester
+                                name: newName
                             }, { merge: true });
                         } catch (err) {
                             console.warn('Could not update Firestore user document:', err);
@@ -72,17 +60,13 @@ export function setupSettingsPage() {
 
                 if (userIndex !== -1) {
                     users[userIndex].name = newName;
-                    users[userIndex].gradeLevel = newGrade;
-                    users[userIndex].semester = newSemester;
                     saveUsers(users);
                 }
 
                 // Update current user session
                 const updatedUser = {
                     ...currentUser,
-                    name: newName,
-                    gradeLevel: newGrade,
-                    semester: newSemester
+                    name: newName
                 };
                 setCurrentUser(updatedUser);
 
