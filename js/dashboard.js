@@ -3,6 +3,8 @@ import {
     getUsers, 
     getCurrentUser, 
     getSavedNotes, 
+    saveNoteForLater,
+    removeSavedNote,
     deleteNote, 
     reportNote, 
     dismissReport, 
@@ -851,6 +853,38 @@ export async function setupDashboard() {
             heading.textContent = `Welcome back, ${currentUser.name || 'Student'}! 👋`;
         }
 
+        // Toast notification helper
+        function showDashboardToast(message, isBookmark = true) {
+            let toast = document.querySelector('.dashboard-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.className = 'dashboard-toast';
+                document.body.appendChild(toast);
+            }
+            const icon = isBookmark ? 'fa-bookmark' : 'fa-circle-check';
+            toast.innerHTML = `<i class="fa-solid ${icon}" style="color: #818cf8;"></i> <span>${escapeHtml(message)}</span>`;
+            toast.style.display = 'flex';
+            clearTimeout(window.__dashboardToastTimer);
+            window.__dashboardToastTimer = setTimeout(() => {
+                if (toast) toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Quick Action button handler: scroll to Explore Notes Marketplace
+        const exploreBtn = document.getElementById('exploreNotesToggleBtn');
+        if (exploreBtn) {
+            exploreBtn.onclick = () => {
+                const section = document.getElementById('exploreNotesSection');
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    const searchInput = document.getElementById('communityNotesSearch');
+                    if (searchInput) {
+                        setTimeout(() => searchInput.focus(), 350);
+                    }
+                }
+            };
+        }
+
         async function loadAndRenderStudentData() {
             try {
                 const activeUser = getCurrentUser();
@@ -860,21 +894,45 @@ export async function setupDashboard() {
                     heading.textContent = `Welcome back, ${activeUser.name || 'Student'}! 👋`;
                 }
 
-                const allNotes = isFirebaseConfigured ? await getFirebaseNotes() : getNotes();
-                const userNotes = activeUser
-                    ? allNotes.filter(note =>
-                        (note.uploadedBy && activeUser.email && note.uploadedBy.toLowerCase() === activeUser.email.toLowerCase()) ||
-                        (activeUser.uid && note.userId === activeUser.uid)
-                    )
-                    : [];
+                // 1. Gather all system notes (defaults + local + firebase)
+                let firebaseNotes = [];
+                if (isFirebaseConfigured) {
+                    try {
+                        firebaseNotes = (await getFirebaseNotes()) || [];
+                    } catch (e) {
+                        firebaseNotes = [];
+                    }
+                }
+                const localNotes = getNotes() || [];
+                const deletedDefaults = getDeletedDefaultNoteIds() || [];
 
-                let savedCount = 0;
+                const noteMap = new Map();
+                localNotes.forEach(n => noteMap.set(String(n.id || n.title), n));
+                firebaseNotes.forEach(n => noteMap.set(String(n.id || n.title), { ...noteMap.get(String(n.id || n.title)), ...n }));
+                const storedNotes = Array.from(noteMap.values());
+
+                const allNotes = [
+                    ...defaultNotes.filter(n => !deletedDefaults.includes(String(n.id))),
+                    ...storedNotes
+                ];
+
+                // 2. Filter user's own uploads
+                const userNotes = allNotes.filter(note =>
+                    (note.uploadedBy && activeUser.email && note.uploadedBy.toLowerCase() === activeUser.email.toLowerCase()) ||
+                    (activeUser.uid && note.userId === activeUser.uid)
+                );
+
+                // 3. Saved notes
+                let savedNotes = [];
                 try {
-                    savedCount = getSavedNotes().length;
+                    savedNotes = getSavedNotes() || [];
                 } catch (err) {
-                    savedCount = 0;
+                    savedNotes = [];
                 }
 
+                const savedNoteIds = savedNotes.map(n => String(n.id));
+
+                // 4. Update top student stats
                 const totalDownloads = userNotes.reduce((acc, note) => acc + (parseInt(note.downloads) || 0), 0);
                 const validRatings = userNotes.map(n => parseFloat(n.rating)).filter(r => !isNaN(r) && r > 0);
                 const avgRating = validRatings.length > 0
@@ -885,7 +943,7 @@ export async function setupDashboard() {
                 if (uploadsEl) uploadsEl.textContent = userNotes.length;
 
                 const savedEl = document.getElementById('userSavedNotes');
-                if (savedEl) savedEl.textContent = savedCount;
+                if (savedEl) savedEl.textContent = savedNotes.length;
 
                 const downloadsEl = document.getElementById('userTotalDownloads');
                 if (downloadsEl) downloadsEl.textContent = totalDownloads;
@@ -893,7 +951,159 @@ export async function setupDashboard() {
                 const ratingEl = document.getElementById('userAvgRating');
                 if (ratingEl) ratingEl.textContent = avgRating;
 
-                // Render Student Recent Uploads
+                // 5. Community Notes Filter & Render
+                const communityGrid = document.getElementById('communityNotesGrid');
+                if (communityGrid) {
+                    function renderCommunityNotesList(notesToRender) {
+                        if (notesToRender.length === 0) {
+                            communityGrid.innerHTML = `
+                                <div style="grid-column: 1 / -1; padding: 35px; text-align: center; background: white; border-radius: 14px; border: 1px dashed var(--border-light); color: var(--text-secondary);">
+                                    <i class="fa-solid fa-magnifying-glass" style="font-size: 28px; color: var(--primary-color); margin-bottom: 10px; display: block;"></i>
+                                    <h4 style="font-size: 15px; margin-bottom: 4px; color: var(--text-dark);">No notes found</h4>
+                                    <p style="font-size: 13px;">Try searching with different keywords or selecting a different subject.</p>
+                                </div>
+                            `;
+                            return;
+                        }
+
+                        communityGrid.innerHTML = notesToRender.map(note => {
+                            const noteId = String(note.id || note.title);
+                            const isSaved = savedNoteIds.includes(noteId);
+                            const isOwn = (note.uploadedBy && activeUser.email && note.uploadedBy.toLowerCase() === activeUser.email.toLowerCase()) ||
+                                (activeUser.uid && note.userId === activeUser.uid);
+
+                            let iconClass = 'fa-file-pdf';
+                            let iconBg = '';
+                            const fileName = (note.fileName || '').toLowerCase();
+                            const type = (note.type || '').toLowerCase();
+
+                            if (type === 'word' || fileName.endsWith('.doc') || fileName.endsWith('.docx')) {
+                                iconClass = 'fa-file-word';
+                                iconBg = 'background: #e0f2fe; color: #0284c7;';
+                            } else if (type === 'powerpoint' || fileName.endsWith('.ppt') || fileName.endsWith('.pptx')) {
+                                iconClass = 'fa-file-powerpoint';
+                                iconBg = 'background: #fef3c7; color: #d97706;';
+                            }
+
+                            return `
+                                <div class="market-card reveal active" style="position: relative;">
+                                    <!-- Top Bookmark Button -->
+                                    <button type="button" class="card-bookmark-btn ${isSaved ? 'saved' : ''}" data-bookmark-id="${noteId}" title="${isSaved ? 'Remove from Saved' : 'Save / Bookmark Note'}">
+                                        <i class="fa-${isSaved ? 'solid' : 'regular'} fa-bookmark"></i>
+                                    </button>
+
+                                    <div class="market-card-top">
+                                        <div class="note-icon-large" style="${iconBg}">
+                                            <i class="fa-solid ${iconClass}"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="market-card-body">
+                                        <h3><a href="view-note.html?id=${encodeURIComponent(noteId)}">${escapeHtml(note.title || 'Untitled Note')}</a></h3>
+                                        <p class="module">${escapeHtml(note.module || '')} • ${escapeHtml(note.gradeLevel || 'General')}</p>
+
+                                        <div class="author-info">
+                                            <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
+                                            <span>By ${escapeHtml(note.uploadedByName || note.uploadedBy || 'Student')}</span>
+                                            ${isOwn ? '<span style="font-size: 10px; background: #e0e7ff; color: #4338ca; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: auto;">YOU</span>' : ''}
+                                        </div>
+
+                                        <div class="market-stats">
+                                            <span><i class="fa-solid fa-star" style="color: #f59e0b;"></i> ${note.rating || '5.0'} (${note.reviews || 0})</span>
+                                            <span><i class="fa-solid fa-download"></i> ${note.downloads || 0}</span>
+                                        </div>
+
+                                        <div class="market-card-actions">
+                                            <button type="button" class="bookmark-action-btn ${isSaved ? 'saved' : ''}" data-bookmark-id="${noteId}">
+                                                <i class="fa-${isSaved ? 'solid' : 'regular'} fa-bookmark"></i>
+                                                <span>${isSaved ? 'Saved' : 'Save Note'}</span>
+                                            </button>
+                                            <a href="view-note.html?id=${encodeURIComponent(noteId)}" class="view-action-btn">
+                                                <i class="fa-solid fa-eye"></i> View
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+
+                        // Attach Bookmark click listeners to all bookmark buttons
+                        communityGrid.querySelectorAll('[data-bookmark-id]').forEach(btn => {
+                            btn.onclick = (e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                const noteIdToToggle = btn.getAttribute('data-bookmark-id');
+                                handleToggleBookmark(noteIdToToggle);
+                            };
+                        });
+                    }
+
+                    function handleToggleBookmark(noteIdToToggle) {
+                        let currentSaved = [];
+                        try {
+                            currentSaved = getSavedNotes() || [];
+                        } catch {
+                            currentSaved = [];
+                        }
+
+                        const currentlySaved = currentSaved.some(n => String(n.id) === String(noteIdToToggle));
+                        const targetNote = allNotes.find(n => String(n.id || n.title) === String(noteIdToToggle));
+
+                        if (currentlySaved) {
+                            removeSavedNote(noteIdToToggle);
+                            showDashboardToast('Removed from Saved Notes');
+                        } else if (targetNote) {
+                            saveNoteForLater({
+                                id: noteIdToToggle,
+                                title: targetNote.title || 'Untitled Note',
+                                module: targetNote.module || '',
+                                gradeLevel: targetNote.gradeLevel || '',
+                                subject: targetNote.subject || 'General',
+                                uploadedBy: targetNote.uploadedBy || 'Student',
+                                uploadedByName: targetNote.uploadedByName || targetNote.uploadedBy || 'Student',
+                                rating: targetNote.rating || '5.0',
+                                downloads: targetNote.downloads || 0,
+                                type: targetNote.type || 'pdf',
+                                fileUrl: targetNote.fileUrl || ''
+                            });
+                            showDashboardToast('Note saved to your bookmarks! 🔖');
+                        }
+
+                        loadAndRenderStudentData();
+                    }
+
+                    // Filter community notes
+                    function filterCommunityNotes() {
+                        const searchQ = (document.getElementById('communityNotesSearch')?.value || '').toLowerCase().trim();
+                        const subjectQ = document.getElementById('communityNotesSubjectFilter')?.value || 'all';
+
+                        const filtered = allNotes.filter(n => {
+                            if (n.reported || n.status === 'pending') return false;
+
+                            const title = (n.title || '').toLowerCase();
+                            const module = (n.module || '').toLowerCase();
+                            const subject = (n.subject || '').toLowerCase();
+                            const author = (n.uploadedByName || n.uploadedBy || '').toLowerCase();
+
+                            const matchesSearch = title.includes(searchQ) || module.includes(searchQ) || subject.includes(searchQ) || author.includes(searchQ);
+                            const matchesSubject = (subjectQ === 'all') || (n.subject && n.subject.toLowerCase() === subjectQ.toLowerCase());
+
+                            return matchesSearch && matchesSubject;
+                        });
+
+                        renderCommunityNotesList(filtered);
+                    }
+
+                    const searchInp = document.getElementById('communityNotesSearch');
+                    if (searchInp) searchInp.oninput = filterCommunityNotes;
+
+                    const subjectSel = document.getElementById('communityNotesSubjectFilter');
+                    if (subjectSel) subjectSel.onchange = filterCommunityNotes;
+
+                    filterCommunityNotes();
+                }
+
+                // 6. Render Student's Own Recent Uploads
                 const grid = document.getElementById('userRecentNotesGrid');
                 if (grid) {
                     if (userNotes.length === 0) {

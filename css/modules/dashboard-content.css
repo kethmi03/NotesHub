@@ -392,3 +392,138 @@
         transform: translateY(0);
     }
 }
+
+/* ================= DASHBOARD MARKETPLACE & BOOKMARK ================= */
+.card-bookmark-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: white;
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    z-index: 5;
+}
+
+.card-bookmark-btn:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-light);
+    transform: scale(1.08);
+}
+
+.card-bookmark-btn.saved {
+    background: #eef2ff;
+    color: var(--primary-color);
+    border-color: var(--primary-light);
+}
+
+.market-card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-light);
+}
+
+.bookmark-action-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid var(--border-light);
+    background: white;
+    color: var(--text-dark);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.bookmark-action-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--primary-color);
+    border-color: var(--primary-light);
+}
+
+.bookmark-action-btn.saved {
+    background: #eef2ff;
+    color: var(--primary-color);
+    border-color: var(--primary-light);
+}
+
+.view-action-btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+.view-action-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+/* Toast Notification */
+.dashboard-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #1e293b;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    z-index: 99999;
+    animation: toastSlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes toastSlideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+[data-theme="dark"] .card-bookmark-btn {
+    background: var(--bg-secondary);
+    border-color: var(--border-light);
+    color: var(--text-main);
+}
+
+[data-theme="dark"] .bookmark-action-btn {
+    background: var(--bg-secondary);
+    border-color: var(--border-light);
+    color: var(--text-main);
+}
+
