@@ -92,11 +92,25 @@ export function updateNavbarState(currentUser) {
             </a>
         ` : '';
 
+        const avatarMap = {
+            student: { icon: 'fa-user-graduate', color: '#4f46e5', bg: '#eef2ff' },
+            scholar: { icon: 'fa-graduation-cap', color: '#0284c7', bg: '#e0f2fe' },
+            coder: { icon: 'fa-laptop-code', color: '#059669', bg: '#ecfdf5' },
+            reader: { icon: 'fa-book-open', color: '#d97706', bg: '#fef3c7' },
+            scientist: { icon: 'fa-flask', color: '#7c3aed', bg: '#f5f3ff' },
+            brain: { icon: 'fa-brain', color: '#db2777', bg: '#fdf2f8' },
+            rocket: { icon: 'fa-rocket', color: '#ea580c', bg: '#fff7ed' },
+            user: { icon: 'fa-user', color: '#475569', bg: '#f1f5f9' }
+        };
+        const studentPreset = avatarMap[currentUser.avatar] || avatarMap.student;
+        const avatarStyle = isAdmin ? 'background: #eef2ff; color: #4f46e5;' : `background: ${studentPreset.bg}; color: ${studentPreset.color};`;
+        const avatarIcon = isAdmin ? 'fa-shield-halved' : studentPreset.icon;
+
         authContainer.innerHTML = `
             ${adminBadge}
             <div class="user-profile-nav">
-                <div class="avatar" style="${isAdmin ? 'background: #eef2ff; color: #4f46e5;' : ''}">
-                    <i class="fa-solid ${isAdmin ? 'fa-shield-halved' : 'fa-user'}"></i>
+                <div class="avatar" style="${avatarStyle}">
+                    <i class="fa-solid ${avatarIcon}"></i>
                 </div>
                 <a href="${dashboardLink}" style="text-decoration: none; color: inherit; font-weight: 600;">${currentUser.name || (isAdmin ? 'Admin' : 'Student')}</a>
                 <button class="logout-btn" title="Logout">

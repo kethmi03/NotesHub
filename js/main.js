@@ -37,9 +37,20 @@ export function updateUserInfo() {
             sidebarAvatar.style.color = '#4f46e5';
             sidebarAvatar.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
         } else {
-            sidebarAvatar.style.background = '';
-            sidebarAvatar.style.color = '';
-            sidebarAvatar.innerHTML = '<i class="fa-solid fa-user"></i>';
+            const avatarMap = {
+                student: { icon: 'fa-user-graduate', color: '#4f46e5', bg: '#eef2ff' },
+                scholar: { icon: 'fa-graduation-cap', color: '#0284c7', bg: '#e0f2fe' },
+                coder: { icon: 'fa-laptop-code', color: '#059669', bg: '#ecfdf5' },
+                reader: { icon: 'fa-book-open', color: '#d97706', bg: '#fef3c7' },
+                scientist: { icon: 'fa-flask', color: '#7c3aed', bg: '#f5f3ff' },
+                brain: { icon: 'fa-brain', color: '#db2777', bg: '#fdf2f8' },
+                rocket: { icon: 'fa-rocket', color: '#ea580c', bg: '#fff7ed' },
+                user: { icon: 'fa-user', color: '#475569', bg: '#f1f5f9' }
+            };
+            const preset = avatarMap[currentUser.avatar] || avatarMap.student;
+            sidebarAvatar.style.background = preset.bg;
+            sidebarAvatar.style.color = preset.color;
+            sidebarAvatar.innerHTML = `<i class="fa-solid ${preset.icon}"></i>`;
         }
     }
 

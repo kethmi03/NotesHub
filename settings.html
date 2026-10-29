@@ -5,22 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Settings | NotesHub</title>
+    <title>Profile & Settings | NotesHub</title>
 
     <link rel="stylesheet" href="css/style.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
 
     <!-- ================= DASHBOARD SECTION ================= -->
-
-    <section class="dashboard-section">
+    <section class="dashboard-section user-dashboard" data-dashboard-role="student">
 
         <div class="dashboard-sidebar">
             <div class="sidebar-user">
-                <div class="avatar-large">
+                <div class="avatar-large" id="sidebarAvatar">
                     <i class="fa-solid fa-user"></i>
                 </div>
                 <h3>Student</h3>
@@ -31,7 +29,6 @@
                 <a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Overview</a>
                 <a href="my-notes.html"><i class="fa-solid fa-file-lines"></i> My Notes</a>
                 <a href="saved-notes.html"><i class="fa-solid fa-bookmark"></i> Saved Notes</a>
-
                 <a href="settings.html" class="active"><i class="fa-solid fa-gear"></i> Settings</a>
             </nav>
 
@@ -42,115 +39,251 @@
 
         <div class="dashboard-content">
 
-            <div class="dashboard-header">
-                <h2>Settings</h2>
-                <p>Manage your account preferences</p>
+            <!-- Profile Page Header -->
+            <div class="dashboard-header profile-page-header">
+                <div>
+                    <h2>Settings</h2>
+                    <p>Manage your account preferences and security credentials</p>
+                </div>
+                <div class="header-badges">
+                    <span class="status-pill active-status"><i class="fa-solid fa-circle-check"></i> Active</span>
+                    <span class="status-pill role-status" id="headerRoleBadge"><i class="fa-solid fa-user"></i> Student Account</span>
+                </div>
             </div>
 
-            <!-- Settings Sections -->
+            <!-- Profile Hero Identity Card -->
+            <div class="profile-hero-card">
+                <div class="profile-hero-main">
+                    <div class="profile-avatar-wrapper">
+                        <div class="profile-avatar-display" id="profileHeroAvatar">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <button type="button" class="avatar-change-btn" id="openAvatarModalBtn" title="Choose Avatar">
+                            <i class="fa-solid fa-camera"></i>
+                        </button>
+                    </div>
+
+                    <div class="profile-hero-info">
+                        <div class="hero-name-row">
+                            <h3 id="heroDisplayName">Student Name</h3>
+                            <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Verified Member</span>
+                        </div>
+                        <p class="hero-email" id="heroDisplayEmail">
+                            <i class="fa-regular fa-envelope"></i> <span>student@gmail.com</span>
+                        </p>
+
+                        <div class="hero-meta-chips">
+                            <span class="meta-chip"><i class="fa-regular fa-calendar"></i> <span id="heroJoinedDate">Joined Oct 2026</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-hero-stats">
+                    <div class="hero-stat-box">
+                        <span class="stat-number" id="heroUploadsCount">0</span>
+                        <span class="stat-label">Uploads</span>
+                    </div>
+                    <div class="hero-stat-box">
+                        <span class="stat-number" id="heroSavedCount">0</span>
+                        <span class="stat-label">Saved</span>
+                    </div>
+                    <div class="hero-stat-box">
+                        <span class="stat-number" id="heroDownloadsCount">0</span>
+                        <span class="stat-label">Downloads</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Content Container (All sections directly visible on one page) -->
             <div class="settings-container">
 
-                <!-- Account Settings -->
-                <div class="settings-section">
+                <!-- 1. ACCOUNT INFORMATION SECTION -->
+                <div class="settings-section" id="section-account">
                     <div class="settings-section-header">
-                        <h3><i class="fa-solid fa-user"></i> Account Information</h3>
+                        <div class="section-header-title">
+                            <div class="icon-bubble"><i class="fa-solid fa-user"></i></div>
+                            <div>
+                                <h3>Account Information</h3>
+                                <p class="section-subtext">Update your personal account details</p>
+                            </div>
+                        </div>
                     </div>
 
                     <form class="settings-form" id="accountForm">
                         <div id="accountMessage" class="form-message"></div>
+
                         <div class="form-grid">
                             <div class="input-group">
-                                <label for="full-name">Full Name</label>
-                                <input type="text" id="full-name" placeholder="Full Name" required>
+                                <label for="full-name">Full Name <span class="required-star">*</span></label>
+                                <div class="input-with-icon">
+                                    <i class="fa-regular fa-user"></i>
+                                    <input type="text" id="full-name" placeholder="Full Name" required>
+                                </div>
                             </div>
 
                             <div class="input-group">
-                                <label for="email">Email Address</label>
-                                <input type="email" id="email" placeholder="Email Address" readonly style="background-color: var(--bg-secondary); cursor: not-allowed;" title="Email cannot be changed" required>
+                                <label for="email">Email Address <span class="badge-locked"><i class="fa-solid fa-lock"></i> Primary ID</span></label>
+                                <div class="input-with-icon readonly-wrapper">
+                                    <i class="fa-regular fa-envelope"></i>
+                                    <input type="email" id="email" placeholder="Email Address" readonly title="Primary email cannot be changed" required>
+                                </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="save-btn">
-                            <i class="fa-solid fa-floppy-disk"></i> Save Changes
-                        </button>
+                        <div class="form-action-footer">
+                            <button type="submit" class="save-btn" id="saveAccountBtn">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                            </button>
+                        </div>
                     </form>
                 </div>
 
-                <!-- Password Settings -->
-                <div class="settings-section">
+                <!-- 2. CHANGE PASSWORD SECTION -->
+                <div class="settings-section" id="section-password">
                     <div class="settings-section-header">
-                        <h3><i class="fa-solid fa-lock"></i> Change Password</h3>
+                        <div class="section-header-title">
+                            <div class="icon-bubble security-bubble"><i class="fa-solid fa-shield-halved"></i></div>
+                            <div>
+                                <h3>Change Password</h3>
+                                <p class="section-subtext">Ensure your account is using a secure, strong password</p>
+                            </div>
+                        </div>
                     </div>
 
                     <form class="settings-form" id="passwordForm">
                         <div id="passwordMessage" class="form-message"></div>
+
                         <div class="form-grid">
                             <div class="input-group full-width">
-                                <label for="current-password">Current Password</label>
-                                <input type="password" id="current-password" placeholder="Current Password" required>
+                                <label for="current-password">Current Password <span class="required-star">*</span></label>
+                                <div class="input-with-icon password-input-wrapper">
+                                    <i class="fa-solid fa-lock"></i>
+                                    <input type="password" id="current-password" placeholder="Current Password" required>
+                                    <button type="button" class="toggle-password-btn" title="Toggle password visibility">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                </div>
                             </div>
 
-                            <div class="input-group full-width">
-                                <label for="new-password">New Password</label>
-                                <input type="password" id="new-password" placeholder="New Password (min 6 characters)" required>
+                            <div class="input-group">
+                                <label for="new-password">New Password <span class="required-star">*</span></label>
+                                <div class="input-with-icon password-input-wrapper">
+                                    <i class="fa-solid fa-key"></i>
+                                    <input type="password" id="new-password" placeholder="New Password (min 6 characters)" required>
+                                    <button type="button" class="toggle-password-btn" title="Toggle password visibility">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                </div>
                             </div>
 
-                            <div class="input-group full-width">
-                                <label for="confirm-password">Confirm New Password</label>
-                                <input type="password" id="confirm-password" placeholder="Confirm New Password" required>
+                            <div class="input-group">
+                                <label for="confirm-password">Confirm New Password <span class="required-star">*</span></label>
+                                <div class="input-with-icon password-input-wrapper">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <input type="password" id="confirm-password" placeholder="Confirm New Password" required>
+                                    <button type="button" class="toggle-password-btn" title="Toggle password visibility">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div id="passwordMatchBadge" class="password-match-badge"></div>
                             </div>
                         </div>
 
-                        <button type="submit" class="save-btn">
-                            <i class="fa-solid fa-lock"></i> Update Password
-                        </button>
+                        <div class="password-guidelines-box">
+                            <p class="guide-title"><i class="fa-solid fa-circle-info"></i> Password Guidelines:</p>
+                            <ul>
+                                <li>Password must be at least 6 characters long.</li>
+                                <li>Use a combination of letters, numbers, and symbols for better security.</li>
+                                <li>Do not share your account password with anyone.</li>
+                            </ul>
+                        </div>
+
+                        <div class="form-action-footer">
+                            <button type="submit" class="save-btn" id="savePasswordBtn">
+                                <i class="fa-solid fa-lock"></i> Update Password
+                            </button>
+                        </div>
                     </form>
                 </div>
 
-                <!-- Notification Settings -->
-                <div class="settings-section">
+                <!-- 3. NOTIFICATION PREFERENCES -->
+                <div class="settings-section" id="section-notifications">
                     <div class="settings-section-header">
-                        <h3><i class="fa-solid fa-bell"></i> Notifications</h3>
+                        <div class="section-header-title">
+                            <div class="icon-bubble notify-bubble"><i class="fa-solid fa-bell"></i></div>
+                            <div>
+                                <h3>Notifications</h3>
+                                <p class="section-subtext">Manage what emails you receive about your notes and activity</p>
+                            </div>
+                        </div>
                     </div>
 
                     <form class="settings-form" id="notificationsForm">
                         <div id="notificationsMessage" class="form-message"></div>
-                        <div class="checkbox-group">
-                            <label class="custom-checkbox">
-                                <input type="checkbox" checked>
-                                Email me when someone downloads my notes
-                            </label>
-                            <label class="custom-checkbox">
-                                <input type="checkbox" checked>
-                                Email me when someone rates my notes
-                            </label>
-                            <label class="custom-checkbox">
-                                <input type="checkbox">
-                                Email me about new notes matching my interests
-                            </label>
-                            <label class="custom-checkbox">
-                                <input type="checkbox" checked>
-                                Weekly digest of platform activity
-                            </label>
+
+                        <div class="preferences-list">
+                            <div class="preference-item">
+                                <div class="preference-text">
+                                    <h4><i class="fa-solid fa-cloud-arrow-down"></i> Note Downloads</h4>
+                                    <p>Email me when someone downloads my uploaded notes.</p>
+                                </div>
+                                <label class="switch-toggle">
+                                    <input type="checkbox" id="pref-downloads" checked>
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="preference-item">
+                                <div class="preference-text">
+                                    <h4><i class="fa-solid fa-star"></i> Ratings & Reviews</h4>
+                                    <p>Email me when someone rates or reviews my notes.</p>
+                                </div>
+                                <label class="switch-toggle">
+                                    <input type="checkbox" id="pref-ratings" checked>
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="preference-item">
+                                <div class="preference-text">
+                                    <h4><i class="fa-regular fa-envelope-open"></i> Weekly Digest</h4>
+                                    <p>Weekly digest of platform activity, popular uploads, and study highlights.</p>
+                                </div>
+                                <label class="switch-toggle">
+                                    <input type="checkbox" id="pref-digest" checked>
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </div>
                         </div>
 
-                        <button type="submit" class="save-btn">
-                            <i class="fa-solid fa-floppy-disk"></i> Save Preferences
-                        </button>
+                        <div class="form-action-footer">
+                            <button type="submit" class="save-btn" id="savePreferencesBtn">
+                                <i class="fa-solid fa-floppy-disk"></i> Save Preferences
+                            </button>
+                        </div>
                     </form>
                 </div>
 
-                <!-- Danger Zone -->
-                <div class="settings-section danger-zone">
+                <!-- 4. DANGER ZONE -->
+                <div class="settings-section danger-zone" id="section-danger">
                     <div class="settings-section-header">
-                        <h3><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone</h3>
+                        <div class="section-header-title">
+                            <div class="icon-bubble danger-bubble"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div>
+                                <h3>Danger Zone</h3>
+                                <p class="section-subtext">Permanently delete your account and associated data</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="danger-actions">
+                    <div class="danger-box">
+                        <div class="danger-info">
+                            <h4>Deactivate Account</h4>
+                            <p>Your account, session, and associated preferences will be permanently removed. This cannot be undone.</p>
+                        </div>
                         <button type="button" class="danger-btn" id="deactivateAccountBtn">
-                            <i class="fa-solid fa-exclamation-circle"></i> Deactivate Account
+                            <i class="fa-solid fa-triangle-exclamation"></i> Deactivate Account
                         </button>
-                        <p>Your account and all data will be permanently deleted.</p>
                     </div>
                 </div>
 
@@ -160,8 +293,23 @@
 
     </section>
 
-    <script type="module" src="js/main.js?v=2.3"></script>
+    <!-- Avatar Selection Modal -->
+    <div class="avatar-modal-overlay" id="avatarModal" style="display: none;">
+        <div class="avatar-modal-box">
+            <div class="avatar-modal-header">
+                <h3><i class="fa-solid fa-user-circle"></i> Choose Profile Avatar</h3>
+                <button type="button" class="close-modal-btn" id="closeAvatarModalBtn">&times;</button>
+            </div>
+            <div class="avatar-modal-body">
+                <p>Pick an avatar icon that best represents your study style:</p>
+                <div class="avatar-presets-grid" id="avatarPresetsGrid">
+                    <!-- Dynamic presets inserted by settings.js -->
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script type="module" src="js/main.js?v=3.2"></script>
     <script src="js/theme.js"></script>
     <script src="js/animations.js"></script>
 </body>
