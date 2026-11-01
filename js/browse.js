@@ -458,7 +458,7 @@ function updateSpotlightPosition() {
     const cards = track.querySelectorAll('.spotlight-card');
     if (cards.length === 0) return;
 
-    const cardWidth = cards[0].offsetWidth + 20;
+    const cardWidth = cards[0].offsetWidth + 16;
     const visibleCards = window.innerWidth <= 640 ? 1 : (window.innerWidth <= 1080 ? 2 : 3);
     const maxIndex = Math.max(0, cards.length - visibleCards);
 
@@ -828,15 +828,18 @@ function handleFilters() {
     if (heroClearBtn) heroClearBtn.style.display = term ? 'flex' : 'none';
 
     // Active Subject checkboxes
-    const subjectCheckboxes = document.querySelectorAll('.filters-sidebar input[type="checkbox"]:checked');
-    const selectedSubjects = Array.from(subjectCheckboxes)
-        .filter(cb => cb.closest('.filter-group:nth-of-type(3)'))
-        .map(cb => cb.value.toLowerCase());
+    const subjectCheckboxes = document.querySelectorAll('[data-filter-group="subject"] input[type="checkbox"]:checked');
+    const selectedSubjects = Array.from(subjectCheckboxes).map(cb => cb.value.toLowerCase());
 
     // Active Grade checkboxes
-    const gradeCheckboxes = Array.from(subjectCheckboxes)
-        .filter(cb => cb.closest('.filter-group:nth-of-type(5)'))
-        .map(cb => cb.value.toLowerCase());
+    const gradeCheckboxes = document.querySelectorAll('[data-filter-group="grade"] input[type="checkbox"]:checked');
+    const selectedGrades = Array.from(gradeCheckboxes).map(cb => cb.value.toLowerCase());
+
+    // Subject count badge in sidebar header
+    const subjectBadge = document.getElementById('subjectFilterCount');
+    if (subjectBadge) {
+        subjectBadge.textContent = selectedSubjects.length ? `(${selectedSubjects.length})` : '';
+    }
 
     // University filter
     const uniSelect = document.getElementById('universitySelect');
@@ -877,7 +880,12 @@ function handleFilters() {
 
         // Grade
         const noteGrade = (note.gradeLevel || '').toLowerCase();
-        const matchesGrade = gradeCheckboxes.length === 0 || gradeCheckboxes.some(g => noteGrade.includes(g));
+        const matchesGrade = selectedGrades.length === 0 || selectedGrades.some(g => {
+            if (g === 'undergraduate') {
+                return noteGrade === 'undergraduate' || /^y[1-4]s[1-2]/i.test(noteGrade);
+            }
+            return noteGrade.includes(g) || g.includes(noteGrade);
+        });
 
         // Semester
         const matchesSemester = !selectedSemester || noteGrade.includes(selectedSemester) || (note.module || '').toLowerCase().includes(selectedSemester);
@@ -961,6 +969,9 @@ function removeFilter(tag) {
         document.querySelectorAll('.doc-type-chip').forEach(c => {
             c.classList.toggle('active', c.getAttribute('data-doctype') === 'all');
         });
+        document.querySelectorAll('.hero-type-pill').forEach(p => {
+            p.classList.toggle('active', p.getAttribute('data-type') === 'all');
+        });
     } else if (tag.type === 'subject') {
         const cbs = document.querySelectorAll('.filters-sidebar input[type="checkbox"]');
         cbs.forEach(cb => {
@@ -1005,6 +1016,9 @@ function resetAllFilters() {
     activeDocTypeFilter = 'all';
     document.querySelectorAll('.doc-type-chip').forEach(c => {
         c.classList.toggle('active', c.getAttribute('data-doctype') === 'all');
+    });
+    document.querySelectorAll('.hero-type-pill').forEach(p => {
+        p.classList.toggle('active', p.getAttribute('data-type') === 'all');
     });
 
     activeFormatFilter = 'all';
@@ -1099,117 +1113,28 @@ export async function setupBrowsePage() {
     renderSpotlightCards();
     setupSpotlightShowcase();
 
-    // ================= STUDOCU HERO CARD LISTENERS =================
-    const modeAiBtn = document.getElementById('modeAiBtn');
-    const modeSearchBtn = document.getElementById('modeSearchBtn');
-    const heroDropzone = document.getElementById('heroDropzone');
-    const heroSearchModeArea = document.getElementById('heroSearchModeArea');
-    const heroPromptInput = document.getElementById('heroPromptInput');
-    const heroInputClear = document.getElementById('heroInputClear');
+    // ================= HERO SEARCH & FILTER LISTENERS =================
+    const heroSearchInput = document.getElementById('heroSearchInput');
+    const heroClearBtn = document.getElementById('heroClearBtn');
     const heroSearchSubmitBtn = document.getElementById('heroSearchSubmitBtn');
-    const heroFileInput = document.getElementById('heroFileInput');
-    const chooseFilesTrigger = document.getElementById('chooseFilesTrigger');
-    const selectedFileChip = document.getElementById('selectedFileChip');
-    const selectedFileName = document.getElementById('selectedFileName');
-    const chipRemoveBtn = document.getElementById('chipRemoveBtn');
     const sidebarSearchInput = document.getElementById('searchInput');
+    const sidebarClearBtn = document.getElementById('clearSearchBtn');
 
-    // Switch between AI Mode & Search Mode
-    function switchMode(mode) {
-        if (mode === 'ai') {
-            modeAiBtn?.classList.add('active');
-            modeSearchBtn?.classList.remove('active');
-            if (heroDropzone) heroDropzone.style.display = 'block';
-            if (heroSearchModeArea) heroSearchModeArea.style.display = 'none';
-            if (heroPromptInput) heroPromptInput.placeholder = 'Ask a question or Search for study materials';
-        } else {
-            modeSearchBtn?.classList.add('active');
-            modeAiBtn?.classList.remove('active');
-            if (heroDropzone) heroDropzone.style.display = 'none';
-            if (heroSearchModeArea) heroSearchModeArea.style.display = 'block';
-            if (heroPromptInput) {
-                heroPromptInput.placeholder = 'Search by course code, university, module, or topic...';
-                heroPromptInput.focus();
-            }
-        }
-    }
-
-    modeAiBtn?.addEventListener('click', () => switchMode('ai'));
-    modeSearchBtn?.addEventListener('click', () => switchMode('search'));
-
-    // File Drag & Drop
-    if (heroDropzone && heroFileInput) {
-        chooseFilesTrigger?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            heroFileInput.click();
-        });
-
-        heroDropzone.addEventListener('click', () => {
-            heroFileInput.click();
-        });
-
-        heroDropzone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            heroDropzone.classList.add('drag-over');
-        });
-
-        heroDropzone.addEventListener('dragleave', () => {
-            heroDropzone.classList.remove('drag-over');
-        });
-
-        heroDropzone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            heroDropzone.classList.remove('drag-over');
-            if (e.dataTransfer?.files?.length) {
-                handleUploadedFile(e.dataTransfer.files[0]);
-            }
-        });
-
-        heroFileInput.addEventListener('change', () => {
-            if (heroFileInput.files?.length) {
-                handleUploadedFile(heroFileInput.files[0]);
-            }
-        });
-    }
-
-    function handleUploadedFile(file) {
-        if (selectedFileChip && selectedFileName) {
-            selectedFileName.textContent = `${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} MB)`;
-            selectedFileChip.style.display = 'inline-flex';
-            showToast(`Uploaded "${file.name}" for instant study prep! 📄`, 'success', 'fa-file-circle-check');
-            if (heroPromptInput) {
-                heroPromptInput.value = `Summarize and generate practice questions for ${file.name}`;
-                if (heroInputClear) heroInputClear.style.display = 'block';
-            }
-        }
-    }
-
-    chipRemoveBtn?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (heroFileInput) heroFileInput.value = '';
-        if (selectedFileChip) selectedFileChip.style.display = 'none';
-        if (heroPromptInput && heroPromptInput.value.startsWith('Summarize')) {
-            heroPromptInput.value = '';
-            if (heroInputClear) heroInputClear.style.display = 'none';
-        }
-    });
-
-    // Prompt & Search Sync
+    // Two-way search synchronization
     function syncSearch(term) {
-        if (heroPromptInput) heroPromptInput.value = term;
+        if (heroSearchInput) heroSearchInput.value = term;
         if (sidebarSearchInput) sidebarSearchInput.value = term;
-        if (heroInputClear) heroInputClear.style.display = term ? 'block' : 'none';
+        if (heroClearBtn) heroClearBtn.style.display = term ? 'flex' : 'none';
+        if (sidebarClearBtn) sidebarClearBtn.style.display = term ? 'flex' : 'none';
         handleFilters();
     }
 
-    if (heroPromptInput) {
-        heroPromptInput.addEventListener('input', (e) => {
-            if (sidebarSearchInput) sidebarSearchInput.value = e.target.value;
-            if (heroInputClear) heroInputClear.style.display = e.target.value ? 'block' : 'none';
-            handleFilters();
+    if (heroSearchInput) {
+        heroSearchInput.addEventListener('input', (e) => {
+            syncSearch(e.target.value);
         });
 
-        heroPromptInput.addEventListener('keydown', (e) => {
+        heroSearchInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 handleFilters();
                 document.querySelector('.browse-header')?.scrollIntoView({ behavior: 'smooth' });
@@ -1219,14 +1144,18 @@ export async function setupBrowsePage() {
 
     if (sidebarSearchInput) {
         sidebarSearchInput.addEventListener('input', (e) => {
-            if (heroPromptInput) heroPromptInput.value = e.target.value;
-            if (heroInputClear) heroInputClear.style.display = e.target.value ? 'block' : 'none';
-            handleFilters();
+            syncSearch(e.target.value);
+        });
+
+        sidebarSearchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                handleFilters();
+            }
         });
     }
 
-    heroInputClear?.addEventListener('click', () => syncSearch(''));
-    document.getElementById('clearSearchBtn')?.addEventListener('click', () => syncSearch(''));
+    heroClearBtn?.addEventListener('click', () => syncSearch(''));
+    sidebarClearBtn?.addEventListener('click', () => syncSearch(''));
 
     heroSearchSubmitBtn?.addEventListener('click', () => {
         handleFilters();
@@ -1234,35 +1163,7 @@ export async function setupBrowsePage() {
         showToast('Showing matching study resources', 'info', 'fa-magnifying-glass');
     });
 
-    // Prompt Tag Pills (Mock exam, Summary, Quiz, Lecture notes)
-    const promptTagPills = document.querySelectorAll('.prompt-tag-pill');
-    promptTagPills.forEach(pill => {
-        pill.addEventListener('click', () => {
-            const docType = pill.getAttribute('data-type');
-            const wasActive = pill.classList.contains('active');
-
-            promptTagPills.forEach(p => p.classList.remove('active'));
-            if (!wasActive) {
-                pill.classList.add('active');
-                activeDocTypeFilter = docType;
-                // Sync with sidebar doc type chips
-                document.querySelectorAll('.doc-type-chip').forEach(c => {
-                    c.classList.toggle('active', c.getAttribute('data-doctype') === docType);
-                });
-                showToast(`Filtered to "${docType}"`, 'info', 'fa-filter');
-            } else {
-                activeDocTypeFilter = 'all';
-                document.querySelectorAll('.doc-type-chip').forEach(c => {
-                    c.classList.toggle('active', c.getAttribute('data-doctype') === 'all');
-                });
-            }
-
-            handleFilters();
-            document.querySelector('.browse-header')?.scrollIntoView({ behavior: 'smooth' });
-        });
-    });
-
-    // Course Code Pills in Search Mode
+    // Course Code Pills (e.g. CS2001, SE3106, MATH101)
     const courseCodePills = document.querySelectorAll('.course-code-pill');
     courseCodePills.forEach(pill => {
         pill.addEventListener('click', () => {
@@ -1273,9 +1174,38 @@ export async function setupBrowsePage() {
         });
     });
 
-    // Plus button action
-    document.getElementById('promptAddBtn')?.addEventListener('click', () => {
-        heroFileInput?.click();
+    // Hero Quick Doc Type Pills & Sidebar Chips
+    const heroTypePills = document.querySelectorAll('.hero-type-pill');
+    const docTypeChips = document.querySelectorAll('.doc-type-chip');
+
+    function setDocTypeFilter(docType) {
+        activeDocTypeFilter = docType || 'all';
+
+        heroTypePills.forEach(p => {
+            p.classList.toggle('active', p.getAttribute('data-type') === activeDocTypeFilter);
+        });
+
+        docTypeChips.forEach(c => {
+            c.classList.toggle('active', c.getAttribute('data-doctype') === activeDocTypeFilter);
+        });
+
+        handleFilters();
+    }
+
+    heroTypePills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            const type = pill.getAttribute('data-type');
+            setDocTypeFilter(type);
+            showToast(type === 'all' ? 'Showing all document types' : `Filtered to "${type}"`, 'info', 'fa-filter');
+            document.querySelector('.browse-header')?.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    docTypeChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            const type = chip.getAttribute('data-doctype');
+            setDocTypeFilter(type);
+        });
     });
 
     // Subject Hubs (Studocu Style Category Tiles)
@@ -1287,11 +1217,9 @@ export async function setupBrowsePage() {
             card.classList.add('active');
 
             // Sync with sidebar checkboxes
-            const subjectCheckboxes = document.querySelectorAll('.filters-sidebar input[type="checkbox"]');
+            const subjectCheckboxes = document.querySelectorAll('[data-filter-group="subject"] input[type="checkbox"]');
             subjectCheckboxes.forEach(cb => {
-                if (cb.closest('.filter-group:nth-of-type(3)')) {
-                    cb.checked = subject !== 'all' && cb.value.toLowerCase() === subject.toLowerCase();
-                }
+                cb.checked = subject !== 'all' && cb.value.toLowerCase() === subject.toLowerCase();
             });
 
             handleFilters();
@@ -1300,25 +1228,14 @@ export async function setupBrowsePage() {
         });
     });
 
-    // Document Type Filter Chips (Studocu Style)
-    const docTypeChips = document.querySelectorAll('.doc-type-chip');
-    docTypeChips.forEach(chip => {
-        chip.addEventListener('click', () => {
-            docTypeChips.forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-            activeDocTypeFilter = chip.getAttribute('data-doctype');
-            handleFilters();
-        });
-    });
-
     // Checkboxes change listeners
     const checkboxes = document.querySelectorAll('.filters-sidebar input[type="checkbox"]');
     checkboxes.forEach(cb => {
         cb.addEventListener('change', () => {
             // Sync with subject hubs if subject checkbox changed
-            const checkedSubjects = Array.from(document.querySelectorAll('.filter-group:nth-of-type(3) input[type="checkbox"]:checked')).map(c => c.value);
+            const checkedSubjects = Array.from(document.querySelectorAll('[data-filter-group="subject"] input[type="checkbox"]:checked')).map(c => c.value);
             if (checkedSubjects.length === 1) {
-                hubCards.forEach(h => h.classList.toggle('active', h.getAttribute('data-subject') === checkedSubjects[0]));
+                hubCards.forEach(h => h.classList.toggle('active', h.getAttribute('data-subject').toLowerCase() === checkedSubjects[0].toLowerCase()));
             } else if (checkedSubjects.length === 0) {
                 hubCards.forEach(h => h.classList.toggle('active', h.getAttribute('data-subject') === 'all'));
             } else {

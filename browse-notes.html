@@ -14,111 +14,79 @@
 
 <body>
 
-    <!-- ================= STUDOCU-STYLE HERO BANNER (REFERENCED DESIGN) ================= -->
+    <!-- ================= HERO BANNER (CLEAN & STUDENT-FOCUSED) ================= -->
     <header class="studocu-hero-banner">
-        <!-- Playful Organic Decorative Blobs (from Studocu Reference) -->
+        <!-- Playful Organic Decorative Blobs (Studocu Aesthetics) -->
         <div class="organic-blob blob-lilac"></div>
         <div class="organic-blob blob-orange"></div>
         <div class="organic-blob blob-lime"></div>
         <div class="organic-blob blob-petal"></div>
 
         <div class="studocu-hero-container">
-            <h1 class="studocu-hero-headline">Other AIs guess. NotesHub knows.</h1>
-            <p class="studocu-hero-subtext">
-                Powered by real notes from students in your course. Find the materials you need and create custom practice materials to ace your next exam.
-            </p>
-
-            <!-- Pill Mode Switcher (AI mode / Search) -->
-            <div class="studocu-mode-switcher">
-                <button class="mode-tab active" id="modeAiBtn" data-mode="ai">
-                    <span>AI mode</span>
-                    <i class="fa-solid fa-sparkles"></i>
-                </button>
-                <button class="mode-tab" id="modeSearchBtn" data-mode="search">
-                    <span>Search</span>
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+            <div class="hero-trust-badge">
+                <span class="badge-dot"></span>
+                <span>The #1 Student Knowledge Platform • 50,000+ Notes</span>
             </div>
 
-            <!-- Central Studocu Action Card -->
+            <h1 class="studocu-hero-headline">Find the Best Study Materials for Your Courses 🎓</h1>
+            <p class="studocu-hero-subtext">
+                Real notes from top students in your modules. Search lecture slides, comprehensive summaries, and past exam packs to ace your next exam.
+            </p>
+
+            <!-- Central Search & Study Hub Card -->
             <div class="studocu-action-card">
-                <!-- Dropzone Area (AI mode default) -->
-                <div class="studocu-dropzone-area" id="heroDropzone">
-                    <input type="file" id="heroFileInput" class="hidden-file-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt">
-                    <div class="cloud-icon-circle">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                <div class="hero-search-inner">
+                    <div class="hero-search-input-wrapper">
+                        <i class="fa-solid fa-magnifying-glass hero-search-icon"></i>
+                        <input type="text" id="heroSearchInput" placeholder="Search by course code, university, module, or topic (e.g. CS2001, Calculus, SLIIT)..." autocomplete="off">
+                        <button type="button" class="hero-input-clear" id="heroClearBtn" style="display: none;" title="Clear search">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                        <button type="button" class="hero-search-submit-btn" id="heroSearchSubmitBtn">
+                            <span>Search</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
                     </div>
-                    <h3>Drag & Drop files</h3>
-                    <p class="dropzone-text">
-                        Or <span class="choose-files-trigger" id="chooseFilesTrigger">choose files</span> from your device.
-                    </p>
-                    <span class="dropzone-file-spec">
-                        Documents, images, text supported. Max file size allowed: 100 MB.
-                    </span>
 
-                    <!-- File selected chip -->
-                    <div class="selected-file-chip" id="selectedFileChip" style="display: none;">
-                        <i class="fa-solid fa-file-circle-check"></i>
-                        <span id="selectedFileName">filename.pdf</span>
-                        <button type="button" class="chip-remove-btn" id="chipRemoveBtn" title="Remove file">&times;</button>
-                    </div>
-                </div>
-
-                <!-- Search Mode Header (shown when 'Search' mode is active) -->
-                <div class="studocu-searchmode-area" id="heroSearchModeArea" style="display: none;">
-                    <div class="searchmode-icon-circle">
-                        <i class="fa-solid fa-graduation-cap"></i>
-                    </div>
-                    <h3>Search 50,000+ Course Materials</h3>
-                    <p class="searchmode-text">
-                        Browse summaries, exam packs, and lecture slides shared by verified students.
-                    </p>
-                    <div class="searchmode-quick-courses">
-                        <span>Popular:</span>
-                        <button type="button" class="course-code-pill" data-keyword="CS2001">CS2001</button>
-                        <button type="button" class="course-code-pill" data-keyword="SE3106">SE3106</button>
-                        <button type="button" class="course-code-pill" data-keyword="MATH101">MATH101</button>
-                        <button type="button" class="course-code-pill" data-keyword="PHY300">PHY300</button>
-                        <button type="button" class="course-code-pill" data-keyword="ACC2010">ACC2010</button>
+                    <!-- Quick Popular Courses Bar -->
+                    <div class="hero-quick-courses-row">
+                        <span class="quick-label"><i class="fa-solid fa-fire"></i> Popular:</span>
+                        <div class="quick-course-pills">
+                            <button type="button" class="course-code-pill" data-keyword="CS2001">💻 CS2001</button>
+                            <button type="button" class="course-code-pill" data-keyword="SE3106">⚙️ SE3106</button>
+                            <button type="button" class="course-code-pill" data-keyword="MATH101">📐 MATH101</button>
+                            <button type="button" class="course-code-pill" data-keyword="PHY300">⚛️ PHY300</button>
+                            <button type="button" class="course-code-pill" data-keyword="ACC2010">💼 ACC2010</button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Divider -->
                 <div class="action-card-divider"></div>
 
-                <!-- Input & Action Bar (Prompt or Search) -->
-                <div class="studocu-input-zone">
-                    <div class="input-field-row">
-                        <input type="text" id="heroPromptInput" placeholder="Ask a question or Search for study materials">
-                        <button type="button" class="hero-input-clear" id="heroInputClear" style="display: none;" title="Clear">
-                            <i class="fa-solid fa-xmark"></i>
+                <!-- Bottom Bar: Document Type Filter & Quick Upload -->
+                <div class="hero-card-bottom-bar">
+                    <div class="hero-doc-types">
+                        <span class="doc-filter-label">Quick Filter:</span>
+                        <button type="button" class="hero-type-pill active" data-type="all">All Types</button>
+                        <button type="button" class="hero-type-pill" data-type="Summary">
+                            <i class="fa-solid fa-file-pen"></i> Summaries
+                        </button>
+                        <button type="button" class="hero-type-pill" data-type="Lecture Notes">
+                            <i class="fa-solid fa-book-open"></i> Lecture Notes
+                        </button>
+                        <button type="button" class="hero-type-pill" data-type="Past Exam">
+                            <i class="fa-solid fa-clipboard-question"></i> Past Exams
+                        </button>
+                        <button type="button" class="hero-type-pill" data-type="Practice Problems">
+                            <i class="fa-solid fa-puzzle-piece"></i> Practice
                         </button>
                     </div>
 
-                    <div class="prompt-actions-row">
-                        <button type="button" class="prompt-add-btn" id="promptAddBtn" title="Upload Document">
-                            <i class="fa-solid fa-plus"></i>
-                        </button>
-
-                        <div class="prompt-tags-list">
-                            <button type="button" class="prompt-tag-pill" data-type="Past Exam">
-                                <i class="fa-solid fa-clipboard-question"></i> Mock exam
-                            </button>
-                            <button type="button" class="prompt-tag-pill" data-type="Summary">
-                                <i class="fa-solid fa-file-pen"></i> Summary
-                            </button>
-                            <button type="button" class="prompt-tag-pill" data-type="Practice Problems">
-                                <i class="fa-solid fa-puzzle-piece"></i> Quiz
-                            </button>
-                            <button type="button" class="prompt-tag-pill" data-type="Lecture Notes">
-                                <i class="fa-solid fa-book-open"></i> Lecture notes
-                            </button>
-                        </div>
-
-                        <button type="button" class="prompt-submit-circle" id="heroSearchSubmitBtn" aria-label="Search & Submit">
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
+                    <a href="upload-note.html" class="hero-upload-shortcut" title="Upload your notes">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>Upload Notes</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -160,8 +128,8 @@
             </div>
 
             <!-- Sidebar Search Box -->
-            <div class="filter-group">
-                <h3>Quick Search</h3>
+            <div class="filter-group" data-filter-group="search">
+                <h3>Keyword Search</h3>
                 <div class="search-box">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="searchInput" placeholder="Filter by keyword...">
@@ -171,8 +139,8 @@
                 </div>
             </div>
 
-            <!-- Document Type Filter (Studocu Style) -->
-            <div class="filter-group">
+            <!-- Document Type Filter -->
+            <div class="filter-group" data-filter-group="doctype">
                 <h3>Document Type</h3>
                 <div class="doc-type-filter-grid">
                     <button type="button" class="doc-type-chip active" data-doctype="all">All Types</button>
@@ -183,8 +151,8 @@
                 </div>
             </div>
 
-            <!-- Subject Group with Color-coded Icons -->
-            <div class="filter-group">
+            <!-- Subject Group with Explicit Data Filter -->
+            <div class="filter-group" data-filter-group="subject">
                 <div class="filter-group-header">
                     <h3>Subjects</h3>
                     <span class="filter-count-badge" id="subjectFilterCount"></span>
@@ -253,8 +221,8 @@
                 </div>
             </div>
 
-            <!-- University / Institution Filter (Studocu Signature) -->
-            <div class="filter-group">
+            <!-- University / Institution Filter -->
+            <div class="filter-group" data-filter-group="university">
                 <h3>Institution / University</h3>
                 <select class="filter-select" id="universitySelect">
                     <option value="">All Universities</option>
@@ -268,8 +236,8 @@
                 </select>
             </div>
 
-            <!-- Grade Range Group -->
-            <div class="filter-group">
+            <!-- Academic Level Group -->
+            <div class="filter-group" data-filter-group="grade">
                 <h3>Academic Level</h3>
                 <div class="filter-options-list">
                     <label class="custom-checkbox">
@@ -296,7 +264,7 @@
             </div>
 
             <!-- Semester Filter -->
-            <div class="filter-group">
+            <div class="filter-group" data-filter-group="semester">
                 <h3>Semester (Undergraduate)</h3>
                 <select class="filter-select" id="semesterSelect">
                     <option value="">All Semesters</option>
@@ -312,7 +280,7 @@
             </div>
 
             <!-- File Format Filter -->
-            <div class="filter-group">
+            <div class="filter-group" data-filter-group="format">
                 <h3>File Format</h3>
                 <div class="format-chips-filter">
                     <button type="button" class="format-chip-btn" data-format="all">All</button>
@@ -323,7 +291,7 @@
             </div>
 
             <!-- Minimum Rating Filter -->
-            <div class="filter-group">
+            <div class="filter-group" data-filter-group="rating">
                 <h3>Minimum Rating</h3>
                 <div class="rating-filter-options">
                     <label class="rating-radio">
@@ -350,17 +318,17 @@
         <!-- Main Content -->
         <div class="browse-content">
 
-            <!-- ================= STUDOCU-STYLE SUBJECT TILES / HUBS ================= -->
+            <!-- ================= SUBJECT TILES / HUBS (ALL VISIBLE, NO HORIZONTAL SCROLL) ================= -->
             <section class="subject-hubs-section">
                 <div class="section-title-row">
                     <div class="title-with-pill">
                         <span class="hub-icon-pill"><i class="fa-solid fa-graduation-cap"></i></span>
                         <h3>Explore by Field of Study</h3>
                     </div>
-                    <span class="hub-subtext">Click any subject to quickly browse all notes</span>
+                    <span class="hub-subtext">Click any field to quickly filter all notes</span>
                 </div>
 
-                <div class="subject-hubs-carousel" id="subjectHubsCarousel">
+                <div class="subject-hubs-grid" id="subjectHubsGrid">
                     <div class="hub-card hub-cs active" data-subject="all">
                         <div class="hub-icon-circle"><i class="fa-solid fa-layer-group"></i></div>
                         <h4>All Fields</h4>
@@ -387,7 +355,7 @@
 
                     <div class="hub-card hub-amber" data-subject="Business">
                         <div class="hub-icon-circle"><i class="fa-solid fa-briefcase"></i></div>
-                        <h4>Business & Finance</h4>
+                        <h4>Business</h4>
                         <span class="hub-count">120+ notes</span>
                     </div>
 
@@ -399,13 +367,13 @@
 
                     <div class="hub-card hub-rose" data-subject="Science">
                         <div class="hub-icon-circle"><i class="fa-solid fa-flask"></i></div>
-                        <h4>Chemistry & Sci</h4>
+                        <h4>Science</h4>
                         <span class="hub-count">85+ notes</span>
                     </div>
 
                     <div class="hub-card hub-teal" data-subject="Biology">
                         <div class="hub-icon-circle"><i class="fa-solid fa-dna"></i></div>
-                        <h4>Biology & Health</h4>
+                        <h4>Biology</h4>
                         <span class="hub-count">65+ notes</span>
                     </div>
 
@@ -517,7 +485,7 @@
 
     </section>
 
-    <!-- ================= STUDOCU-STYLE QUICK PREVIEW MODAL ================= -->
+    <!-- ================= QUICK PREVIEW MODAL ================= -->
     <div class="quick-modal-overlay" id="quickPreviewModal" aria-hidden="true">
         <div class="quick-modal-card" role="dialog" aria-modal="true" aria-labelledby="modalNoteTitle">
             <button class="modal-close-btn" id="closeModalBtn" aria-label="Close Preview">
