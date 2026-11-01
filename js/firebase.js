@@ -50,6 +50,7 @@ export async function registerWithFirebase(name, email, password) {
             role: 'student',
             createdAt: serverTimestamp()
         });
+        await signOut(auth);
     } catch (error) {
         await deleteUser(credentials.user).catch(() => {});
         throw error;

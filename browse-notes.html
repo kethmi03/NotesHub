@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Browse Notes | NotesHub</title>
+    <title>Browse Notes & Study Guides | NotesHub</title>
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -14,77 +14,236 @@
 
 <body>
 
-    <!-- ================= BROWSE SECTION ================= -->
+    <!-- ================= STUDOCU-STYLE HERO BANNER ================= -->
+    <header class="studocu-hero-banner">
+        <div class="hero-mesh-glow"></div>
+        <div class="hero-mesh-glow glow-2"></div>
 
-    <section class="browse-section">
+        <div class="studocu-hero-content">
+            <div class="hero-badge-pill">
+                <span class="badge-dot"></span>
+                <span>The #1 Student Knowledge Platform</span>
+                <span class="badge-sparkle"><i class="fa-solid fa-sparkles"></i></span>
+            </div>
 
-        <!-- Sidebar Filters -->
-        <aside class="filters-sidebar">
+            <h1>Find the best study materials for your courses 🎓</h1>
+            <p class="hero-subtitle">
+                Access over 50,000+ student-curated lecture notes, comprehensive summaries, and past exam revision packs.
+            </p>
 
-            <div class="filter-group">
-                <h3>Search</h3>
-                <div class="search-box">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Search by keyword...">
+            <!-- Search Bar inside Hero -->
+            <div class="hero-search-wrapper">
+                <div class="hero-search-bar">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="heroSearchInput" placeholder="Search by course code, university, module, or topic (e.g. CS2001, Calculus)...">
+                    <button class="hero-search-clear" id="heroClearBtn" title="Clear search" style="display: none;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <button class="hero-search-submit" id="heroSearchSubmitBtn">
+                        <span>Search</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Trending Search Tags -->
+                <div class="trending-tags-row">
+                    <span class="trending-label"><i class="fa-solid fa-fire"></i> Popular searches:</span>
+                    <div class="trending-pills-list" id="trendingPillsList">
+                        <button class="trending-pill" data-keyword="Software Engineering"><i class="fa-solid fa-laptop-code"></i> Software Engineering</button>
+                        <button class="trending-pill" data-keyword="Data Structures"><i class="fa-solid fa-diagram-project"></i> Data Structures</button>
+                        <button class="trending-pill" data-keyword="Calculus"><i class="fa-solid fa-calculator"></i> Calculus</button>
+                        <button class="trending-pill" data-keyword="Quantum Physics"><i class="fa-solid fa-atom"></i> Quantum Physics</button>
+                        <button class="trending-pill" data-keyword="Organic Chemistry"><i class="fa-solid fa-flask"></i> Organic Chemistry</button>
+                        <button class="trending-pill" data-keyword="Accounting"><i class="fa-solid fa-briefcase"></i> Accounting</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="filter-group">
-                <h3>Subject</h3>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> English
-                </label>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> Science
-                </label>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> Physics
-                </label>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> Biology
-                </label>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> Economics
-                </label>
-                <label class="custom-checkbox">
-                    <input type="checkbox" checked> Computer Science
-                </label>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> Mathematics
-                </label>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> Business
-                </label>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> Engineering
-                </label>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> Other
-                </label>
+            <!-- Stats Bar -->
+            <div class="hero-stats-strip">
+                <div class="stat-pill"><i class="fa-solid fa-file-lines stat-icon-blue"></i> <span><strong>50,000+</strong> Study Documents</span></div>
+                <div class="stat-pill"><i class="fa-solid fa-building-columns stat-icon-purple"></i> <span><strong>180+</strong> Universities</span></div>
+                <div class="stat-pill"><i class="fa-solid fa-star stat-icon-yellow"></i> <span><strong>4.9 / 5</strong> Student Rating</span></div>
+                <div class="stat-pill"><i class="fa-solid fa-bolt stat-icon-emerald"></i> <span><strong>100% Free</strong> Downloads</span></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Filter Toggle Bar -->
+    <div class="mobile-filter-bar">
+        <button class="mobile-filter-btn" id="mobileFilterToggle">
+            <i class="fa-solid fa-sliders"></i>
+            <span>Filter Notes</span>
+        </button>
+        <div class="mobile-search-summary" id="mobileSummaryText">
+            All Subjects
+        </div>
+    </div>
+
+    <!-- Backdrop for Mobile Filter Drawer -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- ================= MAIN BROWSE SECTION ================= -->
+    <section class="browse-section">
+
+        <!-- Sidebar Filters -->
+        <aside class="filters-sidebar" id="filtersSidebar">
+
+            <div class="sidebar-header">
+                <div class="sidebar-title">
+                    <i class="fa-solid fa-sliders"></i>
+                    <h3>Filter Resources</h3>
+                </div>
+                <div class="sidebar-actions">
+                    <button id="resetFiltersBtn" class="reset-link-btn" title="Reset all filters">
+                        <i class="fa-solid fa-rotate-left"></i> Reset
+                    </button>
+                    <button class="close-sidebar-btn" id="closeSidebarBtn" aria-label="Close filters">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
             </div>
 
+            <!-- Sidebar Search Box -->
             <div class="filter-group">
-                <h3>Grade Range</h3>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> Grade 6 - 9
-                </label>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> Grade 10 - 11
-                </label>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> Grade 12 - 13
-                </label>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> Undergraduate
-                </label>
-                <label class="custom-checkbox">
-                    <input type="checkbox"> Other
-                </label>
+                <h3>Quick Search</h3>
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Filter by keyword...">
+                    <button class="clear-search-btn" id="clearSearchBtn" title="Clear search" style="display: none;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
             </div>
 
+            <!-- Document Type Filter (Studocu Style) -->
             <div class="filter-group">
-                <h3>Semester (Undergraduate Students)</h3>
-                <select class="filter-select">
+                <h3>Document Type</h3>
+                <div class="doc-type-filter-grid">
+                    <button type="button" class="doc-type-chip active" data-doctype="all">All Types</button>
+                    <button type="button" class="doc-type-chip" data-doctype="Summary"><i class="fa-solid fa-file-pen"></i> Summaries</button>
+                    <button type="button" class="doc-type-chip" data-doctype="Lecture Notes"><i class="fa-solid fa-book-open"></i> Lecture Notes</button>
+                    <button type="button" class="doc-type-chip" data-doctype="Past Exam"><i class="fa-solid fa-clipboard-question"></i> Past Exams</button>
+                    <button type="button" class="doc-type-chip" data-doctype="Practice Problems"><i class="fa-solid fa-list-check"></i> Practice</button>
+                </div>
+            </div>
+
+            <!-- Subject Group with Color-coded Icons -->
+            <div class="filter-group">
+                <div class="filter-group-header">
+                    <h3>Subjects</h3>
+                    <span class="filter-count-badge" id="subjectFilterCount"></span>
+                </div>
+                <div class="filter-options-list">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="Computer Science">
+                        <span class="checkmark"></span>
+                        <i class="fa-solid fa-laptop-code subject-icon icon-cs"></i>
+                        <span class="label-text">Computer Science</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="Mathematics">
+                        <span class="checkmark"></span>
+                        <i class="fa-solid fa-calculator subject-icon icon-math"></i>
+                        <span class="label-text">Mathematics</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="Engineering">
+                        <span class="checkmark"></span>
+                        <i class="fa-solid fa-gear subject-icon icon-eng"></i>
+                        <span class="label-text">Engineering</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="Business">
+                        <span class="checkmark"></span>
+                        <i class="fa-solid fa-briefcase subject-icon icon-biz"></i>
+                        <span class="label-text">Business</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="Physics">
+                        <span class="checkmark"></span>
+                        <i class="fa-solid fa-atom subject-icon icon-phy"></i>
+                        <span class="label-text">Physics</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="Science">
+                        <span class="checkmark"></span>
+                        <i class="fa-solid fa-flask subject-icon icon-sci"></i>
+                        <span class="label-text">Science</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="Economics">
+                        <span class="checkmark"></span>
+                        <i class="fa-solid fa-chart-line subject-icon icon-econ"></i>
+                        <span class="label-text">Economics</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="Biology">
+                        <span class="checkmark"></span>
+                        <i class="fa-solid fa-dna subject-icon icon-bio"></i>
+                        <span class="label-text">Biology</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="English">
+                        <span class="checkmark"></span>
+                        <i class="fa-solid fa-book subject-icon icon-eng-lang"></i>
+                        <span class="label-text">English</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="Other">
+                        <span class="checkmark"></span>
+                        <i class="fa-solid fa-shapes subject-icon icon-other"></i>
+                        <span class="label-text">Other</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- University / Institution Filter (Studocu Signature) -->
+            <div class="filter-group">
+                <h3>Institution / University</h3>
+                <select class="filter-select" id="universitySelect">
+                    <option value="">All Universities</option>
+                    <option value="SLIIT">SLIIT</option>
+                    <option value="University of Colombo">University of Colombo</option>
+                    <option value="University of Moratuwa">University of Moratuwa</option>
+                    <option value="Stanford University">Stanford University</option>
+                    <option value="MIT">MIT</option>
+                    <option value="Harvard">Harvard University</option>
+                    <option value="Cambridge">Cambridge University</option>
+                </select>
+            </div>
+
+            <!-- Grade Range Group -->
+            <div class="filter-group">
+                <h3>Academic Level</h3>
+                <div class="filter-options-list">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="Undergraduate">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Undergraduate (University)</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="Grade 12 - 13">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Grade 12 - 13 (A/L)</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="Grade 10 - 11">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Grade 10 - 11 (O/L)</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" value="Grade 6 - 9">
+                        <span class="checkmark"></span>
+                        <span class="label-text">Grade 6 - 9</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Semester Filter -->
+            <div class="filter-group">
+                <h3>Semester (Undergraduate)</h3>
+                <select class="filter-select" id="semesterSelect">
                     <option value="">All Semesters</option>
                     <option value="Y1S1">Year 1 Sem 1</option>
                     <option value="Y1S2">Year 1 Sem 2</option>
@@ -97,147 +256,289 @@
                 </select>
             </div>
 
-            <button class="apply-filters-btn">Apply Filters</button>
+            <!-- File Format Filter -->
+            <div class="filter-group">
+                <h3>File Format</h3>
+                <div class="format-chips-filter">
+                    <button type="button" class="format-chip-btn" data-format="all">All</button>
+                    <button type="button" class="format-chip-btn format-pdf" data-format="pdf"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                    <button type="button" class="format-chip-btn format-word" data-format="word"><i class="fa-solid fa-file-word"></i> Word</button>
+                    <button type="button" class="format-chip-btn format-ppt" data-format="powerpoint"><i class="fa-solid fa-file-powerpoint"></i> PPT</button>
+                </div>
+            </div>
+
+            <!-- Minimum Rating Filter -->
+            <div class="filter-group">
+                <h3>Minimum Rating</h3>
+                <div class="rating-filter-options">
+                    <label class="rating-radio">
+                        <input type="radio" name="minRating" value="0" checked>
+                        <span>All Ratings</span>
+                    </label>
+                    <label class="rating-radio">
+                        <input type="radio" name="minRating" value="4.5">
+                        <span><i class="fa-solid fa-star"></i> 4.5 & up (Top Rated)</span>
+                    </label>
+                    <label class="rating-radio">
+                        <input type="radio" name="minRating" value="4.0">
+                        <span><i class="fa-solid fa-star"></i> 4.0 & up</span>
+                    </label>
+                </div>
+            </div>
+
+            <button class="apply-filters-btn" id="applyFiltersBtn">
+                <i class="fa-solid fa-check"></i> Apply Filters
+            </button>
 
         </aside>
 
         <!-- Main Content -->
         <div class="browse-content">
 
+            <!-- ================= STUDOCU-STYLE SUBJECT TILES / HUBS ================= -->
+            <section class="subject-hubs-section">
+                <div class="section-title-row">
+                    <div class="title-with-pill">
+                        <span class="hub-icon-pill"><i class="fa-solid fa-graduation-cap"></i></span>
+                        <h3>Explore by Field of Study</h3>
+                    </div>
+                    <span class="hub-subtext">Click any subject to quickly browse all notes</span>
+                </div>
+
+                <div class="subject-hubs-carousel" id="subjectHubsCarousel">
+                    <div class="hub-card hub-cs active" data-subject="all">
+                        <div class="hub-icon-circle"><i class="fa-solid fa-layer-group"></i></div>
+                        <h4>All Fields</h4>
+                        <span class="hub-count">50k+ notes</span>
+                    </div>
+
+                    <div class="hub-card hub-blue" data-subject="Computer Science">
+                        <div class="hub-icon-circle"><i class="fa-solid fa-laptop-code"></i></div>
+                        <h4>Computer Science</h4>
+                        <span class="hub-count">180+ notes</span>
+                    </div>
+
+                    <div class="hub-card hub-cyan" data-subject="Mathematics">
+                        <div class="hub-icon-circle"><i class="fa-solid fa-calculator"></i></div>
+                        <h4>Mathematics</h4>
+                        <span class="hub-count">140+ notes</span>
+                    </div>
+
+                    <div class="hub-card hub-emerald" data-subject="Engineering">
+                        <div class="hub-icon-circle"><i class="fa-solid fa-gear"></i></div>
+                        <h4>Engineering</h4>
+                        <span class="hub-count">95+ notes</span>
+                    </div>
+
+                    <div class="hub-card hub-amber" data-subject="Business">
+                        <div class="hub-icon-circle"><i class="fa-solid fa-briefcase"></i></div>
+                        <h4>Business & Finance</h4>
+                        <span class="hub-count">120+ notes</span>
+                    </div>
+
+                    <div class="hub-card hub-purple" data-subject="Physics">
+                        <div class="hub-icon-circle"><i class="fa-solid fa-atom"></i></div>
+                        <h4>Physics</h4>
+                        <span class="hub-count">75+ notes</span>
+                    </div>
+
+                    <div class="hub-card hub-rose" data-subject="Science">
+                        <div class="hub-icon-circle"><i class="fa-solid fa-flask"></i></div>
+                        <h4>Chemistry & Sci</h4>
+                        <span class="hub-count">85+ notes</span>
+                    </div>
+
+                    <div class="hub-card hub-teal" data-subject="Biology">
+                        <div class="hub-icon-circle"><i class="fa-solid fa-dna"></i></div>
+                        <h4>Biology & Health</h4>
+                        <span class="hub-count">65+ notes</span>
+                    </div>
+
+                    <div class="hub-card hub-orange" data-subject="Economics">
+                        <div class="hub-icon-circle"><i class="fa-solid fa-chart-line"></i></div>
+                        <h4>Economics</h4>
+                        <span class="hub-count">60+ notes</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= SPOTLIGHT / SWAPPING CARDS CAROUSEL ================= -->
+            <section class="spotlight-showcase">
+                <div class="spotlight-header">
+                    <div class="spotlight-title-group">
+                        <div class="spotlight-badge">
+                            <i class="fa-solid fa-fire"></i> Trending at Top Universities
+                        </div>
+                        <h2>Top Rated & Most Downloaded Study Packs</h2>
+                        <p>Popular documents helping students ace their exams right now</p>
+                    </div>
+
+                    <div class="spotlight-controls">
+                        <div class="spotlight-tabs" id="spotlightTabs">
+                            <button class="spotlight-tab active" data-tab="trending">
+                                <i class="fa-solid fa-fire"></i> <span>Trending</span>
+                            </button>
+                            <button class="spotlight-tab" data-tab="popular">
+                                <i class="fa-solid fa-star"></i> <span>Popular</span>
+                            </button>
+                            <button class="spotlight-tab" data-tab="top-rated">
+                                <i class="fa-solid fa-trophy"></i> <span>Top Rated</span>
+                            </button>
+                            <button class="spotlight-tab" data-tab="new">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span>New</span>
+                            </button>
+                        </div>
+
+                        <div class="spotlight-nav-buttons">
+                            <button class="spotlight-nav-btn prev" id="spotlightPrev" aria-label="Previous note">
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </button>
+                            <button class="spotlight-nav-btn next" id="spotlightNext" aria-label="Next note">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Swapping Cards Container -->
+                <div class="spotlight-track-container">
+                    <div class="spotlight-track" id="spotlightTrack">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Carousel Dots Indicator -->
+                <div class="spotlight-dots" id="spotlightDots"></div>
+            </section>
+
+            <!-- ================= BROWSE TOOLBAR & HEADER ================= -->
             <div class="browse-header">
                 <div>
-                    <h2>Explore Notes</h2>
-                    <p>Showing 124 results for "Computer Science"</p>
+                    <h2>Available Study Documents</h2>
+                    <p id="resultsCount">Loading available documents...</p>
+                    <div class="active-filter-tags" id="activeFilterTags"></div>
                 </div>
 
-                <div class="sort-box">
-                    <label>Sort by:</label>
-                    <select>
-                        <option>Most Popular</option>
-                        <option>Highest Rated</option>
-                        <option>Newest First</option>
+                <div class="browse-toolbar">
+                    <!-- Grid / List view toggle -->
+                    <div class="view-mode-toggle" id="viewModeToggle">
+                        <button class="view-btn active" data-view="grid" title="Grid View">
+                            <i class="fa-solid fa-grip"></i>
+                        </button>
+                        <button class="view-btn" data-view="list" title="List View">
+                            <i class="fa-solid fa-list-ul"></i>
+                        </button>
+                    </div>
 
-                    </select>
+                    <!-- Sort Dropdown -->
+                    <div class="sort-box">
+                        <label for="sortSelect"><i class="fa-solid fa-arrow-down-short-wide"></i> Sort by:</label>
+                        <select id="sortSelect">
+                            <option value="popular">Most Popular</option>
+                            <option value="rating">Highest Rated</option>
+                            <option value="downloads">Most Downloads</option>
+                            <option value="newest">Newest First</option>
+                            <option value="title">Title (A - Z)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <!-- Notes Grid -->
-            <div class="marketplace-grid">
-
-                <!-- Note 1 -->
-                <div class="market-card reveal">
-                    <div class="market-card-top">
-
-                        <div class="note-icon-large">
-                            <i class="fa-solid fa-file-pdf"></i>
-                        </div>
-                    </div>
-
-                    <div class="market-card-body">
-                        <h3><a href="view-note.html">Software Engineering Lectures</a></h3>
-                        <p class="module">SE3106 • Y3S1</p>
-
-                        <div class="author-info">
-                            <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
-                            <span>By Sarah Jenkins</span>
-                        </div>
-
-                        <div class="market-stats">
-                            <span><i class="fa-solid fa-star"></i> 4.8 (24)</span>
-                            <span><i class="fa-solid fa-download"></i> 156</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Note 2 -->
-                <div class="market-card reveal">
-                    <div class="market-card-top">
-
-                        <div class="note-icon-large" style="background: #e0f2fe; color: #0284c7;">
-                            <i class="fa-solid fa-file-word"></i>
-                        </div>
-                    </div>
-
-                    <div class="market-card-body">
-                        <h3><a href="view-note.html">Data Structures Complete Summary</a></h3>
-                        <p class="module">CS2001 • Y2S1</p>
-
-                        <div class="author-info">
-                            <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
-                            <span>By Mike Ross</span>
-                        </div>
-
-                        <div class="market-stats">
-                            <span><i class="fa-solid fa-star"></i> 4.9 (42)</span>
-                            <span><i class="fa-solid fa-download"></i> 312</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Note 3 -->
-                <div class="market-card reveal">
-                    <div class="market-card-top">
-
-                        <div class="note-icon-large" style="background: #fef3c7; color: #d97706;">
-                            <i class="fa-solid fa-file-powerpoint"></i>
-                        </div>
-                    </div>
-
-                    <div class="market-card-body">
-                        <h3><a href="view-note.html">Database Management Systems</a></h3>
-                        <p class="module">DB2104 • Y2S2</p>
-
-                        <div class="author-info">
-                            <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
-                            <span>By Emma Watson</span>
-                        </div>
-
-                        <div class="market-stats">
-                            <span><i class="fa-solid fa-star"></i> 4.5 (18)</span>
-                            <span><i class="fa-solid fa-download"></i> 89</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Note 4 -->
-                <div class="market-card reveal">
-                    <div class="market-card-top">
-
-                        <div class="note-icon-large">
-                            <i class="fa-solid fa-file-pdf"></i>
-                        </div>
-                    </div>
-
-                    <div class="market-card-body">
-                        <h3><a href="view-note.html">Computer Networks Past Papers</a></h3>
-                        <p class="module">NW3002 • Y3S2</p>
-
-                        <div class="author-info">
-                            <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
-                            <span>By John Doe</span>
-                        </div>
-
-                        <div class="market-stats">
-                            <span><i class="fa-solid fa-star"></i> 4.7 (12)</span>
-                            <span><i class="fa-solid fa-download"></i> 45</span>
-                        </div>
-                    </div>
-                </div>
-
+            <!-- ================= NOTES GRID / LIST ================= -->
+            <div class="marketplace-grid" id="marketplaceGrid">
+                <!-- Dynamically populated by JS -->
             </div>
 
-            <!-- Pagination -->
-            <div class="pagination">
-                <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
-                <button class="page-btn active">1</button>
-                <button class="page-btn">2</button>
-                <button class="page-btn">3</button>
-                <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+            <!-- ================= PAGINATION ================= -->
+            <div class="pagination" id="paginationContainer">
+                <button class="page-btn" id="prevPageBtn"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="page-numbers" id="pageNumbers">
+                    <button class="page-btn active">1</button>
+                </div>
+                <button class="page-btn" id="nextPageBtn"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
 
         </div>
 
     </section>
+
+    <!-- ================= STUDOCU-STYLE QUICK PREVIEW MODAL ================= -->
+    <div class="quick-modal-overlay" id="quickPreviewModal" aria-hidden="true">
+        <div class="quick-modal-card" role="dialog" aria-modal="true" aria-labelledby="modalNoteTitle">
+            <button class="modal-close-btn" id="closeModalBtn" aria-label="Close Preview">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Document Sheet Top Preview Header -->
+            <div class="modal-doc-preview-top">
+                <div class="doc-mockup-frame">
+                    <div class="doc-page-lines">
+                        <div class="line l1"></div>
+                        <div class="line l2"></div>
+                        <div class="line l3"></div>
+                    </div>
+                    <div class="doc-corner-fold"></div>
+                    <div class="doc-center-badge" id="modalFormatBadge">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <span id="modalDocType">Summary</span>
+                    </div>
+                </div>
+
+                <div class="modal-title-info">
+                    <div class="modal-meta-pills" id="modalMetaPills"></div>
+                    <h3 id="modalNoteTitle">Note Title</h3>
+                    <div class="modal-institution-tag" id="modalInstitutionTag">
+                        <i class="fa-solid fa-building-columns"></i>
+                        <span id="modalInstitutionName">University</span>
+                    </div>
+                    <div class="modal-author-row">
+                        <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
+                        <span id="modalAuthorName">By Author</span>
+                        <span class="verified-badge"><i class="fa-solid fa-circle-check"></i> Verified Student</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <h4>Document Overview & Highlights</h4>
+                <p id="modalDescription">Detailed note description...</p>
+
+                <div class="modal-specs-grid">
+                    <div class="spec-item">
+                        <span class="spec-label"><i class="fa-solid fa-file-lines"></i> Page Length</span>
+                        <strong id="modalPages">45 pages</strong>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label"><i class="fa-solid fa-download"></i> Total Downloads</span>
+                        <strong id="modalDownloads">150+</strong>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label"><i class="fa-solid fa-thumbs-up"></i> Helpful Rating</span>
+                        <strong id="modalRating">4.8★ (98%)</strong>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label"><i class="fa-solid fa-graduation-cap"></i> Academic Level</span>
+                        <strong id="modalDate">Undergraduate</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="modal-upvote-btn" id="modalUpvoteBtn">
+                    <i class="fa-solid fa-thumbs-up"></i> <span id="modalUpvoteText">Helpful (42)</span>
+                </button>
+                <button class="modal-save-btn" id="modalSaveBtn">
+                    <i class="fa-regular fa-bookmark"></i> <span>Save to Library</span>
+                </button>
+                <a href="#" class="modal-open-btn" id="modalOpenFullBtn">
+                    <span>Full Study Page</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= FLOATING TOAST NOTIFICATION ================= -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
     <script type="module" src="js/main.js"></script>
 
