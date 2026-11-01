@@ -14,57 +14,112 @@
 
 <body>
 
-    <!-- ================= STUDOCU-STYLE HERO BANNER ================= -->
+    <!-- ================= STUDOCU-STYLE HERO BANNER (REFERENCED DESIGN) ================= -->
     <header class="studocu-hero-banner">
-        <div class="hero-mesh-glow"></div>
-        <div class="hero-mesh-glow glow-2"></div>
+        <!-- Playful Organic Decorative Blobs (from Studocu Reference) -->
+        <div class="organic-blob blob-lilac"></div>
+        <div class="organic-blob blob-orange"></div>
+        <div class="organic-blob blob-lime"></div>
+        <div class="organic-blob blob-petal"></div>
 
-        <div class="studocu-hero-content">
-            <div class="hero-badge-pill">
-                <span class="badge-dot"></span>
-                <span>The #1 Student Knowledge Platform</span>
-                <span class="badge-sparkle"><i class="fa-solid fa-sparkles"></i></span>
-            </div>
-
-            <h1>Find the best study materials for your courses 🎓</h1>
-            <p class="hero-subtitle">
-                Access over 50,000+ student-curated lecture notes, comprehensive summaries, and past exam revision packs.
+        <div class="studocu-hero-container">
+            <h1 class="studocu-hero-headline">Other AIs guess. NotesHub knows.</h1>
+            <p class="studocu-hero-subtext">
+                Powered by real notes from students in your course. Find the materials you need and create custom practice materials to ace your next exam.
             </p>
 
-            <!-- Search Bar inside Hero -->
-            <div class="hero-search-wrapper">
-                <div class="hero-search-bar">
-                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <input type="text" id="heroSearchInput" placeholder="Search by course code, university, module, or topic (e.g. CS2001, Calculus)...">
-                    <button class="hero-search-clear" id="heroClearBtn" title="Clear search" style="display: none;">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                    <button class="hero-search-submit" id="heroSearchSubmitBtn">
-                        <span>Search</span>
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-                </div>
-
-                <!-- Trending Search Tags -->
-                <div class="trending-tags-row">
-                    <span class="trending-label"><i class="fa-solid fa-fire"></i> Popular searches:</span>
-                    <div class="trending-pills-list" id="trendingPillsList">
-                        <button class="trending-pill" data-keyword="Software Engineering"><i class="fa-solid fa-laptop-code"></i> Software Engineering</button>
-                        <button class="trending-pill" data-keyword="Data Structures"><i class="fa-solid fa-diagram-project"></i> Data Structures</button>
-                        <button class="trending-pill" data-keyword="Calculus"><i class="fa-solid fa-calculator"></i> Calculus</button>
-                        <button class="trending-pill" data-keyword="Quantum Physics"><i class="fa-solid fa-atom"></i> Quantum Physics</button>
-                        <button class="trending-pill" data-keyword="Organic Chemistry"><i class="fa-solid fa-flask"></i> Organic Chemistry</button>
-                        <button class="trending-pill" data-keyword="Accounting"><i class="fa-solid fa-briefcase"></i> Accounting</button>
-                    </div>
-                </div>
+            <!-- Pill Mode Switcher (AI mode / Search) -->
+            <div class="studocu-mode-switcher">
+                <button class="mode-tab active" id="modeAiBtn" data-mode="ai">
+                    <span>AI mode</span>
+                    <i class="fa-solid fa-sparkles"></i>
+                </button>
+                <button class="mode-tab" id="modeSearchBtn" data-mode="search">
+                    <span>Search</span>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
             </div>
 
-            <!-- Stats Bar -->
-            <div class="hero-stats-strip">
-                <div class="stat-pill"><i class="fa-solid fa-file-lines stat-icon-blue"></i> <span><strong>50,000+</strong> Study Documents</span></div>
-                <div class="stat-pill"><i class="fa-solid fa-building-columns stat-icon-purple"></i> <span><strong>180+</strong> Universities</span></div>
-                <div class="stat-pill"><i class="fa-solid fa-star stat-icon-yellow"></i> <span><strong>4.9 / 5</strong> Student Rating</span></div>
-                <div class="stat-pill"><i class="fa-solid fa-bolt stat-icon-emerald"></i> <span><strong>100% Free</strong> Downloads</span></div>
+            <!-- Central Studocu Action Card -->
+            <div class="studocu-action-card">
+                <!-- Dropzone Area (AI mode default) -->
+                <div class="studocu-dropzone-area" id="heroDropzone">
+                    <input type="file" id="heroFileInput" class="hidden-file-input" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt">
+                    <div class="cloud-icon-circle">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <h3>Drag & Drop files</h3>
+                    <p class="dropzone-text">
+                        Or <span class="choose-files-trigger" id="chooseFilesTrigger">choose files</span> from your device.
+                    </p>
+                    <span class="dropzone-file-spec">
+                        Documents, images, text supported. Max file size allowed: 100 MB.
+                    </span>
+
+                    <!-- File selected chip -->
+                    <div class="selected-file-chip" id="selectedFileChip" style="display: none;">
+                        <i class="fa-solid fa-file-circle-check"></i>
+                        <span id="selectedFileName">filename.pdf</span>
+                        <button type="button" class="chip-remove-btn" id="chipRemoveBtn" title="Remove file">&times;</button>
+                    </div>
+                </div>
+
+                <!-- Search Mode Header (shown when 'Search' mode is active) -->
+                <div class="studocu-searchmode-area" id="heroSearchModeArea" style="display: none;">
+                    <div class="searchmode-icon-circle">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h3>Search 50,000+ Course Materials</h3>
+                    <p class="searchmode-text">
+                        Browse summaries, exam packs, and lecture slides shared by verified students.
+                    </p>
+                    <div class="searchmode-quick-courses">
+                        <span>Popular:</span>
+                        <button type="button" class="course-code-pill" data-keyword="CS2001">CS2001</button>
+                        <button type="button" class="course-code-pill" data-keyword="SE3106">SE3106</button>
+                        <button type="button" class="course-code-pill" data-keyword="MATH101">MATH101</button>
+                        <button type="button" class="course-code-pill" data-keyword="PHY300">PHY300</button>
+                        <button type="button" class="course-code-pill" data-keyword="ACC2010">ACC2010</button>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="action-card-divider"></div>
+
+                <!-- Input & Action Bar (Prompt or Search) -->
+                <div class="studocu-input-zone">
+                    <div class="input-field-row">
+                        <input type="text" id="heroPromptInput" placeholder="Ask a question or Search for study materials">
+                        <button type="button" class="hero-input-clear" id="heroInputClear" style="display: none;" title="Clear">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <div class="prompt-actions-row">
+                        <button type="button" class="prompt-add-btn" id="promptAddBtn" title="Upload Document">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+
+                        <div class="prompt-tags-list">
+                            <button type="button" class="prompt-tag-pill" data-type="Past Exam">
+                                <i class="fa-solid fa-clipboard-question"></i> Mock exam
+                            </button>
+                            <button type="button" class="prompt-tag-pill" data-type="Summary">
+                                <i class="fa-solid fa-file-pen"></i> Summary
+                            </button>
+                            <button type="button" class="prompt-tag-pill" data-type="Practice Problems">
+                                <i class="fa-solid fa-puzzle-piece"></i> Quiz
+                            </button>
+                            <button type="button" class="prompt-tag-pill" data-type="Lecture Notes">
+                                <i class="fa-solid fa-book-open"></i> Lecture notes
+                            </button>
+                        </div>
+
+                        <button type="button" class="prompt-submit-circle" id="heroSearchSubmitBtn" aria-label="Search & Submit">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
