@@ -1,21 +1,26 @@
 import { getNotes, getSavedNotes, saveNoteForLater, removeSavedNote, getCurrentUser } from './storage.js';
 import { getFirebaseNotes, isFirebaseConfigured } from './firebase.js';
 
-// Comprehensive, realistic sample notes
+// Enriched Studocu-style dataset with universities, document types, and upvotes
 const defaultNotes = [
     {
         id: 'software-engineering-lectures',
-        title: "Software Engineering Lectures",
+        title: "Software Engineering Lectures & Architecture",
         module: "SE3106",
         gradeLevel: "Y3S1",
         subject: "Computer Science",
+        university: "SLIIT",
+        docType: "Lecture Notes",
         uploadedBy: "Sarah Jenkins",
         rating: 4.8,
+        ratingPercent: 96,
         reviews: 24,
         downloads: 156,
+        upvotes: 48,
         type: "pdf",
         pages: 64,
-        description: "Complete lecture notes covering the software development life cycle (SDLC), agile development methodologies, architectural patterns, software testing, and CI/CD pipelines.",
+        academicYear: "2025/2026",
+        description: "Complete lecture notes covering the software development life cycle (SDLC), agile development methodologies, architectural design patterns, software testing, and CI/CD pipelines.",
         isTrending: true,
         isPopular: true,
         isTopRated: true,
@@ -24,17 +29,22 @@ const defaultNotes = [
     },
     {
         id: 'data-structures-complete-summary',
-        title: "Data Structures Complete Summary",
+        title: "Data Structures & Algorithms Master Summary",
         module: "CS2001",
         gradeLevel: "Y2S1",
         subject: "Computer Science",
+        university: "University of Colombo",
+        docType: "Summary",
         uploadedBy: "Mike Ross",
         rating: 4.9,
+        ratingPercent: 99,
         reviews: 42,
         downloads: 312,
+        upvotes: 95,
         type: "word",
         pages: 48,
-        description: "In-depth cheat sheets and code snippets for linked lists, binary search trees, AVL trees, hash tables, Dijkstra algorithms, graph traversals, and dynamic programming.",
+        academicYear: "2025/2026",
+        description: "In-depth cheat sheets and algorithmic code snippets for linked lists, binary search trees, AVL trees, hash tables, Dijkstra algorithms, graph traversals, and dynamic programming.",
         isTrending: true,
         isPopular: true,
         isTopRated: true,
@@ -43,16 +53,21 @@ const defaultNotes = [
     },
     {
         id: 'database-management-systems',
-        title: "Database Management Systems",
+        title: "Database Management Systems & SQL Queries",
         module: "DB2104",
         gradeLevel: "Y2S2",
         subject: "Computer Science",
+        university: "SLIIT",
+        docType: "Lecture Notes",
         uploadedBy: "Emma Watson",
         rating: 4.5,
+        ratingPercent: 92,
         reviews: 18,
         downloads: 89,
+        upvotes: 32,
         type: "powerpoint",
         pages: 82,
+        academicYear: "2024/2025",
         description: "Visual slides on relational algebra, SQL optimization, B-trees, ACID properties, transaction concurrency control, and NoSQL architecture with MongoDB examples.",
         isTrending: false,
         isPopular: true,
@@ -62,16 +77,21 @@ const defaultNotes = [
     },
     {
         id: 'engineering-calculus-differential-eq',
-        title: "Calculus & Differential Equations",
+        title: "Multivariable Calculus & Differential Equations",
         module: "MATH101",
         gradeLevel: "Undergraduate",
         subject: "Mathematics",
+        university: "MIT",
+        docType: "Summary",
         uploadedBy: "Prof. Alan Baker",
         rating: 4.9,
+        ratingPercent: 98,
         reviews: 56,
         downloads: 420,
+        upvotes: 142,
         type: "pdf",
         pages: 75,
+        academicYear: "2025/2026",
         description: "Step-by-step solutions for multivariable limits, Fourier series, partial differential equations, Laplace transforms, and vector calculus problem sets.",
         isTrending: true,
         isPopular: true,
@@ -81,16 +101,21 @@ const defaultNotes = [
     },
     {
         id: 'computer-networks-past-papers',
-        title: "Computer Networks Past Papers",
+        title: "Computer Networks Past Exam Papers & Solutions",
         module: "NW3002",
         gradeLevel: "Y3S2",
         subject: "Computer Science",
+        university: "University of Moratuwa",
+        docType: "Past Exam",
         uploadedBy: "John Doe",
         rating: 4.7,
+        ratingPercent: 94,
         reviews: 12,
         downloads: 145,
+        upvotes: 38,
         type: "pdf",
         pages: 35,
+        academicYear: "2025/2026",
         description: "Comprehensive solved past exam papers spanning OSI model, TCP/IP handshake, subnetting exercises, routing protocols (OSPF, BGP), and network security questions.",
         isTrending: false,
         isPopular: false,
@@ -104,12 +129,17 @@ const defaultNotes = [
         module: "ACC2010",
         gradeLevel: "Y2S1",
         subject: "Business",
+        university: "Stanford University",
+        docType: "Practice Problems",
         uploadedBy: "Jessica Pearson",
         rating: 4.6,
+        ratingPercent: 93,
         reviews: 20,
         downloads: 110,
+        upvotes: 41,
         type: "word",
         pages: 52,
+        academicYear: "2025/2026",
         description: "Comprehensive study guide on balance sheets, cash flow statement analysis, GAAP vs IFRS rules, working capital management, and company valuation models.",
         isTrending: false,
         isPopular: false,
@@ -119,16 +149,21 @@ const defaultNotes = [
     },
     {
         id: 'quantum-physics-mechanics',
-        title: "Quantum Physics & Modern Mechanics",
+        title: "Quantum Physics & Modern Mechanics Formula Pack",
         module: "PHY300",
         gradeLevel: "Grade 12 - 13",
         subject: "Physics",
+        university: "Cambridge",
+        docType: "Summary",
         uploadedBy: "Liam Neeson",
         rating: 4.8,
+        ratingPercent: 96,
         reviews: 31,
         downloads: 230,
+        upvotes: 76,
         type: "pdf",
         pages: 40,
+        academicYear: "2025/2026",
         description: "Diagram-rich summary on wave-particle duality, Schrödinger equation, quantum tunneling, atomic spectra, photoelectric effect, and thermodynamics fundamentals.",
         isTrending: true,
         isPopular: true,
@@ -138,16 +173,21 @@ const defaultNotes = [
     },
     {
         id: 'organic-chemistry-reactions',
-        title: "Organic Chemistry Reactions & Mechanisms",
+        title: "Organic Chemistry Reactions & Synthesis Guide",
         module: "CHEM202",
         gradeLevel: "Grade 12 - 13",
         subject: "Science",
+        university: "Harvard",
+        docType: "Lecture Notes",
         uploadedBy: "Olivia Wilde",
         rating: 4.7,
+        ratingPercent: 95,
         reviews: 28,
         downloads: 185,
+        upvotes: 62,
         type: "pdf",
         pages: 58,
+        academicYear: "2024/2025",
         description: "High-yield revision maps for nucleophilic substitution (SN1/SN2), elimination (E1/E2), aromatic chemistry, carbon-carbon bond formation, and spectroscopy analysis.",
         isTrending: false,
         isPopular: true,
@@ -157,16 +197,21 @@ const defaultNotes = [
     },
     {
         id: 'microeconomics-market-structures',
-        title: "Microeconomics & Market Structures",
+        title: "Microeconomics Principles & Exam Review",
         module: "ECON101",
         gradeLevel: "Y1S2",
         subject: "Economics",
+        university: "University of Colombo",
+        docType: "Past Exam",
         uploadedBy: "David Clark",
         rating: 4.6,
+        ratingPercent: 91,
         reviews: 15,
         downloads: 115,
+        upvotes: 35,
         type: "powerpoint",
         pages: 45,
+        academicYear: "2025/2026",
         description: "Engaging lecture decks on supply/demand elasticity, perfect competition vs monopoly, game theory, consumer surplus, externalities, and public goods.",
         isTrending: false,
         isPopular: false,
@@ -176,16 +221,21 @@ const defaultNotes = [
     },
     {
         id: 'cellular-biology-genetics',
-        title: "Cellular Biology & Modern Genetics",
+        title: "Cellular Biology & Genetics Complete Review",
         module: "BIO205",
         gradeLevel: "Grade 12 - 13",
         subject: "Biology",
+        university: "SLIIT",
+        docType: "Summary",
         uploadedBy: "Rachel Green",
         rating: 4.8,
+        ratingPercent: 97,
         reviews: 34,
         downloads: 260,
+        upvotes: 88,
         type: "pdf",
         pages: 62,
+        academicYear: "2025/2026",
         description: "Full exam review on DNA replication, CRISPR gene editing, transcription & translation, cellular respiration pathways, Mendelian inheritance, and evolutionary biology.",
         isTrending: true,
         isPopular: true,
@@ -195,16 +245,21 @@ const defaultNotes = [
     },
     {
         id: 'fluid-mechanics-thermodynamics',
-        title: "Fluid Mechanics & Heat Transfer",
+        title: "Fluid Mechanics & Heat Transfer Solved Problems",
         module: "ME2102",
         gradeLevel: "Y2S2",
         subject: "Engineering",
+        university: "University of Moratuwa",
+        docType: "Practice Problems",
         uploadedBy: "Harvey Specter",
         rating: 4.8,
+        ratingPercent: 96,
         reviews: 22,
         downloads: 178,
+        upvotes: 59,
         type: "pdf",
         pages: 55,
+        academicYear: "2024/2025",
         description: "Bernoulli equation derivations, Navier-Stokes simplified solutions, boundary layer theory, pipe flow pressure drops, and heat exchanger design principles.",
         isTrending: true,
         isPopular: false,
@@ -214,18 +269,20 @@ const defaultNotes = [
     }
 ];
 
-// State
+// App State
 let allNotesList = [];
 let currentFilteredNotes = [];
 let currentPage = 1;
 const ITEMS_PER_PAGE = 6;
 let currentViewMode = 'grid';
+let activeDocTypeFilter = 'all';
 let activeFormatFilter = 'all';
 let activeSpotlightTab = 'trending';
 let spotlightCurrentIndex = 0;
 let spotlightAutoplayTimer = null;
+const upvotedNoteIds = new Set();
 
-// Helper: Toast Notifications
+// Toast Notifications
 export function showToast(message, type = 'success', icon = 'fa-check') {
     const container = document.getElementById('toastContainer');
     if (!container) return;
@@ -241,7 +298,7 @@ export function showToast(message, type = 'success', icon = 'fa-check') {
     }, 3000);
 }
 
-// Helper: Format Icon & Styling
+// Format Icon & Color Styling
 function getFileFormatMeta(note) {
     const fileName = (note.fileName || '').toLowerCase();
     const type = (note.type || '').toLowerCase();
@@ -270,7 +327,22 @@ function getFileFormatMeta(note) {
     };
 }
 
-// Helper: Check if note is saved in user's library
+// Document Type Styling Badge (Studocu Style)
+function getDocTypeBadgeMeta(docType) {
+    const type = (docType || 'Summary').toLowerCase();
+    if (type.includes('lecture')) {
+        return { class: 'lecture', icon: 'fa-book-open', text: 'Lecture Notes' };
+    }
+    if (type.includes('exam')) {
+        return { class: 'exam', icon: 'fa-clipboard-question', text: 'Past Exam' };
+    }
+    if (type.includes('practice') || type.includes('problem')) {
+        return { class: 'practice', icon: 'fa-list-check', text: 'Practice' };
+    }
+    return { class: 'summary', icon: 'fa-file-pen', text: 'Summary' };
+}
+
+// Check saved status
 function isNoteSaved(noteId) {
     try {
         const saved = getSavedNotes();
@@ -286,7 +358,6 @@ function renderSpotlightCards() {
     const dotsContainer = document.getElementById('spotlightDots');
     if (!track) return;
 
-    // Filter notes based on active tab
     let spotlightNotes = [];
     if (activeSpotlightTab === 'trending') {
         spotlightNotes = allNotesList.filter(n => n.isTrending || n.downloads > 150);
@@ -298,24 +369,24 @@ function renderSpotlightCards() {
         spotlightNotes = [...allNotesList].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
     }
 
-    spotlightNotes = spotlightNotes.slice(0, 6); // Max 6 featured items
+    spotlightNotes = spotlightNotes.slice(0, 6);
     if (spotlightNotes.length === 0) spotlightNotes = allNotesList.slice(0, 4);
 
     track.innerHTML = '';
-    spotlightNotes.forEach((note, index) => {
+    spotlightNotes.forEach((note) => {
         const formatMeta = getFileFormatMeta(note);
-        const saved = isNoteSaved(note.id);
+        const docBadge = getDocTypeBadgeMeta(note.docType);
 
-        let badgeLabel = '🔥 Trending';
+        let badgeLabel = '🔥 Trending Today';
         let badgeClass = 'trending';
         if (activeSpotlightTab === 'popular') {
-            badgeLabel = '⭐ Popular';
+            badgeLabel = '⭐ Bestseller';
             badgeClass = 'popular';
         } else if (activeSpotlightTab === 'top-rated') {
-            badgeLabel = '🏆 Top Rated';
+            badgeLabel = '🏆 Top Grade A+';
             badgeClass = 'top-rated';
         } else if (activeSpotlightTab === 'new') {
-            badgeLabel = '✨ New';
+            badgeLabel = '✨ New Release';
             badgeClass = 'new';
         }
 
@@ -332,12 +403,12 @@ function renderSpotlightCards() {
                     <h4 class="spotlight-card-title">
                         <a href="view-note.html?id=${encodeURIComponent(note.id || note.title)}">${note.title}</a>
                     </h4>
-                    <span class="spotlight-module">${note.module || ''} • ${note.gradeLevel || 'Undergraduate'}</span>
+                    <span class="spotlight-module">${note.university ? note.university + ' • ' : ''}${note.module || ''}</span>
                 </div>
             </div>
             <div class="spotlight-stats-row">
-                <span><i class="fa-solid fa-star"></i> ${note.rating || 4.8} (${note.reviews || 20})</span>
-                <span><i class="fa-solid fa-download"></i> ${note.downloads || 100}</span>
+                <span><i class="fa-solid fa-thumbs-up"></i> ${note.upvotes || 42} helpful</span>
+                <span><i class="fa-solid fa-star"></i> ${note.rating || 4.8}</span>
                 <span><i class="fa-solid fa-file-lines"></i> ${note.pages || 40} pgs</span>
             </div>
             <div class="spotlight-card-actions">
@@ -387,7 +458,7 @@ function updateSpotlightPosition() {
     const cards = track.querySelectorAll('.spotlight-card');
     if (cards.length === 0) return;
 
-    const cardWidth = cards[0].offsetWidth + 20; // 20px gap
+    const cardWidth = cards[0].offsetWidth + 20;
     const visibleCards = window.innerWidth <= 640 ? 1 : (window.innerWidth <= 1080 ? 2 : 3);
     const maxIndex = Math.max(0, cards.length - visibleCards);
 
@@ -405,7 +476,6 @@ function updateSpotlightPosition() {
 }
 
 function setupSpotlightShowcase() {
-    // Tabs click
     const tabs = document.querySelectorAll('.spotlight-tab');
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -416,32 +486,23 @@ function setupSpotlightShowcase() {
         });
     });
 
-    // Nav buttons
-    const prevBtn = document.getElementById('spotlightPrev');
-    const nextBtn = document.getElementById('spotlightNext');
+    document.getElementById('spotlightPrev')?.addEventListener('click', () => {
+        spotlightCurrentIndex--;
+        updateSpotlightPosition();
+    });
 
-    if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-            spotlightCurrentIndex--;
-            updateSpotlightPosition();
-        });
-    }
+    document.getElementById('spotlightNext')?.addEventListener('click', () => {
+        spotlightCurrentIndex++;
+        updateSpotlightPosition();
+    });
 
-    if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            spotlightCurrentIndex++;
-            updateSpotlightPosition();
-        });
-    }
-
-    // Auto-advance spotlight every 6 seconds
     const showcase = document.querySelector('.spotlight-showcase');
     function startAutoplay() {
         stopAutoplay();
         spotlightAutoplayTimer = setInterval(() => {
             spotlightCurrentIndex++;
             updateSpotlightPosition();
-        }, 6000);
+        }, 6500);
     }
     function stopAutoplay() {
         if (spotlightAutoplayTimer) clearInterval(spotlightAutoplayTimer);
@@ -452,14 +513,11 @@ function setupSpotlightShowcase() {
         showcase.addEventListener('mouseleave', startAutoplay);
     }
 
-    window.addEventListener('resize', () => {
-        updateSpotlightPosition();
-    });
-
+    window.addEventListener('resize', updateSpotlightPosition);
     startAutoplay();
 }
 
-// ================= NOTE CARDS RENDERING =================
+// ================= NOTE CARDS RENDERING (STUDOCU STYLE) =================
 function renderNotes(notes) {
     const grid = document.getElementById('marketplaceGrid');
     const resultsCount = document.getElementById('resultsCount');
@@ -469,7 +527,7 @@ function renderNotes(notes) {
     currentFilteredNotes = notes;
 
     if (resultsCount) {
-        resultsCount.textContent = `Showing ${notes.length} note${notes.length === 1 ? '' : 's'}`;
+        resultsCount.textContent = `Showing ${notes.length} document${notes.length === 1 ? '' : 's'}`;
     }
 
     if (notes.length === 0) {
@@ -478,8 +536,8 @@ function renderNotes(notes) {
                 <div class="empty-icon-circle">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
-                <h3>No study notes found</h3>
-                <p>We couldn't find any materials matching your criteria. Try adjusting your search keywords, grade ranges, or subject filters.</p>
+                <h3>No study materials found</h3>
+                <p>We couldn't find any documents matching your criteria. Try adjusting your search query, subject filter, or academic level.</p>
                 <button type="button" class="empty-reset-btn" id="emptyResetFiltersBtn">
                     <i class="fa-solid fa-rotate-left"></i> Reset All Filters
                 </button>
@@ -490,7 +548,7 @@ function renderNotes(notes) {
         return;
     }
 
-    // Paginate notes
+    // Pagination
     const totalPages = Math.ceil(notes.length / ITEMS_PER_PAGE);
     if (currentPage > totalPages) currentPage = 1;
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -498,24 +556,39 @@ function renderNotes(notes) {
 
     paginatedNotes.forEach(note => {
         const formatMeta = getFileFormatMeta(note);
+        const docBadge = getDocTypeBadgeMeta(note.docType);
         const noteId = String(note.id || note.title);
         const saved = isNoteSaved(noteId);
+        const isUpvoted = upvotedNoteIds.has(noteId);
+        const upvoteCount = (note.upvotes || 30) + (isUpvoted ? 1 : 0);
 
         const card = document.createElement('div');
         card.className = 'market-card reveal active';
         card.innerHTML = `
+            <!-- Top Paper Sheet Mockup (Studocu Style) -->
             <div class="market-card-top">
                 <div class="card-top-badges">
-                    <span class="format-badge ${formatMeta.class}">${formatMeta.label}</span>
-                    <span class="subject-badge">${note.subject || 'General'}</span>
+                    <span class="doc-type-badge ${docBadge.class}">
+                        <i class="fa-solid ${docBadge.icon}"></i> ${docBadge.text}
+                    </span>
+                    <span class="page-count-badge">📄 ${note.pages || 40} pgs</span>
                 </div>
 
-                <button class="card-bookmark-btn ${saved ? 'saved' : ''}" data-id="${noteId}" title="${saved ? 'Remove from Saved' : 'Save for Later'}">
+                <button class="card-bookmark-btn ${saved ? 'saved' : ''}" data-id="${noteId}" title="${saved ? 'Remove from Saved' : 'Save to Library'}">
                     <i class="fa-${saved ? 'solid' : 'regular'} fa-bookmark"></i>
                 </button>
 
-                <div class="note-icon-large" style="${formatMeta.style}">
-                    <i class="fa-solid ${formatMeta.icon}"></i>
+                <div class="paper-sheet-mockup">
+                    <div class="sheet-corner-fold"></div>
+                    <div class="sheet-lines">
+                        <div class="sheet-line l1"></div>
+                        <div class="sheet-line l2"></div>
+                        <div class="sheet-line l3"></div>
+                        <div class="sheet-line l4"></div>
+                    </div>
+                    <div class="sheet-icon-center" style="${formatMeta.style}">
+                        <i class="fa-solid ${formatMeta.icon}"></i>
+                    </div>
                 </div>
 
                 <div class="card-hover-overlay">
@@ -525,15 +598,20 @@ function renderNotes(notes) {
                 </div>
             </div>
 
+            <!-- Card Body -->
             <div class="market-card-body">
-                <div class="card-module-row">
-                    <span class="module-code">${note.module || 'Note'}</span>
-                    <span class="grade-pill">${note.gradeLevel || 'Undergraduate'}</span>
+                <div class="institution-pill-row">
+                    <span class="institution-tag">
+                        <i class="fa-solid fa-building-columns"></i> ${note.university || 'University'}
+                    </span>
+                    <span class="academic-year">${note.academicYear || '2025/2026'}</span>
                 </div>
+
+                <div class="card-module-tag">${note.module || note.subject || 'General'}</div>
 
                 <h3><a href="view-note.html?id=${encodeURIComponent(noteId)}">${note.title}</a></h3>
 
-                <p class="note-excerpt">${note.description || 'Comprehensive class summary and study material compiled for students.'}</p>
+                <p class="note-excerpt">${note.description || 'Verified course summary and exam study guide prepared by students.'}</p>
 
                 <div class="author-info">
                     <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
@@ -543,15 +621,27 @@ function renderNotes(notes) {
 
                 <div class="market-stats">
                     <div class="stat-group">
-                        <span class="stat-item"><i class="fa-solid fa-star"></i> ${note.rating || 4.8} (${note.reviews || 0})</span>
-                        <span class="stat-item"><i class="fa-solid fa-download"></i> ${note.downloads || 0}</span>
+                        <button type="button" class="upvote-btn-pill ${isUpvoted ? 'upvoted' : ''}" data-id="${noteId}" title="Mark as helpful">
+                            <i class="fa-solid fa-thumbs-up"></i> <span>${upvoteCount}</span>
+                        </button>
+                        <span class="card-rating-pill">
+                            <i class="fa-solid fa-star"></i> ${note.rating || 4.8}
+                        </span>
                     </div>
                     <a href="view-note.html?id=${encodeURIComponent(noteId)}" class="card-view-link">
-                        View Note <i class="fa-solid fa-arrow-right"></i>
+                        View <i class="fa-solid fa-arrow-right"></i>
                     </a>
                 </div>
             </div>
         `;
+
+        // Upvote Handler
+        const upvoteBtn = card.querySelector('.upvote-btn-pill');
+        upvoteBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleUpvote(noteId, upvoteBtn, note);
+        });
 
         // Bookmark Toggle
         const bookmarkBtn = card.querySelector('.card-bookmark-btn');
@@ -575,6 +665,23 @@ function renderNotes(notes) {
     renderPagination(totalPages);
 }
 
+// ================= UPVOTE INTERACTION =================
+function toggleUpvote(noteId, buttonElement, note) {
+    if (upvotedNoteIds.has(noteId)) {
+        upvotedNoteIds.delete(noteId);
+        buttonElement.classList.remove('upvoted');
+        const countSpan = buttonElement.querySelector('span');
+        if (countSpan) countSpan.textContent = note.upvotes || 30;
+        showToast(`Upvote removed`, 'info', 'fa-thumbs-up');
+    } else {
+        upvotedNoteIds.add(noteId);
+        buttonElement.classList.add('upvoted');
+        const countSpan = buttonElement.querySelector('span');
+        if (countSpan) countSpan.textContent = (note.upvotes || 30) + 1;
+        showToast(`Thank you! Marked "${note.title}" as helpful 👍`, 'success', 'fa-thumbs-up');
+    }
+}
+
 // ================= BOOKMARK HANDLER =================
 function toggleBookmark(note, buttonElement) {
     const noteId = String(note.id || note.title);
@@ -590,7 +697,7 @@ function toggleBookmark(note, buttonElement) {
         removeSavedNote(noteId);
         buttonElement.classList.remove('saved');
         buttonElement.innerHTML = '<i class="fa-regular fa-bookmark"></i>';
-        buttonElement.title = 'Save for Later';
+        buttonElement.title = 'Save to Library';
         showToast(`Removed "${note.title}" from Saved Notes`, 'info', 'fa-bookmark');
     } else {
         saveNoteForLater({
@@ -599,6 +706,8 @@ function toggleBookmark(note, buttonElement) {
             module: note.module,
             gradeLevel: note.gradeLevel,
             subject: note.subject,
+            university: note.university,
+            docType: note.docType,
             uploadedBy: note.uploadedByName || note.uploadedBy,
             rating: note.rating,
             reviews: note.reviews,
@@ -613,12 +722,12 @@ function toggleBookmark(note, buttonElement) {
         showToast(`Saved "${note.title}" to your library! 🔖`, 'success', 'fa-bookmark');
     }
 
-    // Also update modal save button if open for this note
+    // Sync modal if open
     const modalSaveBtn = document.getElementById('modalSaveBtn');
     if (modalSaveBtn && modalSaveBtn.getAttribute('data-id') === noteId) {
         const isNowSaved = !saved;
         modalSaveBtn.classList.toggle('saved', isNowSaved);
-        modalSaveBtn.innerHTML = `<i class="fa-${isNowSaved ? 'solid' : 'regular'} fa-bookmark"></i> <span>${isNowSaved ? 'Saved in Library' : 'Save for Later'}</span>`;
+        modalSaveBtn.innerHTML = `<i class="fa-${isNowSaved ? 'solid' : 'regular'} fa-bookmark"></i> <span>${isNowSaved ? 'Saved in Library' : 'Save to Library'}</span>`;
     }
 }
 
@@ -628,54 +737,68 @@ function openQuickPreview(note) {
     if (!modal) return;
 
     const formatMeta = getFileFormatMeta(note);
+    const docBadge = getDocTypeBadgeMeta(note.docType);
     const noteId = String(note.id || note.title);
     const saved = isNoteSaved(noteId);
+    const isUpvoted = upvotedNoteIds.has(noteId);
 
-    // Format icon
-    const formatIcon = document.getElementById('modalFormatIcon');
-    if (formatIcon) {
-        formatIcon.className = `modal-icon-badge ${formatMeta.class}`;
-        formatIcon.innerHTML = `<i class="fa-solid ${formatMeta.icon}"></i>`;
+    // Format badge & doc type
+    const modalFormatBadge = document.getElementById('modalFormatBadge');
+    if (modalFormatBadge) {
+        modalFormatBadge.innerHTML = `<i class="fa-solid ${formatMeta.icon}"></i> <span>${docBadge.text}</span>`;
     }
 
     // Meta pills
     const metaPills = document.getElementById('modalMetaPills');
     if (metaPills) {
         metaPills.innerHTML = `
-            <span class="format-badge ${formatMeta.class}">${formatMeta.label}</span>
-            <span class="subject-badge">${note.subject || 'General'}</span>
-            <span class="module-code">${note.module || ''}</span>
+            <span class="doc-type-badge ${docBadge.class}"><i class="fa-solid ${docBadge.icon}"></i> ${docBadge.text}</span>
+            <span class="institution-tag"><i class="fa-solid fa-building-columns"></i> ${note.university || 'University'}</span>
+            <span class="card-module-tag">${note.module || ''}</span>
         `;
     }
 
-    // Title & Author
+    // Title & Institution & Author
     document.getElementById('modalNoteTitle').textContent = note.title;
+    document.getElementById('modalInstitutionName').textContent = note.university || 'Accredited Institution';
     document.getElementById('modalAuthorName').textContent = `By ${note.uploadedByName || note.uploadedBy || 'Student'}`;
-    document.getElementById('modalDescription').textContent = note.description || 'Complete study notes compiled for easy reading, exam revision, and coursework review.';
+    document.getElementById('modalDescription').textContent = note.description || 'Verified course summary and exam study guide prepared by students.';
 
     // Specs
     document.getElementById('modalPages').textContent = `${note.pages || 40} pages`;
     document.getElementById('modalDownloads').textContent = `${note.downloads || 0}+ downloads`;
-    document.getElementById('modalRating').textContent = `${note.rating || 4.8}★ (${note.reviews || 0} reviews)`;
-    document.getElementById('modalDate').textContent = note.gradeLevel || 'Undergraduate';
+    document.getElementById('modalRating').textContent = `${note.rating || 4.8}★ (${note.ratingPercent || 96}% helpful)`;
+    document.getElementById('modalDate').textContent = `${note.gradeLevel || 'Undergraduate'} • ${note.academicYear || '2025/2026'}`;
 
-    // Open Full Note link
+    // Link
     const openFullBtn = document.getElementById('modalOpenFullBtn');
     if (openFullBtn) {
         openFullBtn.href = `view-note.html?id=${encodeURIComponent(noteId)}`;
     }
 
-    // Save button
+    // Upvote in modal
+    const modalUpvoteBtn = document.getElementById('modalUpvoteBtn');
+    const modalUpvoteText = document.getElementById('modalUpvoteText');
+    if (modalUpvoteBtn && modalUpvoteText) {
+        modalUpvoteText.textContent = `Helpful (${(note.upvotes || 30) + (isUpvoted ? 1 : 0)})`;
+        modalUpvoteBtn.onclick = () => {
+            const cardBtn = document.querySelector(`.upvote-btn-pill[data-id="${noteId}"]`);
+            toggleUpvote(noteId, cardBtn || modalUpvoteBtn, note);
+            const nowUpvoted = upvotedNoteIds.has(noteId);
+            modalUpvoteText.textContent = `Helpful (${(note.upvotes || 30) + (nowUpvoted ? 1 : 0)})`;
+        };
+    }
+
+    // Save in modal
     const modalSaveBtn = document.getElementById('modalSaveBtn');
     if (modalSaveBtn) {
         modalSaveBtn.setAttribute('data-id', noteId);
         modalSaveBtn.classList.toggle('saved', saved);
-        modalSaveBtn.innerHTML = `<i class="fa-${saved ? 'solid' : 'regular'} fa-bookmark"></i> <span>${saved ? 'Saved in Library' : 'Save for Later'}</span>`;
+        modalSaveBtn.innerHTML = `<i class="fa-${saved ? 'solid' : 'regular'} fa-bookmark"></i> <span>${saved ? 'Saved in Library' : 'Save to Library'}</span>`;
 
-        // Replace click handler cleanly
         modalSaveBtn.onclick = () => {
-            const currentCardBtn = document.querySelector(`.card-bookmark-btn[data-id="${noteId}"]`);
-            toggleBookmark(note, currentCardBtn || modalSaveBtn);
+            const cardBtn = document.querySelector(`.card-bookmark-btn[data-id="${noteId}"]`);
+            toggleBookmark(note, cardBtn || modalSaveBtn);
         };
     }
 
@@ -695,21 +818,29 @@ function closeQuickPreview() {
 // ================= FILTER & SEARCH LOGIC =================
 function handleFilters() {
     const searchInput = document.getElementById('searchInput');
-    const term = (searchInput?.value || '').trim().toLowerCase();
+    const heroInput = document.getElementById('heroSearchInput');
+    const term = (searchInput?.value || heroInput?.value || '').trim().toLowerCase();
 
-    // Toggle clear search button
+    // Toggle clear buttons
     const clearBtn = document.getElementById('clearSearchBtn');
-    if (clearBtn) {
-        clearBtn.style.display = term ? 'flex' : 'none';
-    }
+    const heroClearBtn = document.getElementById('heroClearBtn');
+    if (clearBtn) clearBtn.style.display = term ? 'flex' : 'none';
+    if (heroClearBtn) heroClearBtn.style.display = term ? 'flex' : 'none';
 
     // Active Subject checkboxes
-    const subjectCheckboxes = document.querySelectorAll('.filter-group:nth-child(2) input[type="checkbox"]:checked');
-    const selectedSubjects = Array.from(subjectCheckboxes).map(cb => cb.value.toLowerCase());
+    const subjectCheckboxes = document.querySelectorAll('.filters-sidebar input[type="checkbox"]:checked');
+    const selectedSubjects = Array.from(subjectCheckboxes)
+        .filter(cb => cb.closest('.filter-group:nth-of-type(3)'))
+        .map(cb => cb.value.toLowerCase());
 
     // Active Grade checkboxes
-    const gradeCheckboxes = document.querySelectorAll('.filter-group:nth-child(3) input[type="checkbox"]:checked');
-    const selectedGrades = Array.from(gradeCheckboxes).map(cb => cb.value.toLowerCase());
+    const gradeCheckboxes = Array.from(subjectCheckboxes)
+        .filter(cb => cb.closest('.filter-group:nth-of-type(5)'))
+        .map(cb => cb.value.toLowerCase());
+
+    // University filter
+    const uniSelect = document.getElementById('universitySelect');
+    const selectedUni = (uniSelect?.value || '').toLowerCase();
 
     // Semester filter
     const semesterSelect = document.getElementById('semesterSelect');
@@ -721,25 +852,37 @@ function handleFilters() {
 
     // Filter notes
     let filtered = allNotesList.filter(note => {
-        // Search matching
+        // Keyword Search
         const titleMatch = (note.title || '').toLowerCase().includes(term);
         const moduleMatch = (note.module || '').toLowerCase().includes(term);
         const descMatch = (note.description || '').toLowerCase().includes(term);
-        const subjectMatchTerm = (note.subject || '').toLowerCase().includes(term);
-        const matchesSearch = !term || titleMatch || moduleMatch || descMatch || subjectMatchTerm;
+        const subjectMatch = (note.subject || '').toLowerCase().includes(term);
+        const uniMatch = (note.university || '').toLowerCase().includes(term);
+        const matchesSearch = !term || titleMatch || moduleMatch || descMatch || subjectMatch || uniMatch;
 
-        // Subject matching
+        // Document Type
+        const noteDocType = (note.docType || 'Summary').toLowerCase();
+        let matchesDocType = true;
+        if (activeDocTypeFilter !== 'all') {
+            matchesDocType = noteDocType.includes(activeDocTypeFilter.toLowerCase());
+        }
+
+        // Subject
         const noteSubject = (note.subject || '').toLowerCase();
         const matchesSubject = selectedSubjects.length === 0 || selectedSubjects.includes(noteSubject);
 
-        // Grade matching
-        const noteGrade = (note.gradeLevel || '').toLowerCase();
-        const matchesGrade = selectedGrades.length === 0 || selectedGrades.some(g => noteGrade.includes(g));
+        // University
+        const noteUni = (note.university || '').toLowerCase();
+        const matchesUni = !selectedUni || noteUni.includes(selectedUni);
 
-        // Semester matching
+        // Grade
+        const noteGrade = (note.gradeLevel || '').toLowerCase();
+        const matchesGrade = gradeCheckboxes.length === 0 || gradeCheckboxes.some(g => noteGrade.includes(g));
+
+        // Semester
         const matchesSemester = !selectedSemester || noteGrade.includes(selectedSemester) || (note.module || '').toLowerCase().includes(selectedSemester);
 
-        // Format matching
+        // Format
         const noteType = (note.type || '').toLowerCase();
         const noteFileName = (note.fileName || '').toLowerCase();
         let matchesFormat = true;
@@ -751,10 +894,10 @@ function handleFilters() {
             matchesFormat = noteType === 'powerpoint' || /\.(ppt|pptx)$/.test(noteFileName);
         }
 
-        // Rating matching
+        // Rating
         const matchesRating = !minRating || (note.rating || 0) >= minRating;
 
-        return matchesSearch && matchesSubject && matchesGrade && matchesSemester && matchesFormat && matchesRating;
+        return matchesSearch && matchesDocType && matchesSubject && matchesUni && matchesGrade && matchesSemester && matchesFormat && matchesRating;
     });
 
     // Sorting
@@ -762,7 +905,7 @@ function handleFilters() {
     const sortVal = sortSelect?.value || 'popular';
 
     if (sortVal === 'popular') {
-        filtered.sort((a, b) => ((b.downloads || 0) * (b.rating || 1)) - ((a.downloads || 0) * (a.rating || 1)));
+        filtered.sort((a, b) => ((b.downloads || 0) + (b.upvotes || 0)) - ((a.downloads || 0) + (a.upvotes || 0)));
     } else if (sortVal === 'rating') {
         filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
     } else if (sortVal === 'downloads') {
@@ -775,11 +918,11 @@ function handleFilters() {
 
     currentPage = 1;
     renderNotes(filtered);
-    updateActiveFilterBadges(term, selectedSubjects, selectedGrades, selectedSemester);
+    updateActiveFilterBadges(term, selectedSubjects, selectedUni, selectedSemester);
     updateMobileSummary(selectedSubjects);
 }
 
-function updateActiveFilterBadges(term, subjects, grades, semester) {
+function updateActiveFilterBadges(term, subjects, uni, semester) {
     const container = document.getElementById('activeFilterTags');
     if (!container) return;
 
@@ -787,8 +930,9 @@ function updateActiveFilterBadges(term, subjects, grades, semester) {
     const tags = [];
 
     if (term) tags.push({ type: 'search', label: `Search: "${term}"` });
+    if (activeDocTypeFilter !== 'all') tags.push({ type: 'doctype', label: `Type: ${activeDocTypeFilter}` });
     subjects.forEach(s => tags.push({ type: 'subject', val: s, label: s }));
-    grades.forEach(g => tags.push({ type: 'grade', val: g, label: g }));
+    if (uni) tags.push({ type: 'uni', label: `University: ${uni.toUpperCase()}` });
     if (semester) tags.push({ type: 'semester', label: `Semester: ${semester.toUpperCase()}` });
     if (activeFormatFilter !== 'all') tags.push({ type: 'format', label: `Format: ${activeFormatFilter.toUpperCase()}` });
 
@@ -809,24 +953,26 @@ function updateActiveFilterBadges(term, subjects, grades, semester) {
 function removeFilter(tag) {
     if (tag.type === 'search') {
         const input = document.getElementById('searchInput');
+        const heroInput = document.getElementById('heroSearchInput');
         if (input) input.value = '';
+        if (heroInput) heroInput.value = '';
+    } else if (tag.type === 'doctype') {
+        activeDocTypeFilter = 'all';
+        document.querySelectorAll('.doc-type-chip').forEach(c => {
+            c.classList.toggle('active', c.getAttribute('data-doctype') === 'all');
+        });
     } else if (tag.type === 'subject') {
-        const cbs = document.querySelectorAll('.filter-group:nth-child(2) input[type="checkbox"]');
+        const cbs = document.querySelectorAll('.filters-sidebar input[type="checkbox"]');
         cbs.forEach(cb => {
             if (cb.value.toLowerCase() === tag.val) cb.checked = false;
         });
-        // Also sync chip
-        const chips = document.querySelectorAll('.category-chip');
-        chips.forEach(c => {
-            if (c.getAttribute('data-subject').toLowerCase() === tag.val) {
-                c.classList.remove('active');
-            }
+        const hubs = document.querySelectorAll('.hub-card');
+        hubs.forEach(h => {
+            if (h.getAttribute('data-subject').toLowerCase() === tag.val) h.classList.remove('active');
         });
-    } else if (tag.type === 'grade') {
-        const cbs = document.querySelectorAll('.filter-group:nth-child(3) input[type="checkbox"]');
-        cbs.forEach(cb => {
-            if (cb.value.toLowerCase() === tag.val) cb.checked = false;
-        });
+    } else if (tag.type === 'uni') {
+        const uniSelect = document.getElementById('universitySelect');
+        if (uniSelect) uniSelect.value = '';
     } else if (tag.type === 'semester') {
         const semSelect = document.getElementById('semesterSelect');
         if (semSelect) semSelect.value = '';
@@ -841,23 +987,33 @@ function removeFilter(tag) {
 
 function resetAllFilters() {
     const searchInput = document.getElementById('searchInput');
+    const heroInput = document.getElementById('heroSearchInput');
     if (searchInput) searchInput.value = '';
+    if (heroInput) heroInput.value = '';
 
     document.querySelectorAll('.filters-sidebar input[type="checkbox"]').forEach(cb => cb.checked = false);
 
     const semSelect = document.getElementById('semesterSelect');
     if (semSelect) semSelect.value = '';
 
+    const uniSelect = document.getElementById('universitySelect');
+    if (uniSelect) uniSelect.value = '';
+
     const defaultRadio = document.querySelector('input[name="minRating"][value="0"]');
     if (defaultRadio) defaultRadio.checked = true;
+
+    activeDocTypeFilter = 'all';
+    document.querySelectorAll('.doc-type-chip').forEach(c => {
+        c.classList.toggle('active', c.getAttribute('data-doctype') === 'all');
+    });
 
     activeFormatFilter = 'all';
     document.querySelectorAll('.format-chip-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-format') === 'all');
     });
 
-    document.querySelectorAll('.category-chip').forEach(chip => {
-        chip.classList.toggle('active', chip.getAttribute('data-subject') === 'all');
+    document.querySelectorAll('.hub-card').forEach(h => {
+        h.classList.toggle('active', h.getAttribute('data-subject') === 'all');
     });
 
     handleFilters();
@@ -943,57 +1099,237 @@ export async function setupBrowsePage() {
     renderSpotlightCards();
     setupSpotlightShowcase();
 
-    // Search input listener
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', () => handleFilters());
+    // ================= STUDOCU HERO CARD LISTENERS =================
+    const modeAiBtn = document.getElementById('modeAiBtn');
+    const modeSearchBtn = document.getElementById('modeSearchBtn');
+    const heroDropzone = document.getElementById('heroDropzone');
+    const heroSearchModeArea = document.getElementById('heroSearchModeArea');
+    const heroPromptInput = document.getElementById('heroPromptInput');
+    const heroInputClear = document.getElementById('heroInputClear');
+    const heroSearchSubmitBtn = document.getElementById('heroSearchSubmitBtn');
+    const heroFileInput = document.getElementById('heroFileInput');
+    const chooseFilesTrigger = document.getElementById('chooseFilesTrigger');
+    const selectedFileChip = document.getElementById('selectedFileChip');
+    const selectedFileName = document.getElementById('selectedFileName');
+    const chipRemoveBtn = document.getElementById('chipRemoveBtn');
+    const sidebarSearchInput = document.getElementById('searchInput');
+
+    // Switch between AI Mode & Search Mode
+    function switchMode(mode) {
+        if (mode === 'ai') {
+            modeAiBtn?.classList.add('active');
+            modeSearchBtn?.classList.remove('active');
+            if (heroDropzone) heroDropzone.style.display = 'block';
+            if (heroSearchModeArea) heroSearchModeArea.style.display = 'none';
+            if (heroPromptInput) heroPromptInput.placeholder = 'Ask a question or Search for study materials';
+        } else {
+            modeSearchBtn?.classList.add('active');
+            modeAiBtn?.classList.remove('active');
+            if (heroDropzone) heroDropzone.style.display = 'none';
+            if (heroSearchModeArea) heroSearchModeArea.style.display = 'block';
+            if (heroPromptInput) {
+                heroPromptInput.placeholder = 'Search by course code, university, module, or topic...';
+                heroPromptInput.focus();
+            }
+        }
     }
 
-    const clearSearchBtn = document.getElementById('clearSearchBtn');
-    if (clearSearchBtn) {
-        clearSearchBtn.addEventListener('click', () => {
-            if (searchInput) searchInput.value = '';
+    modeAiBtn?.addEventListener('click', () => switchMode('ai'));
+    modeSearchBtn?.addEventListener('click', () => switchMode('search'));
+
+    // File Drag & Drop
+    if (heroDropzone && heroFileInput) {
+        chooseFilesTrigger?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            heroFileInput.click();
+        });
+
+        heroDropzone.addEventListener('click', () => {
+            heroFileInput.click();
+        });
+
+        heroDropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            heroDropzone.classList.add('drag-over');
+        });
+
+        heroDropzone.addEventListener('dragleave', () => {
+            heroDropzone.classList.remove('drag-over');
+        });
+
+        heroDropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            heroDropzone.classList.remove('drag-over');
+            if (e.dataTransfer?.files?.length) {
+                handleUploadedFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        heroFileInput.addEventListener('change', () => {
+            if (heroFileInput.files?.length) {
+                handleUploadedFile(heroFileInput.files[0]);
+            }
+        });
+    }
+
+    function handleUploadedFile(file) {
+        if (selectedFileChip && selectedFileName) {
+            selectedFileName.textContent = `${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} MB)`;
+            selectedFileChip.style.display = 'inline-flex';
+            showToast(`Uploaded "${file.name}" for instant study prep! 📄`, 'success', 'fa-file-circle-check');
+            if (heroPromptInput) {
+                heroPromptInput.value = `Summarize and generate practice questions for ${file.name}`;
+                if (heroInputClear) heroInputClear.style.display = 'block';
+            }
+        }
+    }
+
+    chipRemoveBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (heroFileInput) heroFileInput.value = '';
+        if (selectedFileChip) selectedFileChip.style.display = 'none';
+        if (heroPromptInput && heroPromptInput.value.startsWith('Summarize')) {
+            heroPromptInput.value = '';
+            if (heroInputClear) heroInputClear.style.display = 'none';
+        }
+    });
+
+    // Prompt & Search Sync
+    function syncSearch(term) {
+        if (heroPromptInput) heroPromptInput.value = term;
+        if (sidebarSearchInput) sidebarSearchInput.value = term;
+        if (heroInputClear) heroInputClear.style.display = term ? 'block' : 'none';
+        handleFilters();
+    }
+
+    if (heroPromptInput) {
+        heroPromptInput.addEventListener('input', (e) => {
+            if (sidebarSearchInput) sidebarSearchInput.value = e.target.value;
+            if (heroInputClear) heroInputClear.style.display = e.target.value ? 'block' : 'none';
+            handleFilters();
+        });
+
+        heroPromptInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                handleFilters();
+                document.querySelector('.browse-header')?.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+
+    if (sidebarSearchInput) {
+        sidebarSearchInput.addEventListener('input', (e) => {
+            if (heroPromptInput) heroPromptInput.value = e.target.value;
+            if (heroInputClear) heroInputClear.style.display = e.target.value ? 'block' : 'none';
             handleFilters();
         });
     }
+
+    heroInputClear?.addEventListener('click', () => syncSearch(''));
+    document.getElementById('clearSearchBtn')?.addEventListener('click', () => syncSearch(''));
+
+    heroSearchSubmitBtn?.addEventListener('click', () => {
+        handleFilters();
+        document.querySelector('.browse-header')?.scrollIntoView({ behavior: 'smooth' });
+        showToast('Showing matching study resources', 'info', 'fa-magnifying-glass');
+    });
+
+    // Prompt Tag Pills (Mock exam, Summary, Quiz, Lecture notes)
+    const promptTagPills = document.querySelectorAll('.prompt-tag-pill');
+    promptTagPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            const docType = pill.getAttribute('data-type');
+            const wasActive = pill.classList.contains('active');
+
+            promptTagPills.forEach(p => p.classList.remove('active'));
+            if (!wasActive) {
+                pill.classList.add('active');
+                activeDocTypeFilter = docType;
+                // Sync with sidebar doc type chips
+                document.querySelectorAll('.doc-type-chip').forEach(c => {
+                    c.classList.toggle('active', c.getAttribute('data-doctype') === docType);
+                });
+                showToast(`Filtered to "${docType}"`, 'info', 'fa-filter');
+            } else {
+                activeDocTypeFilter = 'all';
+                document.querySelectorAll('.doc-type-chip').forEach(c => {
+                    c.classList.toggle('active', c.getAttribute('data-doctype') === 'all');
+                });
+            }
+
+            handleFilters();
+            document.querySelector('.browse-header')?.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // Course Code Pills in Search Mode
+    const courseCodePills = document.querySelectorAll('.course-code-pill');
+    courseCodePills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            const keyword = pill.getAttribute('data-keyword');
+            syncSearch(keyword);
+            showToast(`Filtering for course "${keyword}"`, 'info', 'fa-graduation-cap');
+            document.querySelector('.browse-header')?.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // Plus button action
+    document.getElementById('promptAddBtn')?.addEventListener('click', () => {
+        heroFileInput?.click();
+    });
+
+    // Subject Hubs (Studocu Style Category Tiles)
+    const hubCards = document.querySelectorAll('.hub-card');
+    hubCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const subject = card.getAttribute('data-subject');
+            hubCards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+
+            // Sync with sidebar checkboxes
+            const subjectCheckboxes = document.querySelectorAll('.filters-sidebar input[type="checkbox"]');
+            subjectCheckboxes.forEach(cb => {
+                if (cb.closest('.filter-group:nth-of-type(3)')) {
+                    cb.checked = subject !== 'all' && cb.value.toLowerCase() === subject.toLowerCase();
+                }
+            });
+
+            handleFilters();
+            showToast(subject === 'all' ? 'Browsing all study fields' : `Viewing ${subject} notes`, 'info', 'fa-layer-group');
+            document.querySelector('.browse-header')?.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // Document Type Filter Chips (Studocu Style)
+    const docTypeChips = document.querySelectorAll('.doc-type-chip');
+    docTypeChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            docTypeChips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            activeDocTypeFilter = chip.getAttribute('data-doctype');
+            handleFilters();
+        });
+    });
 
     // Checkboxes change listeners
     const checkboxes = document.querySelectorAll('.filters-sidebar input[type="checkbox"]');
     checkboxes.forEach(cb => {
         cb.addEventListener('change', () => {
-            // Sync with category chips if subject checkbox changed
-            const checkedSubjects = Array.from(document.querySelectorAll('.filter-group:nth-child(2) input[type="checkbox"]:checked')).map(c => c.value);
-            const chips = document.querySelectorAll('.category-chip');
+            // Sync with subject hubs if subject checkbox changed
+            const checkedSubjects = Array.from(document.querySelectorAll('.filter-group:nth-of-type(3) input[type="checkbox"]:checked')).map(c => c.value);
             if (checkedSubjects.length === 1) {
-                chips.forEach(c => c.classList.toggle('active', c.getAttribute('data-subject') === checkedSubjects[0]));
+                hubCards.forEach(h => h.classList.toggle('active', h.getAttribute('data-subject') === checkedSubjects[0]));
             } else if (checkedSubjects.length === 0) {
-                chips.forEach(c => c.classList.toggle('active', c.getAttribute('data-subject') === 'all'));
+                hubCards.forEach(h => h.classList.toggle('active', h.getAttribute('data-subject') === 'all'));
             } else {
-                chips.forEach(c => c.classList.remove('active'));
+                hubCards.forEach(h => h.classList.remove('active'));
             }
             handleFilters();
         });
     });
 
-    // Quick Category Chips
-    const categoryChips = document.querySelectorAll('.category-chip');
-    categoryChips.forEach(chip => {
-        chip.addEventListener('click', () => {
-            const subject = chip.getAttribute('data-subject');
-            categoryChips.forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-
-            // Update sidebar subject checkboxes
-            const subjectCheckboxes = document.querySelectorAll('.filter-group:nth-child(2) input[type="checkbox"]');
-            subjectCheckboxes.forEach(cb => {
-                cb.checked = subject !== 'all' && cb.value.toLowerCase() === subject.toLowerCase();
-            });
-
-            handleFilters();
-        });
-    });
-
-    // Semester and Sort selects
+    // University, Semester, and Sort Selects
+    document.getElementById('universitySelect')?.addEventListener('change', handleFilters);
     document.getElementById('semesterSelect')?.addEventListener('change', handleFilters);
     document.getElementById('sortSelect')?.addEventListener('change', handleFilters);
 
@@ -1055,7 +1391,7 @@ export async function setupBrowsePage() {
     closeSidebarBtn?.addEventListener('click', closeMobileSidebar);
     sidebarBackdrop?.addEventListener('click', closeMobileSidebar);
 
-    // Modal Close
+    // Modal Close handlers
     document.getElementById('closeModalBtn')?.addEventListener('click', closeQuickPreview);
     document.getElementById('quickPreviewModal')?.addEventListener('click', (e) => {
         if (e.target.id === 'quickPreviewModal') closeQuickPreview();
