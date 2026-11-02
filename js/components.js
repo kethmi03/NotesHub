@@ -11,6 +11,7 @@ export function loadNavbar() {
         <nav>
             <a href="index.html" class="nav-link-home">Home</a>
             <a href="browse-notes.html" class="protected-link nav-link-browse">Browse Notes</a>
+            <a href="saved-notes.html" class="protected-link nav-link-saved" id="navSavedNotesLink" style="display: none;">Saved Notes</a>
             <a href="index.html#how-it-works" class="nav-link-how">How It Works</a>
             <a href="index.html#about" class="nav-link-about">About</a>
         </nav>
@@ -81,28 +82,43 @@ export function loadFooter() {
 
 export function updateNavbarState(currentUser) {
     const authContainer = document.getElementById('auth-buttons-container');
-    if (!authContainer) return;
-    
+    const navSavedNotesLink = document.getElementById('navSavedNotesLink');
+
     if (currentUser) {
+        if (navSavedNotesLink) {
+            navSavedNotesLink.style.display = 'inline-flex';
+            navSavedNotesLink.style.alignItems = 'center';
+        }
+
         const profileUrl = currentUser.role === 'admin' ? 'dashboard.html' : 'settings.html';
-        authContainer.innerHTML = `
-            <div class="user-profile-nav">
-                <a href="${profileUrl}" class="user-profile-link" title="View Profile & Settings">
-                    <div class="avatar">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-                    <span>${currentUser.name || 'Student'}</span>
-                </a>
-                <button class="logout-btn" title="Logout">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </button>
-            </div>
-        `;
+        if (authContainer) {
+            authContainer.innerHTML = `
+                <div class="user-profile-nav">
+                    <a href="saved-notes.html" class="saved-notes-quick-btn" title="Saved Notes">
+                        <i class="fa-solid fa-bookmark"></i>
+                    </a>
+                    <a href="${profileUrl}" class="user-profile-link" title="View Profile & Settings">
+                        <div class="avatar">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <span>${currentUser.name || 'Student'}</span>
+                    </a>
+                    <button class="logout-btn" title="Logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            `;
+        }
     } else {
-        authContainer.innerHTML = `
-            <a href="login.html" class="login-btn">Login</a>
-            <a href="register.html" class="register-btn">Get Started</a>
-        `;
+        if (navSavedNotesLink) {
+            navSavedNotesLink.style.display = 'none';
+        }
+        if (authContainer) {
+            authContainer.innerHTML = `
+                <a href="login.html" class="login-btn">Login</a>
+                <a href="register.html" class="register-btn">Get Started</a>
+            `;
+        }
     }
     
     // Highlight active link based on current path and hash
