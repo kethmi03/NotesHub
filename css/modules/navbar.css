@@ -28,6 +28,21 @@
     font-weight: 800;
 
     color: var(--text-main);
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+    text-decoration: none;
+    opacity: 0.9;
+}
+
+.logo:focus,
+.logo:active,
+.logo:visited {
+    text-decoration: none;
+    color: var(--text-main);
 }
 
 .logo i {
