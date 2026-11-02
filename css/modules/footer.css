@@ -3,6 +3,8 @@ footer {
     background: var(--text-darkest);
     color: white;
     padding: 60px 8% 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .footer-content {
