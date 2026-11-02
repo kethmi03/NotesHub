@@ -410,7 +410,7 @@ export async function setupNoteDetails() {
     const detailsContainer = document.querySelector('.note-header-info');
     if (!detailsContainer) return;
 
-    const saveButton = document.querySelector('.save-btn');
+    const saveButton = document.getElementById('saveForLaterBtn') || document.querySelector('.note-action-sidebar .save-btn') || document.querySelector('.save-btn');
     const status = document.querySelector('[data-saved-note-status]');
     let note;
 
@@ -430,7 +430,7 @@ export async function setupNoteDetails() {
     // State variable to track whether note is currently saved
     let isSaved = false;
     try {
-        isSaved = getSavedNotes().some((savedNote) => savedNote.id === note.id);
+        isSaved = getSavedNotes().some((savedNote) => String(savedNote.id || savedNote.title) === String(note.id));
     } catch (e) {
         console.warn('Could not read saved notes state:', e);
     }
@@ -440,7 +440,7 @@ export async function setupNoteDetails() {
         saveButton.classList.toggle('is-saved', isSaved);
 
         if (isSaved) {
-            saveButton.innerHTML = '<i class="fa-solid fa-bookmark"></i> Saved';
+            saveButton.innerHTML = '<i class="fa-solid fa-bookmark" style="color: #ffffff;"></i> Saved';
             saveButton.title = 'Click to remove from saved notes';
         } else {
             saveButton.innerHTML = '<i class="fa-regular fa-bookmark"></i> Save for later';
