@@ -106,10 +106,15 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 body {
     font-family: 'Space Grotesk', sans-serif;
     background: var(--bg-main);
     color: var(--text-main);
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
 }
