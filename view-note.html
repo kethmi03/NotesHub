@@ -24,11 +24,10 @@
 
                 <div class="breadcrumb">
                     <a href="browse-notes.html">Browse Notes</a>
-                <a href="upload-note.html">Upload Notes</a>
                     <span>/</span>
-                    <a href="#">Computer Science</a>
+                    <a href="browse-notes.html" id="breadcrumbSubject">Computer Science</a>
                     <span>/</span>
-                    <span class="current">Software Engineering Lectures</span>
+                    <span class="current" id="breadcrumbTitle">Software Engineering Lectures</span>
                 </div>
 
                 <div class="note-header-info">
@@ -51,62 +50,55 @@
 
                 <div class="note-description">
                     <h3>Description</h3>
-                    <p>
-                        This is a complete set of lecture notes for Software Engineering (SE3106). It covers everything from the software development life cycle (SDLC), agile methodologies, requirements engineering, system design, testing, to maintenance.
-                    </p>
-                    <p>
-                        The notes are compiled from lecture slides, textbooks, and personal research. It's perfectly structured for exam preparation and quick revision.
-                    </p>
+                    <div id="noteDescriptionContainer">
+                        <p id="noteDescriptionText">
+                            This is a complete set of lecture notes for Software Engineering (SE3106).
+                        </p>
+                    </div>
 
                     <h4>Tags:</h4>
-                    <div class="tags-list">
+                    <div class="tags-list" id="noteTagsList">
                         <span>#software-engineering</span>
-                        <span>#agile</span>
-                        <span>#sdlc</span>
-                        <span>#summary</span>
                     </div>
                 </div>
 
                 <div class="note-reviews">
-                    <h3>Student Reviews</h3>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <div class="reviewer-info">
-                                <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
-                                <strong>Mike Ross</strong>
-                            </div>
-                            <div class="review-stars">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                            </div>
-                        </div>
-                        <p>These notes are a lifesaver! Perfectly summarized and very easy to understand. Helped me a lot during the final exams.</p>
-                        <span class="review-date">2 weeks ago</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 0;">Student Reviews</h3>
+                        <span id="reviewsHeaderBadge" style="font-weight: 600; color: var(--text-secondary); font-size: 14px;"></span>
                     </div>
 
-                    <div class="review-card">
-                        <div class="review-header">
-                            <div class="reviewer-info">
-                                <div class="avatar-small"><i class="fa-solid fa-user"></i></div>
-                                <strong>Emily Chen</strong>
-                            </div>
-                            <div class="review-stars">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-regular fa-star"></i>
-                            </div>
-                        </div>
-                        <p>Good notes, especially the part about Agile methodologies. Highly recommended.</p>
-                        <span class="review-date">1 month ago</span>
+                    <div id="reviewsList">
+                        <!-- Populated dynamically with actual reviews -->
                     </div>
 
-                    <button class="add-review-btn">Write a Review</button>
+                    <button type="button" class="add-review-btn" id="openReviewBtn">
+                        <i class="fa-solid fa-pen"></i> Write a Review
+                    </button>
+
+                    <div id="reviewFormContainer" style="display: none; margin-top: 20px; padding: 22px; background: var(--bg-secondary, #f8fafc); border-radius: 14px; border: 1px solid var(--border-light, #e2e8f0);">
+                        <h4 style="margin-bottom: 14px; font-size: 16px; font-weight: 700;">Write a Review</h4>
+                        <form id="noteReviewForm">
+                            <div style="margin-bottom: 14px;">
+                                <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Your Rating:</label>
+                                <div id="starRatingPicker" style="display: flex; gap: 8px; font-size: 22px; color: #f59e0b; cursor: pointer;">
+                                    <i class="fa-solid fa-star" data-rating="1"></i>
+                                    <i class="fa-solid fa-star" data-rating="2"></i>
+                                    <i class="fa-solid fa-star" data-rating="3"></i>
+                                    <i class="fa-solid fa-star" data-rating="4"></i>
+                                    <i class="fa-solid fa-star" data-rating="5"></i>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 14px;">
+                                <label for="reviewCommentText" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Your Review:</label>
+                                <textarea id="reviewCommentText" rows="3" placeholder="Share your experience with this study resource..." required style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 14px; box-sizing: border-box; resize: vertical;"></textarea>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="submit" class="save-btn" style="width: auto; padding: 10px 22px; margin: 0; background: var(--primary-color); color: white; border: none; font-weight: 600;"><i class="fa-solid fa-paper-plane"></i> Post Review</button>
+                                <button type="button" id="cancelReviewBtn" class="add-review-btn" style="margin: 0; padding: 10px 18px;">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
             </div>
@@ -119,19 +111,19 @@
                     <div class="file-details">
                         <div class="detail-row">
                             <span><i class="fa-solid fa-file"></i> Format</span>
-                            <strong>PDF</strong>
+                            <strong id="fileDetailFormat">PDF</strong>
                         </div>
                         <div class="detail-row">
                             <span><i class="fa-solid fa-hard-drive"></i> Size</span>
-                            <strong>2.4 MB</strong>
+                            <strong id="fileDetailSize">2.4 MB</strong>
                         </div>
                         <div class="detail-row">
                             <span><i class="fa-solid fa-file-lines"></i> Pages</span>
-                            <strong>45</strong>
+                            <strong id="fileDetailPages">45</strong>
                         </div>
                         <div class="detail-row">
                             <span><i class="fa-solid fa-clock"></i> Uploaded</span>
-                            <strong>Sept 15, 2026</strong>
+                            <strong id="fileDetailDate">Sept 15, 2026</strong>
                         </div>
                     </div>
 

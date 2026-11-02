@@ -571,6 +571,7 @@ function renderNotes(notes) {
                     <span class="doc-type-badge ${docBadge.class}">
                         <i class="fa-solid ${docBadge.icon}"></i> ${docBadge.text}
                     </span>
+                    ${(note.isUserUploaded || note.isNew) ? '<span class="doc-type-badge" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;"><i class="fa-solid fa-sparkles"></i> New</span>' : ''}
                     <span class="page-count-badge">📄 ${note.pages || 40} pgs</span>
                 </div>
 
@@ -908,21 +909,36 @@ function handleFilters() {
         return matchesSearch && matchesDocType && matchesSubject && matchesUni && matchesGrade && matchesSemester && matchesFormat && matchesRating;
     });
 
-    // Sorting
+    // Sorting - User uploaded notes are prioritized at first, newest first
     const sortSelect = document.getElementById('sortSelect');
     const sortVal = sortSelect?.value || 'popular';
 
-    if (sortVal === 'popular') {
-        filtered.sort((a, b) => ((b.downloads || 0) + (b.upvotes || 0)) - ((a.downloads || 0) + (a.upvotes || 0)));
-    } else if (sortVal === 'rating') {
-        filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    } else if (sortVal === 'downloads') {
-        filtered.sort((a, b) => (b.downloads || 0) - (a.downloads || 0));
-    } else if (sortVal === 'newest') {
-        filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-    } else if (sortVal === 'title') {
-        filtered.sort((a, b) => a.title.localeCompare(b.title));
-    }
+    filtered.sort((a, b) => {
+        const isUserA = Boolean(a.isUserUploaded || a.id?.startsWith('note-') || a.id?.startsWith('local-'));
+        const isUserB = Boolean(b.isUserUploaded || b.id?.startsWith('note-') || b.id?.startsWith('local-'));
+
+        // Always show user-uploaded notes at the very top (newest first)
+        if (isUserA && !isUserB) return -1;
+        if (!isUserA && isUserB) return 1;
+        if (isUserA && isUserB) {
+            const timeA = new Date(a.uploadedAt || a.createdAt || 0).getTime();
+            const timeB = new Date(b.uploadedAt || b.createdAt || 0).getTime();
+            return timeB - timeA;
+        }
+
+        if (sortVal === 'popular') {
+            return ((b.downloads || 0) + (b.upvotes || 0)) - ((a.downloads || 0) + (a.upvotes || 0));
+        } else if (sortVal === 'rating') {
+            return (b.rating || 0) - (a.rating || 0);
+        } else if (sortVal === 'downloads') {
+            return (b.downloads || 0) - (a.downloads || 0);
+        } else if (sortVal === 'newest') {
+            return new Date(b.uploadedAt || b.createdAt || 0) - new Date(a.uploadedAt || a.createdAt || 0);
+        } else if (sortVal === 'title') {
+            return (a.title || '').localeCompare(b.title || '');
+        }
+        return 0;
+    });
 
     currentPage = 1;
     renderNotes(filtered);
@@ -1106,21 +1122,23 @@ export async function setupBrowsePage() {
     if (!grid) return;
 
     // Fetch notes from local storage and Firebase
-    let storedNotes = getNotes();
+    let storedNotes = getNotes().map(n => ({ ...n, isUserUploaded: true }));
     if (isFirebaseConfigured) {
         try {
             const fbNotes = await getFirebaseNotes();
             const localIds = new Set(storedNotes.map(n => String(n.id)));
             fbNotes.forEach(fn => {
                 if (!localIds.has(String(fn.id))) {
-                    storedNotes.push(fn);
+                    storedNotes.push({ ...fn, isUserUploaded: true });
                 }
             });
         } catch (err) {
             console.warn('Could not fetch Firebase notes:', err);
         }
     }
-    // Prepend user-uploaded notes so they appear at the top of Browse Notes
+    // Sort user-uploaded notes newest first
+    storedNotes.sort((a, b) => new Date(b.uploadedAt || b.createdAt || 0) - new Date(a.uploadedAt || a.createdAt || 0));
+    // Prepend user-uploaded notes so they appear at the very top of Browse Notes
     allNotesList = [...storedNotes, ...defaultNotes];
 
     // Render Spotlight showcase
