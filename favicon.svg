@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+  <defs>
+    <linearGradient id="bookGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#4338ca" />
+    </linearGradient>
+  </defs>
+  <style>
+    .book-icon { fill: url(#bookGrad); }
+    @media (prefers-color-scheme: dark) {
+      .book-icon { fill: #818cf8; }
+    }
+  </style>
+  <path class="book-icon" d="M249.6 471.5c10.8 3.8 22.4-4.1 22.4-15.5V78.6c0-9.3-5.6-17.7-14.2-21.2C216.8 41.2 161.7 32 96 32 43 32 0 44.8 0 70.4v316.8c0 7.2 4.3 13.6 10.9 16.4 56.5 24.2 121.2 32.8 175.7 49.9 21.6 6.8 42.6 13.9 63 18zM326.4 471.5c20.4-4.1 41.4-11.2 63-18 54.5-17.1 119.2-25.7 175.7-49.9 6.6-2.8 10.9-9.2 10.9-16.4V70.4c0-25.6-43-38.4-96-38.4-65.7 0-120.8 9.2-161.8 25.4-8.6 3.5-14.2 11.9-14.2 21.2v377.4c0 11.4 11.6 19.3 22.4 15.5z"/>
+</svg>
+

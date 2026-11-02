@@ -1,13 +1,24 @@
+
+function ensureFavicon() {
+    if (!document.querySelector("link[rel*='icon']")) {
+        const link = document.createElement('link');
+        link.rel = 'icon';
+        link.type = 'image/svg+xml';
+        link.href = 'favicon.svg';
+        document.head.appendChild(link);
+    }
+}
 export function loadNavbar() {
+    ensureFavicon();
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     const themeIcon = isDark ? 'fa-sun' : 'fa-moon';
 
     const navbarHTML = `
     <header class="navbar">
-        <div class="logo">
+        <a href="index.html" class="logo" title="NotesHub Home">
             <i class="fa-solid fa-book-open"></i>
             <span>Notes<span class="logo-highlight">Hub</span></span>
-        </div>
+        </a>
         <nav>
             <a href="index.html" class="nav-link-home">Home</a>
             <a href="browse-notes.html" class="protected-link nav-link-browse">Browse Notes</a>
@@ -43,10 +54,10 @@ export function loadFooter() {
     <footer>
         <div class="footer-content">
             <div class="footer-brand">
-                <div class="logo">
+                <a href="index.html" class="logo" title="NotesHub Home">
                     <i class="fa-solid fa-book-open"></i>
                     <span>Notes<span class="logo-highlight">Hub</span></span>
-                </div>
+                </a>
                 <p>A peer-to-peer academic notes marketplace designed for students.</p>
             </div>
             <div>
