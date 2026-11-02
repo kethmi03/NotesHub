@@ -17,7 +17,24 @@ function updateUserInfo() {
 
     // Update sidebar user info on student dashboard / profile details
     const sidebarName = document.querySelector('.sidebar-user h3');
-    if (sidebarName) sidebarName.textContent = userName;
+    if (sidebarName) {
+        sidebarName.innerHTML = currentUser.role === 'admin'
+            ? `${userName} <span style="display: inline-block; background: #4f46e5; color: white; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 999px; vertical-align: middle; margin-left: 4px;">Admin</span>`
+            : userName;
+    }
+
+    // For admin users on settings/my-notes/saved-notes, ensure Admin Panel link is accessible
+    if (currentUser.role === 'admin') {
+        const sidebarNav = document.querySelector('.dashboard-sidebar .sidebar-nav');
+        if (sidebarNav && !sidebarNav.querySelector('a[href="dashboard.html"]')) {
+            const adminLink = document.createElement('a');
+            adminLink.href = 'dashboard.html';
+            adminLink.innerHTML = '<i class="fa-solid fa-chart-pie"></i> Admin Overview';
+            adminLink.style.color = '#4f46e5';
+            adminLink.style.fontWeight = '700';
+            sidebarNav.insertBefore(adminLink, sidebarNav.firstChild);
+        }
+    }
 
     // Populate profile inputs on profile details page if present
     const fullNameInput = document.getElementById('full-name');
@@ -261,6 +278,16 @@ function setupMyNotes() {
             else if (note.type === 'powerpoint' || /\.(ppt|pptx)$/.test(ext)) iconClass = 'fa-file-powerpoint';
 
             const uploadedTime = note.uploadedAt ? new Date(note.uploadedAt).toLocaleDateString() : 'Recently';
+            const status = note.status || (note.approvalStatus || 'approved');
+            let statusBadge = '<span class="badge" style="display:inline-flex; align-items:center; gap:4px; margin-top:4px; background: #dcfce7; color: #15803d; font-weight: 600; padding: 2px 8px; border-radius: 6px; font-size: 11px;"><i class="fa-solid fa-check"></i> Approved</span>';
+            if (status === 'pending') {
+                statusBadge = '<span class="badge" style="display:inline-flex; align-items:center; gap:4px; margin-top:4px; background: #fef3c7; color: #b45309; font-weight: 600; padding: 2px 8px; border-radius: 6px; font-size: 11px;"><i class="fa-solid fa-hourglass-half"></i> Pending Approval</span>';
+            } else if (status === 'rejected') {
+                statusBadge = '<span class="badge" style="display:inline-flex; align-items:center; gap:4px; margin-top:4px; background: #fee2e2; color: #b91c1c; font-weight: 600; padding: 2px 8px; border-radius: 6px; font-size: 11px;"><i class="fa-solid fa-xmark"></i> Rejected</span>';
+            }
+            const rejectionNote = (status === 'rejected' && note.rejectionReason)
+                ? ('<p style="font-size: 11px; color: #b91c1c; margin-top: 4px; background: #fff1f2; padding: 4px 8px; border-radius: 4px; border-left: 2px solid #ef4444;">Feedback: ' + note.rejectionReason + '</p>')
+                : '';
 
             return `
                 <div class="note-card-small" data-note-id="${note.id}">
@@ -269,7 +296,9 @@ function setupMyNotes() {
                     </div>
                     <div class="note-details">
                         <h4><a href="view-note.html?id=${encodeURIComponent(note.id)}" style="text-decoration:none; color:inherit;">${note.title}</a></h4>
-                        <p>${note.gradeLevel || 'All Levels'} • ${note.module || note.subject || 'General'}</p>
+                        <p>${note.gradeLevel || 'All Levels'} • ${note.module || note.subject || 'General'}${note.pages ? ' • ' + note.pages + ' pgs' : ''}${note.fileSize ? ' • ' + note.fileSize : ''}</p>
+                        <div>${statusBadge}</div>
+                        ${rejectionNote}
                         <p style="font-size: 12px; color: #666; margin-top: 5px;">Uploaded ${uploadedTime}</p>
                     </div>
                     <div class="note-stats">
