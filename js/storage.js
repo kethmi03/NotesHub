@@ -45,43 +45,45 @@ export function setCurrentUser(user) {
 
 function getSavedNotesStorageKey() {
     const currentUser = getCurrentUser();
-    const userId = currentUser?.uid || currentUser?.email?.toLowerCase();
-
-    if (!userId) {
-        throw new Error('A signed-in user is required to manage saved notes.');
-    }
-
+    const userId = currentUser?.uid || currentUser?.email?.toLowerCase() || currentUser?.name?.toLowerCase() || 'default';
     return `${SAVED_NOTES_KEY}:${userId}`;
 }
 
 export function getSavedNotes() {
     try {
-        return JSON.parse(localStorage.getItem(getSavedNotesStorageKey()) || '[]');
+        const raw = localStorage.getItem(getSavedNotesStorageKey());
+        if (!raw) return [];
+        return JSON.parse(raw);
     } catch (error) {
-        if (error instanceof SyntaxError) {
-            console.error('Saved notes could not be parsed.', error);
-            return [];
-        }
-        throw error;
+        console.error('Saved notes could not be parsed.', error);
+        return [];
     }
 }
 
 export function saveNoteForLater(note) {
-    if (!note?.id) {
-        throw new Error('A note ID is required to save a note.');
+    if (!note?.id && !note?.title) {
+        return false;
     }
 
+    const noteId = String(note.id || note.title);
     const savedNotes = getSavedNotes();
-    if (savedNotes.some((savedNote) => savedNote.id === note.id)) return false;
+    if (savedNotes.some((savedNote) => String(savedNote.id || savedNote.title) === noteId)) {
+        return false;
+    }
 
-    savedNotes.unshift({ ...note, savedAt: new Date().toISOString() });
+    savedNotes.unshift({
+        ...note,
+        id: noteId,
+        savedAt: new Date().toISOString()
+    });
     localStorage.setItem(getSavedNotesStorageKey(), JSON.stringify(savedNotes));
     return true;
 }
 
 export function removeSavedNote(noteId) {
+    const targetId = String(noteId);
     const savedNotes = getSavedNotes();
-    const updatedNotes = savedNotes.filter((note) => note.id !== noteId);
+    const updatedNotes = savedNotes.filter((note) => String(note.id || note.title) !== targetId);
     localStorage.setItem(getSavedNotesStorageKey(), JSON.stringify(updatedNotes));
     return updatedNotes.length !== savedNotes.length;
 }
