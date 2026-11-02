@@ -15,7 +15,7 @@ function updateUserInfo() {
     if (!currentUser) return;
     const userName = currentUser.name || 'Student';
 
-    // Update sidebar user info on dashboard
+    // Update sidebar user info on dashboard / settings
     const sidebarName = document.querySelector('.sidebar-user h3');
     if (sidebarName) sidebarName.textContent = userName;
 
@@ -23,6 +23,12 @@ function updateUserInfo() {
     const isOverviewPage = window.location.pathname.split('/').pop() === 'dashboard.html';
     const welcomeHeading = isOverviewPage ? document.querySelector('.dashboard-header h2') : null;
     if (welcomeHeading) welcomeHeading.textContent = `Welcome back, ${userName}! 👋`;
+
+    // Populate profile inputs on settings page if present
+    const fullNameInput = document.getElementById('full-name');
+    if (fullNameInput && currentUser.name) fullNameInput.value = currentUser.name;
+    const emailInput = document.getElementById('email');
+    if (emailInput && currentUser.email) emailInput.value = currentUser.email;
 }
 
 document.addEventListener('DOMContentLoaded', () => {

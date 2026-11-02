@@ -2,19 +2,48 @@
 .user-profile-nav {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     font-weight: 600;
 }
 
+.user-profile-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 15px;
+    padding: 4px 12px 4px 4px;
+    border-radius: 30px;
+    background: transparent;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.user-profile-link:hover {
+    background: var(--primary-lightest);
+    color: var(--primary-color);
+}
+
+.user-profile-link:hover .avatar {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.06);
+}
+
 .avatar {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     background: var(--primary-lightest);
     color: var(--primary-color);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    flex-shrink: 0;
 }
 
 .logout-btn {
@@ -23,5 +52,33 @@
     color: var(--danger-color);
     cursor: pointer;
     font-size: 16px;
-    margin-left: 10px;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logout-btn:hover {
+    background: var(--danger-light);
+    transform: scale(1.08);
+}
+
+[data-theme="dark"] .user-profile-link {
+    color: var(--text-main);
+}
+
+[data-theme="dark"] .user-profile-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--primary-light);
+}
+
+[data-theme="dark"] .user-profile-link:hover .avatar {
+    background: var(--primary-color);
+    color: white;
+}
+
+[data-theme="dark"] .logout-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
 }

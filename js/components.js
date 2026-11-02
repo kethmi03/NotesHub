@@ -84,12 +84,15 @@ export function updateNavbarState(currentUser) {
     if (!authContainer) return;
     
     if (currentUser) {
+        const profileUrl = currentUser.role === 'admin' ? 'dashboard.html' : 'settings.html';
         authContainer.innerHTML = `
             <div class="user-profile-nav">
-                <div class="avatar">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <span>${currentUser.name || 'Student'}</span>
+                <a href="${profileUrl}" class="user-profile-link" title="View Profile & Settings">
+                    <div class="avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <span>${currentUser.name || 'Student'}</span>
+                </a>
                 <button class="logout-btn" title="Logout">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </button>

@@ -106,10 +106,13 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: clip;
 }
 
 body {
     font-family: 'Space Grotesk', sans-serif;
     background: var(--bg-main);
     color: var(--text-main);
+    overflow-x: clip;
+    min-height: 100vh;
 }
