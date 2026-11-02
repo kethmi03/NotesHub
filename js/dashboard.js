@@ -2,8 +2,8 @@ import { getNotes, getUsers } from './storage.js';
 import { getFirebaseNotes, getFirebaseUsers, isFirebaseConfigured } from './firebase.js';
 
 export async function setupDashboard() {
-    const dashboardSection = document.querySelector('.dashboard-section');
-    if (!dashboardSection) return;
+    const adminDashboard = document.querySelector('[data-dashboard-role="admin"]');
+    if (!adminDashboard) return;
 
     const allNotes = isFirebaseConfigured ? await getFirebaseNotes() : getNotes();
     const users = isFirebaseConfigured ? await getFirebaseUsers() : getUsers();

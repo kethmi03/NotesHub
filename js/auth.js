@@ -200,7 +200,10 @@ export async function handleLoginSubmit(event) {
     showFormMessage(messageElement, 'success', 'Login successful! Redirecting...');
 
     const nextPage = new URLSearchParams(window.location.search).get('next');
-    const targetPage = (nextPage && allowedNextPages.includes(nextPage)) ? nextPage : 'browse-notes.html';
+    let targetPage = (nextPage && allowedNextPages.includes(nextPage)) ? nextPage : 'browse-notes.html';
+    if (targetPage === 'dashboard.html' && matchedUser.role !== 'admin') {
+        targetPage = 'settings.html';
+    }
 
     setTimeout(() => {
         window.location.href = targetPage;
@@ -238,7 +241,18 @@ export function setupAuthRedirect() {
     let currentPage = window.location.pathname.split('/').pop();
     if (currentPage === '') currentPage = 'index.html';
 
-    if (!loggedOutPages.includes(currentPage) && !getCurrentUser()) {
+    const currentUser = getCurrentUser();
+
+    if (!loggedOutPages.includes(currentPage) && !currentUser) {
         window.location.href = 'login.html';
+        return;
+    }
+
+    // Role protection: Only admin role can access admin dashboard
+    if (currentPage === 'dashboard.html') {
+        if (!currentUser || currentUser.role !== 'admin') {
+            window.location.href = 'settings.html';
+            return;
+        }
     }
 }

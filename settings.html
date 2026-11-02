@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Settings | NotesHub</title>
+    <title>Profile Details | NotesHub</title>
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -28,11 +28,11 @@
             </div>
 
             <nav class="sidebar-nav">
-                <a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Overview</a>
+                <a href="settings.html" class="active"><i class="fa-solid fa-user"></i> Profile Details</a>
                 <a href="my-notes.html"><i class="fa-solid fa-file-lines"></i> My Notes</a>
                 <a href="saved-notes.html"><i class="fa-solid fa-bookmark"></i> Saved Notes</a>
 
-                <a href="settings.html" class="active"><i class="fa-solid fa-gear"></i> Settings</a>
+
             </nav>
 
             <a href="upload-note.html" class="upload-btn">
@@ -43,8 +43,8 @@
         <div class="dashboard-content">
 
             <div class="dashboard-header">
-                <h2>Settings</h2>
-                <p>Manage your account preferences</p>
+                <h2>Profile Details</h2>
+                <p>Manage your student profile and account settings</p>
             </div>
 
             <!-- Settings Sections -->
@@ -53,24 +53,25 @@
                 <!-- Account Settings -->
                 <div class="settings-section">
                     <div class="settings-section-header">
-                        <h3><i class="fa-solid fa-user"></i> Account Information</h3>
+                        <h3><i class="fa-solid fa-id-card"></i> Student Information</h3>
                     </div>
 
-                    <form class="settings-form">
+                    <form class="settings-form" id="profile-details-form">
+                        <div id="profile-status-message" class="form-message" style="display:none; margin-bottom: 15px;"></div>
                         <div class="form-grid">
                             <div class="input-group">
                                 <label for="full-name">Full Name</label>
-                                <input type="text" id="full-name" value="Kulith" required>
+                                <input type="text" id="full-name" placeholder="Your full name" required>
                             </div>
 
                             <div class="input-group">
                                 <label for="email">Email Address</label>
-                                <input type="email" id="email" value="kulith@gmail.com" required>
+                                <input type="email" id="email" placeholder="Your email address" readonly disabled title="Email address cannot be changed" style="cursor: not-allowed; opacity: 0.85;">
                             </div>
 
                             <div class="input-group">
                                 <label for="grade-level">Grade Level</label>
-                                <select id="grade-level" required>
+                                <select id="grade-level">
                                     <option value="6-9">Grade 6 - 9</option>
                                     <option value="10-11">Grade 10 - 11</option>
                                     <option value="12-13">Grade 12 - 13</option>
@@ -84,7 +85,7 @@
 
                             <div class="input-group">
                                 <label for="semester">Semester</label>
-                                <select id="semester" required>
+                                <select id="semester">
                                     <option value="s1">Semester 1</option>
                                     <option value="s2">Semester 2</option>
                                     <option value="other">Other</option>
@@ -104,21 +105,22 @@
                         <h3><i class="fa-solid fa-lock"></i> Change Password</h3>
                     </div>
 
-                    <form class="settings-form">
+                    <form class="settings-form" id="password-form">
+                        <div id="password-status-message" class="form-message" style="display:none; margin-bottom: 15px;"></div>
                         <div class="form-grid">
                             <div class="input-group full-width">
                                 <label for="current-password">Current Password</label>
-                                <input type="password" id="current-password" required>
+                                <input type="password" id="current-password" placeholder="Enter current password" required>
                             </div>
 
                             <div class="input-group full-width">
                                 <label for="new-password">New Password</label>
-                                <input type="password" id="new-password" required>
+                                <input type="password" id="new-password" placeholder="At least 6 characters" required>
                             </div>
 
                             <div class="input-group full-width">
                                 <label for="confirm-password">Confirm New Password</label>
-                                <input type="password" id="confirm-password" required>
+                                <input type="password" id="confirm-password" placeholder="Confirm new password" required>
                             </div>
                         </div>
 
@@ -134,7 +136,8 @@
                         <h3><i class="fa-solid fa-bell"></i> Notifications</h3>
                     </div>
 
-                    <form class="settings-form">
+                    <form class="settings-form" id="notification-form">
+                        <div id="notification-status-message" class="form-message" style="display:none; margin-bottom: 15px;"></div>
                         <div class="checkbox-group">
                             <label class="custom-checkbox">
                                 <input type="checkbox" checked>

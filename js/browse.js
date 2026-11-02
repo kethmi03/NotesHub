@@ -1105,9 +1105,23 @@ export async function setupBrowsePage() {
     const grid = document.getElementById('marketplaceGrid');
     if (!grid) return;
 
-    // Fetch notes from Firebase or local storage
-    const storedNotes = isFirebaseConfigured ? await getFirebaseNotes() : getNotes();
-    allNotesList = [...defaultNotes, ...storedNotes];
+    // Fetch notes from local storage and Firebase
+    let storedNotes = getNotes();
+    if (isFirebaseConfigured) {
+        try {
+            const fbNotes = await getFirebaseNotes();
+            const localIds = new Set(storedNotes.map(n => String(n.id)));
+            fbNotes.forEach(fn => {
+                if (!localIds.has(String(fn.id))) {
+                    storedNotes.push(fn);
+                }
+            });
+        } catch (err) {
+            console.warn('Could not fetch Firebase notes:', err);
+        }
+    }
+    // Prepend user-uploaded notes so they appear at the top of Browse Notes
+    allNotesList = [...storedNotes, ...defaultNotes];
 
     // Render Spotlight showcase
     renderSpotlightCards();

@@ -82,7 +82,10 @@ function updateNoteDetails(note) {
 }
 
 export async function setupNoteDetails() {
-    const saveButton = document.querySelector('.save-btn');
+    const detailsContainer = document.querySelector('.note-header-info');
+    if (!detailsContainer) return;
+
+    const saveButton = detailsContainer.querySelector('.save-btn') || document.querySelector('.note-header-actions .save-btn') || document.querySelector('.save-btn');
     if (!saveButton) return;
 
     saveButton.disabled = true;

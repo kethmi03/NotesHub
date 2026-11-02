@@ -28,11 +28,9 @@
             </div>
 
             <nav class="sidebar-nav">
-                <a href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Overview</a>
+                <a href="settings.html"><i class="fa-solid fa-user"></i> Profile Details</a>
                 <a href="my-notes.html" class="active"><i class="fa-solid fa-file-lines"></i> My Notes</a>
                 <a href="saved-notes.html"><i class="fa-solid fa-bookmark"></i> Saved Notes</a>
-
-                <a href="settings.html"><i class="fa-solid fa-gear"></i> Settings</a>
             </nav>
 
             <a href="upload-note.html" class="upload-btn">
@@ -52,81 +50,26 @@
                 <div style="display: flex; gap: 20px; flex: 1;">
                     <div class="search-box" style="flex: 1; max-width: 300px;">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" placeholder="Search your notes...">
+                        <input type="text" id="myNotesSearch" placeholder="Search your notes...">
                     </div>
                 </div>
 
                 <div class="sort-box">
                     <label>Sort by:</label>
-                    <select>
-                        <option>Most Recent</option>
-                        <option>Most Downloaded</option>
-                        <option>Highest Rated</option>
+                    <select id="myNotesSort">
+                        <option value="recent">Most Recent</option>
+                        <option value="downloads">Most Downloaded</option>
+                        <option value="rating">Highest Rated</option>
                     </select>
                 </div>
             </div>
 
+            <div id="myNotesStatus" class="form-message" style="display:none; margin-bottom: 20px;"></div>
+
             <!-- My Notes Grid -->
             <div class="recent-notes">
-                <div class="notes-grid">
-
-                    <div class="note-card-small">
-                        <div class="note-icon-small">
-                            <i class="fa-solid fa-file-pdf"></i>
-                        </div>
-                        <div class="note-details">
-                            <h4>Software Engineering Notes</h4>
-                            <p>Y3S1 • SE3106</p>
-                            <p style="font-size: 12px; color: #666; margin-top: 5px;">Uploaded 2 days ago</p>
-                        </div>
-                        <div class="note-stats">
-                            <span><i class="fa-solid fa-download"></i> 45</span>
-                            <span><i class="fa-solid fa-star"></i> 4.5</span>
-                        </div>
-                        <div class="note-actions">
-                            <button class="edit-btn"><i class="fa-solid fa-pen"></i></button>
-                            <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="note-card-small">
-                        <div class="note-icon-small">
-                            <i class="fa-solid fa-file-powerpoint"></i>
-                        </div>
-                        <div class="note-details">
-                            <h4>Database Management</h4>
-                            <p>Y2S2 • DB2104</p>
-                            <p style="font-size: 12px; color: #666; margin-top: 5px;">Uploaded 5 days ago</p>
-                        </div>
-                        <div class="note-stats">
-                            <span><i class="fa-solid fa-download"></i> 79</span>
-                            <span><i class="fa-solid fa-star"></i> 4.9</span>
-                        </div>
-                        <div class="note-actions">
-                            <button class="edit-btn"><i class="fa-solid fa-pen"></i></button>
-                            <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="note-card-small">
-                        <div class="note-icon-small">
-                            <i class="fa-solid fa-file-word"></i>
-                        </div>
-                        <div class="note-details">
-                            <h4>Web Development Guide</h4>
-                            <p>Y2S1 • CS2050</p>
-                            <p style="font-size: 12px; color: #666; margin-top: 5px;">Uploaded 1 week ago</p>
-                        </div>
-                        <div class="note-stats">
-                            <span><i class="fa-solid fa-download"></i> 32</span>
-                            <span><i class="fa-solid fa-star"></i> 4.3</span>
-                        </div>
-                        <div class="note-actions">
-                            <button class="edit-btn"><i class="fa-solid fa-pen"></i></button>
-                            <button class="delete-btn"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-
+                <div class="notes-grid" id="myNotesGrid">
+                    <!-- Populated dynamically by setupMyNotes -->
                 </div>
 
             </div>
