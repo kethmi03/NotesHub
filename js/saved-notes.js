@@ -1,6 +1,7 @@
-import { getCurrentUser, getNotes, saveNotes, getSavedNotes, removeSavedNote, saveNoteForLater } from './storage.js';
+import { getCurrentUser, getNotes, saveNotes, getSavedNotes, removeSavedNote, saveNoteForLater, updateNoteStatus, addNotification } from './storage.js';
 import { getFirebaseNotes, isFirebaseConfigured } from './firebase.js';
 import { getUploadedFile } from './file-storage.js';
+import { formatFileSize, detectDocumentPages } from './document-parser.js';
 
 const exampleNote = {
     id: 'software-engineering-lectures',
@@ -141,6 +142,108 @@ function updateNoteDetails(note) {
     const title = note.title || 'Untitled Note';
     document.title = `${title} | NotesHub`;
 
+    // Moderation Banner for Pending/Rejected Notes or Admin View
+    const existingBanner = document.getElementById('noteModerationAlertBanner');
+    if (existingBanner) existingBanner.remove();
+
+    const currentUser = getCurrentUser();
+    const isAdmin = currentUser?.role === 'admin';
+    const noteStatus = note.status || (note.approvalStatus || 'approved');
+
+    if (noteStatus !== 'approved' || isAdmin) {
+        const banner = document.createElement('div');
+        banner.id = 'noteModerationAlertBanner';
+        banner.className = 'note-status-alert-banner';
+        
+        let bannerHtml = '';
+        if (noteStatus === 'pending') {
+            bannerHtml = `
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; width:100%;">
+                    <div>
+                        <i class="fa-solid fa-hourglass-half" style="color:#d97706; margin-right:8px; font-size:16px;"></i>
+                        <strong>Pending Admin Approval:</strong> This note is awaiting administrator review and is not publicly visible yet.
+                    </div>
+                    ${isAdmin ? `
+                        <div style="display:flex; gap:8px;">
+                            <button type="button" id="adminQuickApproveBtn" style="background:#16a34a; color:white; border:none; padding:7px 15px; border-radius:6px; font-weight:700; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                                <i class="fa-solid fa-check"></i> Approve Note
+                            </button>
+                            <button type="button" id="adminQuickRejectBtn" style="background:#dc2626; color:white; border:none; padding:7px 15px; border-radius:6px; font-weight:700; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                                <i class="fa-solid fa-xmark"></i> Reject
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            banner.style.cssText = 'background:#fffbeb; border:1px solid #fde68a; color:#92400e; padding:14px 18px; border-radius:12px; margin-bottom:20px; font-size:14px;';
+        } else if (noteStatus === 'rejected') {
+            bannerHtml = `
+                <div>
+                    <i class="fa-solid fa-circle-xmark" style="color:#dc2626; margin-right:8px; font-size:16px;"></i>
+                    <strong>Note Rejected:</strong> ${escapeHtml(note.rejectionReason || 'This note was not approved by moderation.')}
+                </div>
+            `;
+            banner.style.cssText = 'background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:14px 18px; border-radius:12px; margin-bottom:20px; font-size:14px;';
+        } else if (isAdmin) {
+            bannerHtml = `
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; width:100%;">
+                    <div>
+                        <i class="fa-solid fa-shield-halved" style="color:#4f46e5; margin-right:8px;"></i>
+                        <strong>Admin Moderation View:</strong> Published & Approved
+                    </div>
+                    <button type="button" id="adminQuickRejectBtn" style="background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; padding:6px 14px; border-radius:6px; font-weight:600; font-size:12px; cursor:pointer;">
+                        <i class="fa-solid fa-xmark"></i> Reject Note
+                    </button>
+                </div>
+            `;
+            banner.style.cssText = 'background:#eef2ff; border:1px solid #c7d2fe; color:#3730a3; padding:12px 18px; border-radius:12px; margin-bottom:20px; font-size:13px;';
+        }
+
+        banner.innerHTML = bannerHtml;
+        const detailsContainer = document.querySelector('.note-header-info');
+        if (detailsContainer) {
+            detailsContainer.insertBefore(banner, detailsContainer.firstChild);
+        }
+
+        // Quick action listeners
+        const quickApprove = document.getElementById('adminQuickApproveBtn');
+        if (quickApprove) {
+            quickApprove.onclick = () => {
+                updateNoteStatus(note.id, 'approved');
+                addNotification({
+                    userEmail: note.uploadedByEmail || note.uploadedBy,
+                    userName: note.uploadedByName || note.uploadedBy,
+                    noteId: note.id,
+                    noteTitle: note.title,
+                    status: 'approved',
+                    adminMessage: 'Your note has been approved and published to the public student library.'
+                });
+                alert('Note approved successfully!');
+                window.location.reload();
+            };
+        }
+
+        const quickReject = document.getElementById('adminQuickRejectBtn');
+        if (quickReject) {
+            quickReject.onclick = () => {
+                const reason = prompt('Please enter a rejection reason (optional feedback for student):', 'Does not meet academic guidelines');
+                if (reason !== null) {
+                    updateNoteStatus(note.id, 'rejected', reason);
+                    addNotification({
+                        userEmail: note.uploadedByEmail || note.uploadedBy,
+                        userName: note.uploadedByName || note.uploadedBy,
+                        noteId: note.id,
+                        noteTitle: note.title,
+                        status: 'rejected',
+                        adminMessage: reason
+                    });
+                    alert('Note marked as rejected.');
+                    window.location.reload();
+                }
+            };
+        }
+    }
+
     // 1. Header & Breadcrumb
     const headerTitle = document.querySelector('.note-header-info h1');
     if (headerTitle) headerTitle.textContent = title;
@@ -226,10 +329,37 @@ function updateNoteDetails(note) {
     if (formatEl) formatEl.textContent = ext;
 
     const sizeEl = document.getElementById('fileDetailSize');
-    if (sizeEl) sizeEl.textContent = note.fileSize || '1.8 MB';
+    if (sizeEl) sizeEl.textContent = note.fileSize || 'Unknown';
 
     const pagesEl = document.getElementById('fileDetailPages');
-    if (pagesEl) pagesEl.textContent = note.pages || 32;
+    if (pagesEl) pagesEl.textContent = note.pages ? String(note.pages) : '1';
+
+    // Verify and synchronize with actual uploaded document if stored locally
+    getUploadedFile(note.id).then(async (realFile) => {
+        if (realFile) {
+            const exactSize = formatFileSize(realFile.size);
+            if (sizeEl) sizeEl.textContent = exactSize;
+            try {
+                const exactPages = await detectDocumentPages(realFile);
+                if (pagesEl && exactPages > 0) {
+                    pagesEl.textContent = String(exactPages);
+                    if (note.pages !== exactPages || note.fileSize !== exactSize) {
+                        note.pages = exactPages;
+                        note.fileSize = exactSize;
+                        const allNotes = getNotes();
+                        const idx = allNotes.findIndex(n => String(n.id || n.title) === String(note.id || note.title));
+                        if (idx !== -1) {
+                            allNotes[idx].pages = exactPages;
+                            allNotes[idx].fileSize = exactSize;
+                            saveNotes(allNotes);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn('Real document verification error:', err);
+            }
+        }
+    }).catch(() => {});
 
     const uploadedEl = document.getElementById('fileDetailDate');
     if (uploadedEl) {

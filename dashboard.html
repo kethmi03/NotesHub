@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Admin Overview | NotesHub</title>
+    <title>Admin Overview & Moderation | NotesHub</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
     <link rel="stylesheet" href="css/style.css">
@@ -38,21 +38,21 @@
 
         <div class="dashboard-sidebar">
             <div class="sidebar-user">
-                <div class="avatar-large">
-                    <i class="fa-solid fa-user"></i>
+                <div class="avatar-large" style="background: #4f46e5; color: white;">
+                    <i class="fa-solid fa-user-shield"></i>
                 </div>
                 <h3>NotesHub Admin</h3>
-
+                <span class="admin-badge" style="display: inline-block; background: #e0e7ff; color: #4338ca; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-top: 4px;">Super Admin</span>
             </div>
 
             <nav class="sidebar-nav">
-                <a href="dashboard.html" class="active"><i class="fa-solid fa-chart-pie"></i> Overview</a>
-                <a href="#users"><i class="fa-solid fa-users"></i> Users</a>
-                <a href="#notes"><i class="fa-solid fa-file-lines"></i> Notes</a>
-                <a href="#reports"><i class="fa-solid fa-flag"></i> Reports</a>
+                <a href="#overview" class="active" data-admin-tab="overview"><i class="fa-solid fa-chart-pie"></i> Overview</a>
+                <a href="#notes" data-admin-tab="notes"><i class="fa-solid fa-file-lines"></i> Note Approvals <span class="nav-count-badge" id="sidebarPendingCount" style="display: none;">0</span></a>
+                <a href="#users" data-admin-tab="users"><i class="fa-solid fa-users"></i> Users</a>
+                <a href="#reports" data-admin-tab="reports"><i class="fa-solid fa-flag"></i> Reports</a>
             </nav>
 
-            <a href="#notes" class="upload-btn">
+            <a href="#notes" class="upload-btn" id="moderateNotesBtn" style="cursor: pointer;">
                 <i class="fa-solid fa-shield-halved"></i> Moderate Notes
             </a>
 
@@ -60,78 +60,242 @@
 
         <div class="dashboard-content">
 
-            <div class="dashboard-header">
-                <h2>Admin Overview</h2>
-                <p>Keep track of your NotesHub community and content.</p>
+            <!-- TAB 1: OVERVIEW -->
+            <div class="admin-tab-pane active" id="tabOverview">
+                <div class="dashboard-header">
+                    <h2>Admin Overview</h2>
+                    <p>Keep track of your NotesHub community, uploaded documents, and moderation approvals.</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid admin-stats-grid">
+
+                    <div class="stat-card reveal stat-clickable" data-jump-tab="users">
+                        <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 data-admin-stat="users">0</h3>
+                            <p>Total Users</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card reveal stat-clickable" data-jump-tab="notes" data-jump-filter="all">
+                        <div class="stat-icon" style="background: #eef2ff; color: #4f46e5;">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 data-admin-stat="notes">0</h3>
+                            <p>Total Notes</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card reveal stat-clickable" data-jump-tab="notes" data-jump-filter="pending" style="border: 2px solid #fef3c7;">
+                        <div class="stat-icon" style="background: #fef3c7; color: #d97706;">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 data-admin-stat="pending" style="color: #d97706;">0</h3>
+                            <p>Pending Approvals</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card reveal stat-clickable" data-jump-tab="reports">
+                        <div class="stat-icon" style="background: #fee2e2; color: #dc2626;">
+                            <i class="fa-solid fa-flag"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 data-admin-stat="reported">0</h3>
+                            <p>Reported Notes</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card reveal stat-clickable" data-jump-tab="users" data-jump-filter="blocked">
+                        <div class="stat-icon" style="background: #f1f5f9; color: #475569;">
+                            <i class="fa-solid fa-user-slash"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 data-admin-stat="blocked">0</h3>
+                            <p>Blocked Users</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Moderation Center Banner -->
+                <div class="recent-notes admin-overview-note" style="margin-bottom: 35px;">
+                    <div class="section-heading">
+                        <h3>Moderation Center</h3>
+                        <span class="admin-status"><i class="fa-solid fa-circle-check"></i> System healthy</span>
+                    </div>
+                    <p class="admin-overview-copy">Review student submissions, inspect document contents, grant approvals, and manage community access in real-time.</p>
+                    <div style="margin-top: 18px; display: flex; gap: 12px; flex-wrap: wrap;">
+                        <button type="button" class="admin-banner-action-btn" id="bannerReviewPendingBtn">
+                            <i class="fa-solid fa-hourglass-half"></i> Review Pending Notes (<span id="bannerPendingBadge">0</span>)
+                        </button>
+                        <button type="button" class="admin-banner-action-btn secondary" id="bannerManageUsersBtn">
+                            <i class="fa-solid fa-users"></i> Manage Users
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Submissions Awaiting Approval -->
+                <div class="admin-section-card">
+                    <div class="section-heading">
+                        <h3><i class="fa-solid fa-clock-rotate-left" style="color: #4f46e5; margin-right: 8px;"></i> Recent Submissions Awaiting Review</h3>
+                        <button type="button" class="admin-link-btn" id="viewAllPendingBtn">View all notes &rarr;</button>
+                    </div>
+                    <div id="overviewPendingList" class="admin-notes-container">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
             </div>
 
-            <!-- Stats -->
-            <div class="stats-grid admin-stats-grid">
+            <!-- TAB 2: NOTE APPROVALS & MANAGEMENT -->
+            <div class="admin-tab-pane" id="tabNotes" style="display: none;">
+                <div class="dashboard-header">
+                    <h2>Note Approvals & Management</h2>
+                    <p>Review student uploads, inspect files, and approve or reject notes with feedback.</p>
+                </div>
 
-                <div class="stat-card reveal" id="users">
-                    <div class="stat-icon" style="background: #e0f2fe; color: #0284c7;">
-                        <i class="fa-solid fa-users"></i>
+                <!-- Filters & Search Toolbar -->
+                <div class="admin-toolbar">
+                    <div class="admin-filter-pills" id="noteStatusFilters">
+                        <button type="button" class="filter-pill active" data-filter="pending">
+                            <i class="fa-solid fa-hourglass-half"></i> Pending Review <span class="pill-count" id="pillCountPending">0</span>
+                        </button>
+                        <button type="button" class="filter-pill" data-filter="all">
+                            All Notes <span class="pill-count" id="pillCountAll">0</span>
+                        </button>
+                        <button type="button" class="filter-pill" data-filter="approved">
+                            <i class="fa-solid fa-check"></i> Approved <span class="pill-count" id="pillCountApproved">0</span>
+                        </button>
+                        <button type="button" class="filter-pill" data-filter="rejected">
+                            <i class="fa-solid fa-xmark"></i> Rejected <span class="pill-count" id="pillCountRejected">0</span>
+                        </button>
                     </div>
-                    <div class="stat-info">
-                        <h3 data-admin-stat="users">0</h3>
-                        <p>Total Users</p>
+
+                    <div class="admin-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="adminNotesSearchInput" placeholder="Search notes by title, subject, module, or student...">
                     </div>
                 </div>
 
-                <div class="stat-card reveal">
-                    <div class="stat-icon" style="background: #eef2ff; color: #4f46e5;">
-                        <i class="fa-solid fa-book-open"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 data-admin-stat="notes">0</h3>
-                        <p>Total Notes</p>
-                    </div>
-                </div>
+                <!-- Status alert banner (for feedback messages) -->
+                <div id="adminNotesStatusAlert" class="admin-status-alert" style="display: none;"></div>
 
-                <div class="stat-card reveal">
-                    <div class="stat-icon" style="background: #fef3c7; color: #d97706;">
-                        <i class="fa-solid fa-hourglass-half"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 data-admin-stat="pending">0</h3>
-                        <p>Pending Note Approvals</p>
-                    </div>
+                <!-- Notes Cards Container -->
+                <div id="adminNotesList" class="admin-notes-container">
+                    <!-- Rendered dynamically -->
                 </div>
-
-                <div class="stat-card reveal" id="reports">
-                    <div class="stat-icon" style="background: #fee2e2; color: #dc2626;">
-                        <i class="fa-solid fa-flag"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 data-admin-stat="reported">0</h3>
-                        <p>Reported Notes</p>
-                    </div>
-                </div>
-
-                <div class="stat-card reveal">
-                    <div class="stat-icon" style="background: #f1f5f9; color: #475569;">
-                        <i class="fa-solid fa-user-slash"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 data-admin-stat="blocked">0</h3>
-                        <p>Blocked Users</p>
-                    </div>
-                </div>
-
             </div>
 
-            <!-- Admin activity entry point -->
-            <div class="recent-notes admin-overview-note" id="notes">
-                <div class="section-heading">
-                    <h3>Moderation Center</h3>
-                    <span class="admin-status"><i class="fa-solid fa-circle-check"></i> System healthy</span>
+            <!-- TAB 3: USER MANAGEMENT -->
+            <div class="admin-tab-pane" id="tabUsers" style="display: none;">
+                <div class="dashboard-header">
+                    <h2>User Management</h2>
+                    <p>View registered student accounts, manage roles, block violating accounts, or remove users.</p>
                 </div>
-                <p class="admin-overview-copy">Review pending submissions, investigate reports, and manage community access from one place.</p>
+
+                <!-- Users Toolbar -->
+                <div class="admin-toolbar">
+                    <div class="admin-search-box" style="max-width: 400px;">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="adminUsersSearchInput" placeholder="Search users by name, email, or role...">
+                    </div>
+                    <div class="admin-user-counts">
+                        <span>Total: <strong id="usersTotalDisplay">0</strong></span>
+                        <span style="color: #16a34a;">Active: <strong id="usersActiveDisplay">0</strong></span>
+                        <span style="color: #dc2626;">Blocked: <strong id="usersBlockedDisplay">0</strong></span>
+                    </div>
+                </div>
+
+                <!-- Status message for users -->
+                <div id="adminUsersStatusAlert" class="admin-status-alert" style="display: none;"></div>
+
+                <!-- Users Table Card -->
+                <div class="admin-section-card" style="padding: 0; overflow: hidden;">
+                    <div class="admin-table-responsive">
+                        <table class="admin-table" id="adminUsersTable">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Academic Info</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUsersTableBody">
+                                <!-- Rendered dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: REPORTS & MODERATION -->
+            <div class="admin-tab-pane" id="tabReports" style="display: none;">
+                <div class="dashboard-header">
+                    <h2>Reported Content</h2>
+                    <p>Review community-flagged notes, investigate reports, and take moderation action.</p>
+                </div>
+
+                <div class="admin-section-card">
+                    <div id="adminReportsList">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
             </div>
 
         </div>
 
     </section>
+
+    <!-- REJECTION REASON MODAL DIALOG -->
+    <div class="admin-modal-backdrop" id="adminRejectModal" style="display: none;">
+        <div class="admin-modal-card">
+            <div class="admin-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="admin-modal-icon reject"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 17px; font-weight: 700;">Reject Note Submission</h3>
+                        <p style="margin: 2px 0 0; font-size: 13px; color: #64748b;">The student will be notified with your feedback.</p>
+                    </div>
+                </div>
+                <button type="button" class="admin-modal-close-btn" id="rejectModalCloseBtn">&times;</button>
+            </div>
+
+            <div class="admin-modal-body">
+                <p style="font-size: 14px; margin-bottom: 12px;"><strong>Note:</strong> <span id="rejectModalNoteTitle">Untitled</span></p>
+
+                <div style="margin-bottom: 15px;">
+                    <label for="rejectPresetSelect" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #334155;">Common Rejection Reason:</label>
+                    <select id="rejectPresetSelect" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 14px;">
+                        <option value="Low scan quality or unreadable document pages">Low scan quality or unreadable document pages</option>
+                        <option value="Incorrect or misleading subject and course module tags">Incorrect or misleading subject and course module tags</option>
+                        <option value="Incomplete study notes / missing chapters or pages">Incomplete study notes / missing chapters or pages</option>
+                        <option value="Potential copyright violation or unauthorized textbook reprint">Potential copyright violation or unauthorized textbook reprint</option>
+                        <option value="Duplicate or spam upload">Duplicate or spam upload</option>
+                        <option value="custom">Other reason (write custom message below)</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label for="rejectCustomMessage" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #334155;">Feedback / Message to Student (optional):</label>
+                    <textarea id="rejectCustomMessage" rows="3" placeholder="Explain what needs improvement so the student can fix and re-upload..." style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 14px; box-sizing: border-box; resize: vertical;"></textarea>
+                </div>
+            </div>
+
+            <div class="admin-modal-footer">
+                <button type="button" class="admin-btn cancel" id="rejectModalCancelBtn">Cancel</button>
+                <button type="button" class="admin-btn confirm-reject" id="rejectModalConfirmBtn">
+                    <i class="fa-solid fa-xmark"></i> Confirm Rejection
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script type="module" src="js/main.js"></script>
 

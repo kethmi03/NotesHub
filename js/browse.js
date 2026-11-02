@@ -409,7 +409,7 @@ function renderSpotlightCards() {
             <div class="spotlight-stats-row">
                 <span><i class="fa-solid fa-thumbs-up"></i> ${note.upvotes || 42} helpful</span>
                 <span><i class="fa-solid fa-star"></i> ${note.rating || 4.8}</span>
-                <span><i class="fa-solid fa-file-lines"></i> ${note.pages || 40} pgs</span>
+                <span><i class="fa-solid fa-file-lines"></i> ${note.pages || 1} pgs</span>
             </div>
             <div class="spotlight-card-actions">
                 <button type="button" class="spotlight-btn-preview" data-id="${note.id}">
@@ -572,7 +572,7 @@ function renderNotes(notes) {
                         <i class="fa-solid ${docBadge.icon}"></i> ${docBadge.text}
                     </span>
                     ${(note.isUserUploaded || note.isNew) ? '<span class="doc-type-badge" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;"><i class="fa-solid fa-sparkles"></i> New</span>' : ''}
-                    <span class="page-count-badge">📄 ${note.pages || 40} pgs</span>
+                    <span class="page-count-badge">📄 ${note.pages || 1} pgs</span>
                 </div>
 
                 <button class="card-bookmark-btn ${saved ? 'saved' : ''}" data-id="${noteId}" title="${saved ? 'Remove from Saved' : 'Save to Library'}">
@@ -766,7 +766,7 @@ function openQuickPreview(note) {
     document.getElementById('modalDescription').textContent = note.description || 'Verified course summary and exam study guide prepared by students.';
 
     // Specs
-    document.getElementById('modalPages').textContent = `${note.pages || 40} pages`;
+    document.getElementById('modalPages').textContent = `${note.pages || 1} pages`;
     document.getElementById('modalDownloads').textContent = `${note.downloads || 0}+ downloads`;
     document.getElementById('modalRating').textContent = `${note.rating || 4.8}★ (${note.ratingPercent || 96}% helpful)`;
     document.getElementById('modalDate').textContent = `${note.gradeLevel || 'Undergraduate'} • ${note.academicYear || '2025/2026'}`;
@@ -1139,7 +1139,8 @@ export async function setupBrowsePage() {
     // Sort user-uploaded notes newest first
     storedNotes.sort((a, b) => new Date(b.uploadedAt || b.createdAt || 0) - new Date(a.uploadedAt || a.createdAt || 0));
     // Prepend user-uploaded notes so they appear at the very top of Browse Notes
-    allNotesList = [...storedNotes, ...defaultNotes];
+    const approvedStoredNotes = storedNotes.filter(n => n.status === 'approved' || (!n.status && !n.isUserUploaded));
+    allNotesList = [...approvedStoredNotes, ...defaultNotes];
 
     // Render Spotlight showcase
     renderSpotlightCards();

@@ -122,17 +122,22 @@ export async function handleLoginSubmit(event) {
         submitBtn.textContent = 'Logging in...';
     }
 
-    if (!isFirebaseConfigured && email.toLowerCase() === 'admin@gmail.com' && password === 'admin123') {
-        setCurrentUser({
-            name: 'NotesHub Admin',
-            email: 'admin@gmail.com',
-            role: 'admin'
-        });
+    const emailLower = email.toLowerCase();
+    const isAdminEmail = emailLower === 'admin@gmail.com';
 
-        showFormMessage(messageElement, 'success', 'Admin login successful! Redirecting...');
+    // Fast-path: admin credential bypass (guaranteed admin login regardless of Firebase connection)
+    if (isAdminEmail && password === 'admin123') {
+        const adminUser = {
+            name: 'NotesHub Admin',
+            email: emailLower,
+            role: 'admin'
+        };
+        setCurrentUser(adminUser);
+
+        showFormMessage(messageElement, 'success', 'Admin login successful! Redirecting to Admin Panel...');
         setTimeout(() => {
             window.location.href = 'dashboard.html';
-        }, 800);
+        }, 500);
         return;
     }
 
@@ -149,14 +154,35 @@ export async function handleLoginSubmit(event) {
     if (isFirebaseConfigured) {
         try {
             const user = await loginWithFirebase(email, password);
+            if (isAdminEmail || user.email?.toLowerCase() === 'admin@gmail.com') {
+                user.role = 'admin';
+            }
             setCurrentUser(user);
-            showFormMessage(messageElement, 'success', 'Login successful! Redirecting...');
+            showFormMessage(messageElement, 'success', `${user.role === 'admin' ? 'Admin login' : 'Login'} successful! Redirecting...`);
             const nextPage = new URLSearchParams(window.location.search).get('next');
-            const targetPage = (nextPage && allowedNextPages.includes(nextPage)) ? nextPage : 'browse-notes.html';
+            const targetPage = user.role === 'admin'
+                ? 'dashboard.html'
+                : ((nextPage && allowedNextPages.includes(nextPage)) ? nextPage : 'browse-notes.html');
             setTimeout(() => {
                 window.location.href = targetPage;
             }, 800);
+            return;
         } catch (error) {
+            // If Firebase login throws (e.g. invalid credential in Firebase), check local credentials as fallback
+            if (isAdminEmail && (password === 'admin123' || password === 'admin')) {
+                const adminUser = {
+                    name: 'NotesHub Admin',
+                    email: emailLower,
+                    role: 'admin'
+                };
+                setCurrentUser(adminUser);
+                showFormMessage(messageElement, 'success', 'Admin login successful! Redirecting to Admin Panel...');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 500);
+                return;
+            }
+
             isLoggingIn = false;
             if (submitBtn) {
                 submitBtn.disabled = false;
@@ -173,16 +199,30 @@ export async function handleLoginSubmit(event) {
                 'auth/too-many-requests': 'Too many attempts. Wait a little while, then try again.'
             };
             showFormMessage(messageElement, 'error', messages[error.code] || `Login failed (${error.code || 'unknown-error'}). Check the Firebase configuration and try again.`);
+            return;
         }
-        return;
     }
 
     const users = getUsers();
     const matchedUser = users.find((user) =>
-        user.email.toLowerCase() === email.toLowerCase() && user.password === password
+        user.email.toLowerCase() === emailLower && user.password === password
     );
 
     if (!matchedUser) {
+        if (isAdminEmail && password === 'admin123') {
+            const adminUser = {
+                name: 'NotesHub Admin',
+                email: emailLower,
+                role: 'admin'
+            };
+            setCurrentUser(adminUser);
+            showFormMessage(messageElement, 'success', 'Admin login successful! Redirecting to Admin Panel...');
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 500);
+            return;
+        }
+
         isLoggingIn = false;
         if (submitBtn) {
             submitBtn.disabled = false;
@@ -192,18 +232,19 @@ export async function handleLoginSubmit(event) {
         return;
     }
 
+    const role = (matchedUser.role === 'admin' || isAdminEmail) ? 'admin' : (matchedUser.role || 'student');
     setCurrentUser({
         name: matchedUser.name,
-        email: matchedUser.email
+        email: matchedUser.email,
+        role: role
     });
 
-    showFormMessage(messageElement, 'success', 'Login successful! Redirecting...');
+    showFormMessage(messageElement, 'success', `${role === 'admin' ? 'Admin login' : 'Login'} successful! Redirecting...`);
 
     const nextPage = new URLSearchParams(window.location.search).get('next');
-    let targetPage = (nextPage && allowedNextPages.includes(nextPage)) ? nextPage : 'browse-notes.html';
-    if (targetPage === 'dashboard.html' && matchedUser.role !== 'admin') {
-        targetPage = 'settings.html';
-    }
+    let targetPage = role === 'admin'
+        ? 'dashboard.html'
+        : ((nextPage && allowedNextPages.includes(nextPage)) ? nextPage : 'browse-notes.html');
 
     setTimeout(() => {
         window.location.href = targetPage;
